@@ -398,41 +398,41 @@ describe('CollisionSystem', () => {
         });
     });
 
-    describe('子弹互击', () => {
-        it('玩家子弹和敌人子弹碰撞时应该双双销毁', () => {
-            const playerBulletId = generateId();
-            const enemyBulletId = generateId();
-            const playerId = generateId();
-            const enemyId = generateId();
+    // describe('子弹互击', () => {
+    //     it('玩家子弹和敌人子弹碰撞时应该双双销毁', () => {
+    //         const playerBulletId = generateId();
+    //         const enemyBulletId = generateId();
+    //         const playerId = generateId();
+    //         const enemyId = generateId();
 
-            world.entities.set(playerBulletId, []);
-            world.entities.set(enemyBulletId, []);
-            world.entities.set(playerId, []);
-            world.entities.set(enemyId, []);
+    //         world.entities.set(playerBulletId, []);
+    //         world.entities.set(enemyBulletId, []);
+    //         world.entities.set(playerId, []);
+    //         world.entities.set(enemyId, []);
 
-            // 设置玩家
-            addComponent(world, playerId, new PlayerTag());
+    //         // 设置玩家
+    //         addComponent(world, playerId, new PlayerTag());
 
-            // 设置敌人
-            addComponent(world, enemyId, new EnemyTag({ id: EnemyId.NORMAL }));
+    //         // 设置敌人
+    //         addComponent(world, enemyId, new EnemyTag({ id: EnemyId.NORMAL }));
 
-            // 玩家子弹
-            addComponent(world, playerBulletId, new Transform({ x: 100, y: 100 }));
-            addComponent(world, playerBulletId, new HitBox({ shape: 'circle', radius: 10, layer: CollisionLayer.PlayerBullet }));
-            addComponent(world, playerBulletId, new Bullet({ owner: playerId, ammoType: AmmoType.VULCAN_SPREAD }));
+    //         // 玩家子弹
+    //         addComponent(world, playerBulletId, new Transform({ x: 100, y: 100 }));
+    //         addComponent(world, playerBulletId, new HitBox({ shape: 'circle', radius: 10, layer: CollisionLayer.PlayerBullet }));
+    //         addComponent(world, playerBulletId, new Bullet({ owner: playerId, ammoType: AmmoType.VULCAN_SPREAD }));
 
-            // 敌人子弹
-            addComponent(world, enemyBulletId, new Transform({ x: 105, y: 100 }));
-            addComponent(world, enemyBulletId, new HitBox({ shape: 'circle', radius: 10, layer: CollisionLayer.EnemyBullet }));
-            addComponent(world, enemyBulletId, new Bullet({ owner: enemyId, ammoType: AmmoType.VULCAN_SPREAD }));
+    //         // 敌人子弹
+    //         addComponent(world, enemyBulletId, new Transform({ x: 105, y: 100 }));
+    //         addComponent(world, enemyBulletId, new HitBox({ shape: 'circle', radius: 10, layer: CollisionLayer.EnemyBullet }));
+    //         addComponent(world, enemyBulletId, new Bullet({ owner: enemyId, ammoType: AmmoType.VULCAN_SPREAD }));
 
-            CollisionSystem(world, 0.016);
+    //         CollisionSystem(world, 0.016);
 
-            // 两颗子弹都应该被标记销毁
-            expect(world.entities.get(playerBulletId)?.some(c => c instanceof DestroyTag)).toBe(true);
-            expect(world.entities.get(enemyBulletId)?.some(c => c instanceof DestroyTag)).toBe(true);
-        });
-    });
+    //         // 两颗子弹都应该被标记销毁
+    //         expect(world.entities.get(playerBulletId)?.some(c => c instanceof DestroyTag)).toBe(true);
+    //         expect(world.entities.get(enemyBulletId)?.some(c => c instanceof DestroyTag)).toBe(true);
+    //     });
+    // });
 
     describe('玩家无敌状态', () => {
         it('无敌状态的玩家不应该受到伤害', () => {

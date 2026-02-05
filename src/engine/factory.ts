@@ -5,6 +5,7 @@ import { EntityId, Component } from './types';
 import { World, generateId, getFromPool } from './world';
 import { OPTION_LERP_FACTOR, OPTION_RADIUS, OPTION_ROTATION_SPEED } from './configs';
 
+type ComponentType = keyof typeof Components
 
 /** 根据蓝图生成实体，支持对象池 */
 export function spawnFromBlueprint(world: World, bp: Blueprint,
@@ -22,7 +23,7 @@ export function spawnFromBlueprint(world: World, bp: Blueprint,
 
     // 2. 按蓝图 push 组件
     for (const [key, args] of Object.entries(bp)) {
-        const ComponentCtor = Components[key];
+        const ComponentCtor = Components[key as ComponentType] as new (args?: any) => Component;
         if (!ComponentCtor) {
             console.error('[factory] Missing component constructor for key:', key);
             continue;
@@ -119,7 +120,7 @@ export function spawnOption(world: World, bp: Blueprint, x: number, y: number, o
     const id = spawnFromBlueprint(world, bp, x, y, 0);
 
     // 设置僚机的索引
-    const optionComps = world.entities.get(id);
+    const optionComps = world.entities.get(id)!;
     // 配置僚机所有者
     optionComps.push(new Option({
         owner: ownerId,

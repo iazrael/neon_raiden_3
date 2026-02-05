@@ -353,7 +353,7 @@ export class Option extends Component {
         this.owner = cfg.owner;
         this.index = cfg.index;
         this.radius = cfg.radius;
-        this.angle = cfg.angle;
+        this.angle = cfg.angle ?? 0;
         this.rotationSpeed = cfg.rotationSpeed;
         this.lerpFactor = cfg.lerpFactor;
     }
