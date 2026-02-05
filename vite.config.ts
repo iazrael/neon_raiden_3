@@ -38,8 +38,8 @@ export default defineConfig(({ mode }) => {
             //     registerType: 'prompt',
             //     includeAssets: ['favicon.svg', 'logo.svg', 'logo-180.png', 'logo-192.png', 'logo-512.png'],
             //     manifest: {
-            //         name: "霓电战记",
-            //         short_name: "霓电战记",
+            //         name: "霓电战记III",
+            //         short_name: "霓电III",
             //         description: "A cyberpunk action game with neon aesthetics",
             //         start_url: "./",
             //         scope: "./",

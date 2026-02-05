@@ -724,7 +724,7 @@ function handlePlayerPickup(
 
     let playerId: EntityId;
     let pickup: PickupItem;
-    let pickupTransform: Transform;
+    let pickupTransform: Transform | undefined;
     let pickupComps: Component[];
 
     if (player1 && pickup2) {

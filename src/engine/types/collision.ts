@@ -17,7 +17,7 @@ export enum CollisionLayer {
 const CollisionMatrix: Record<CollisionLayer, CollisionLayer> = {
     [CollisionLayer.Player]: CollisionLayer.Enemy | CollisionLayer.EnemyBullet | CollisionLayer.Pickup,
     [CollisionLayer.Enemy]: CollisionLayer.Player | CollisionLayer.PlayerBullet,
-    [CollisionLayer.PlayerBullet]: CollisionLayer.Enemy | CollisionLayer.EnemyBullet,
+    [CollisionLayer.PlayerBullet]: CollisionLayer.Enemy, // | CollisionLayer.EnemyBullet, 先不合敌方子弹互击
     [CollisionLayer.EnemyBullet]: CollisionLayer.Player,
     [CollisionLayer.Pickup]: CollisionLayer.Player,
     [CollisionLayer.None]: 0,
