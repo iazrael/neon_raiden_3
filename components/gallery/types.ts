@@ -1,33 +1,32 @@
-import { WeaponType, EnemyType, BossWeaponType, FighterEntity } from '@/types';
-import { WeaponConfig, EnemyConfig, BossConfig } from '@/game/config';
+import { WeaponId, EnemyId, BossId, FighterId } from '../../src/engine/types/ids';
+import { GalleryEntry } from '../../src/engine/configs/base';
 
 export interface BaseItem {
   name: string;
   chineseName: string;
-  chineseDescription: string;
+  description: string;
 }
 
 export interface FighterItem extends BaseItem {
-  config: FighterEntity;
+  id: FighterId;
+  entry: GalleryEntry;
+  isUnlocked: boolean;
 }
 
 export interface WeaponItem extends BaseItem {
-  type: WeaponType;
-  config: typeof WeaponConfig[keyof typeof WeaponConfig];
+  id: WeaponId;
+  entry: GalleryEntry;
   isUnlocked: boolean;
 }
 
 export interface EnemyItem extends BaseItem {
-  type: EnemyType;
-  config: typeof EnemyConfig[keyof typeof EnemyConfig];
+  id: EnemyId;
+  entry: GalleryEntry;
   isUnlocked: boolean;
 }
 
 export interface BossItem extends BaseItem {
-  level: number;
-  config: typeof BossConfig[keyof typeof BossConfig];
+  id: BossId;
+  entry: GalleryEntry;
   isUnlocked: boolean;
-  weapons: BossWeaponType[];
-  wingmenCount: number;
-  wingmenType: string;
 }

@@ -83,7 +83,7 @@ describe('RenderSystem', () => {
             const entityId = 100;
             mockWorld.entities.set(entityId, [
                 new Transform({ x: 400, y: 300, rot: 0 }),
-                new Sprite({ spriteKey: SpriteKey.PLAYER, color: '#ff0000' })
+                new Sprite({ spriteKey: SpriteKey.FIGHTER_NEON, color: '#ff0000' })
             ]);
 
             RenderSystem(mockWorld, 16);
@@ -97,7 +97,7 @@ describe('RenderSystem', () => {
             // 添加玩家实体
             mockWorld.entities.set(mockWorld.playerId, [
                 new Transform({ x: 400, y: 300, rot: 0 }),
-                new Sprite({ spriteKey: SpriteKey.PLAYER, color: '#00ff00' }),
+                new Sprite({ spriteKey: SpriteKey.FIGHTER_NEON, color: '#00ff00' }),
                 new PlayerTag()
             ]);
 
@@ -117,7 +117,7 @@ describe('RenderSystem', () => {
 
         it('应该跳过没有 Transform 的实体', () => {
             mockWorld.entities.set(100, [
-                new Sprite({ spriteKey: SpriteKey.PLAYER, color: '#ff0000' })
+                new Sprite({ spriteKey: SpriteKey.FIGHTER_NEON, color: '#ff0000' })
             ]);
 
             RenderSystem(mockWorld, 16);
@@ -147,7 +147,7 @@ describe('RenderSystem', () => {
 
             mockWorld.entities.set(100, [
                 new Transform({ x: 400, y: 300, rot: 0 }),
-                new Sprite({ spriteKey: SpriteKey.PLAYER, color: '#ff0000' })
+                new Sprite({ spriteKey: SpriteKey.FIGHTER_NEON, color: '#ff0000' })
             ]);
 
             RenderSystem(mockWorld, 16);
@@ -164,7 +164,7 @@ describe('RenderSystem', () => {
 
             mockWorld.entities.set(100, [
                 new Transform({ x: 400, y: 300, rot: 0 }),
-                new Sprite({ spriteKey: SpriteKey.PLAYER, color: '#ff0000' })
+                new Sprite({ spriteKey: SpriteKey.FIGHTER_NEON, color: '#ff0000' })
             ]);
 
             RenderSystem(mockWorld, 16);
@@ -190,7 +190,7 @@ describe('RenderSystem', () => {
                 new Transform({ x: 400, y: 300, rot: 0 })
             ]);
             mockWorld.entities.set(102, [
-                new Sprite({ spriteKey: SpriteKey.PLAYER, color: '#ff0000' })
+                new Sprite({ spriteKey: SpriteKey.FIGHTER_NEON, color: '#ff0000' })
             ]);
 
             RenderSystem(mockWorld, 16);

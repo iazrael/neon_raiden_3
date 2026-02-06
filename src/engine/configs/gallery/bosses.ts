@@ -1,5 +1,6 @@
 import { BossId } from '../../types';
-import { GalleryEntry } from '../index';
+import { GalleryEntry } from '../base';
+import { SpriteKey } from '../sprites/base';
 
 export const GALLERY_BOSSES: Record<BossId, GalleryEntry> = {
   [BossId.GUARDIAN]: {
@@ -10,6 +11,8 @@ export const GALLERY_BOSSES: Record<BossId, GalleryEntry> = {
     rarity: 'common',
     unlock: 'level',
     unlockParam: 1,
+    sprite: SpriteKey.BOSS_GUARDIAN,
+    color: '#4488ff',
   },
   [BossId.INTERCEPTOR]: {
     id: BossId.INTERCEPTOR,
@@ -19,6 +22,8 @@ export const GALLERY_BOSSES: Record<BossId, GalleryEntry> = {
     rarity: 'common',
     unlock: 'level',
     unlockParam: 2,
+    sprite: SpriteKey.BOSS_INTERCEPTOR,
+    color: '#ff4488',
   },
   [BossId.DESTROYER]: {
     id: BossId.DESTROYER,
@@ -28,6 +33,8 @@ export const GALLERY_BOSSES: Record<BossId, GalleryEntry> = {
     rarity: 'rare',
     unlock: 'level',
     unlockParam: 3,
+    sprite: SpriteKey.BOSS_DESTROYER,
+    color: '#44ff88',
   },
   [BossId.ANNIHILATOR]: {
     id: BossId.ANNIHILATOR,
@@ -37,6 +44,8 @@ export const GALLERY_BOSSES: Record<BossId, GalleryEntry> = {
     rarity: 'rare',
     unlock: 'level',
     unlockParam: 4,
+    sprite: SpriteKey.BOSS_ANNIHILATOR,
+    color: '#ff8844',
   },
   [BossId.DOMINATOR]: {
     id: BossId.DOMINATOR,
@@ -46,6 +55,8 @@ export const GALLERY_BOSSES: Record<BossId, GalleryEntry> = {
     rarity: 'epic',
     unlock: 'level',
     unlockParam: 5,
+    sprite: SpriteKey.BOSS_DOMINATOR,
+    color: '#8844ff',
   },
   [BossId.OVERLORD]: {
     id: BossId.OVERLORD,
@@ -55,6 +66,8 @@ export const GALLERY_BOSSES: Record<BossId, GalleryEntry> = {
     rarity: 'epic',
     unlock: 'level',
     unlockParam: 6,
+    sprite: SpriteKey.BOSS_OVERLORD,
+    color: '#ff44ff',
   },
   [BossId.TITAN]: {
     id: BossId.TITAN,
@@ -64,6 +77,8 @@ export const GALLERY_BOSSES: Record<BossId, GalleryEntry> = {
     rarity: 'legendary',
     unlock: 'level',
     unlockParam: 7,
+    sprite: SpriteKey.BOSS_TITAN,
+    color: '#44ff44',
   },
   [BossId.COLOSSUS]: {
     id: BossId.COLOSSUS,
@@ -73,6 +88,8 @@ export const GALLERY_BOSSES: Record<BossId, GalleryEntry> = {
     rarity: 'legendary',
     unlock: 'level',
     unlockParam: 8,
+    sprite: SpriteKey.BOSS_COLOSSUS,
+    color: '#ffff44',
   },
   [BossId.LEVIATHAN]: {
     id: BossId.LEVIATHAN,
@@ -82,6 +99,8 @@ export const GALLERY_BOSSES: Record<BossId, GalleryEntry> = {
     rarity: 'mythic',
     unlock: 'level',
     unlockParam: 9,
+    sprite: SpriteKey.BOSS_LEVIATHAN,
+    color: '#44ffff',
   },
   [BossId.APOCALYPSE]: {
     id: BossId.APOCALYPSE,
@@ -91,5 +110,7 @@ export const GALLERY_BOSSES: Record<BossId, GalleryEntry> = {
     rarity: 'mythic',
     unlock: 'level',
     unlockParam: 10,
+    sprite: SpriteKey.BOSS_APOCALYPSE,
+    color: '#ff0000',
   },
 };

@@ -1,3 +1,5 @@
+import { SpriteKey } from './sprites/base';
+
 /**
  * 子弹外观配置（纯视觉，无数值）
  */
@@ -21,9 +23,13 @@ export type GalleryEntry = {
     name: string;
     chineseName: string;
     description: string;
-    rarity: string,                    // ← 稀有度：图鉴边框颜色
-    unlock: string,                   // ← 解锁方式：等级解锁
-    unlockParam: number,                    // ← 解锁参数：玩家等级 ≥ 5
+    rarity: string;                    // ← 稀有度：图鉴边框颜色
+    unlock: string;                   // ← 解锁方式：等级解锁
+    unlockParam: number;              // ← 解锁参数：玩家等级 ≥ 5
+    /** Sprite 引用 */
+    sprite: SpriteKey;                // ← 引用 SpriteKey 枚举
+    /** 主题颜色 (hex + alpha) */
+    color: string;                    // ← 主题颜色，用于 UI 主题色
 };
 
 export type WeaponGrowthSpec = {

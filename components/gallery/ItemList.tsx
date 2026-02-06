@@ -52,7 +52,7 @@ export const ItemList: React.FC<ItemListProps> = ({
           <div className="grid grid-cols-2 gap-2 sm:gap-2">
             {weapons.map((weapon) => (
               <WeaponListItem
-                key={weapon.type}
+                key={weapon.id}
                 weapon={weapon}
                 isSelected={selectedItem === weapon}
                 onSelect={() => {
@@ -70,7 +70,7 @@ export const ItemList: React.FC<ItemListProps> = ({
           <div className="grid grid-cols-2 gap-2 sm:gap-2">
             {enemies.map((enemy) => (
               <EnemyListItem
-                key={enemy.type}
+                key={enemy.id}
                 enemy={enemy}
                 isSelected={selectedItem === enemy}
                 onSelect={() => {
@@ -88,7 +88,7 @@ export const ItemList: React.FC<ItemListProps> = ({
           <div className="grid grid-cols-1 gap-4">
             {bosses.map((boss) => (
               <BossListItem
-                key={boss.level}
+                key={boss.id}
                 boss={boss}
                 isSelected={selectedItem === boss}
                 onSelect={() => {

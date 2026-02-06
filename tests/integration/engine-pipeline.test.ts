@@ -54,7 +54,7 @@ class MockResizeObserver {
 const PLAYER_BLUEPRINT: Blueprint = {
     Transform: { x: 400, y: 500, rot: 0 },
     Velocity: { vx: 0, vy: 0 , vrot: 0},
-    Sprite: { spriteKey: SpriteKey.PLAYER, color: '#00ff00' }
+    Sprite: { spriteKey: SpriteKey.FIGHTER_NEON, color: '#00ff00' }
 };
 
 describe('Engine Pipeline 集成测试', () => {

@@ -28,7 +28,7 @@ export const BLUEPRINT_FIGHTER_NEON: Blueprint = {
     HitBox: { shape: 'circle', radius: 24 * (1 - 0.2), layer: CollisionLayer.Player },
 
     /** 精灵组件 - 使用 SpriteKey */
-    Sprite: { spriteKey: SpriteKey.PLAYER, scale: 1 },
+    Sprite: { spriteKey: SpriteKey.FIGHTER_NEON, scale: 1 },
 
     /** 玩家标签组件 - 标识此实体为玩家 */
     PlayerTag: {},

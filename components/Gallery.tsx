@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {  ClickType } from '@/types';
-import { WeaponConfig, EnemyConfig, BossConfig, PlayerConfig, ASSETS_BASE_PATH } from '@/game/config';
-import { isWeaponUnlocked, isEnemyUnlocked, isBossUnlocked } from '@/game/unlockedItems';
+import { ClickType } from '@/types';
+import { GALLERY_WEAPONS, GALLERY_ENEMIES, GALLERY_BOSSES, GALLERY_FIGHTERS } from '../src/engine/configs/gallery';
+import { isWeaponUnlocked, isEnemyUnlocked, isBossUnlocked, isFighterUnlocked } from '../src/engine/configs/gallery/unlock';
+import { getSpritePath } from '../src/engine/configs/sprites/base';
+import { WeaponId, EnemyId, BossId, FighterId } from '../src/engine/types/ids';
 import { Tabs } from './gallery/Tabs';
 import { ItemList } from './gallery/ItemList';
 import { ItemDetailPanel } from './gallery/ItemDetailPanel';
@@ -54,52 +56,45 @@ export const Gallery: React.FC<GalleryProps> = ({ onClose, maxLevelReached, play
     };
   }, []);
 
-  const getSpriteSrc = (item: any, tab: Tab): string => {
-    if (tab === 'FIGHTERS') return `${ASSETS_BASE_PATH}fighters/${item.config.sprite}.svg`;
-    if (tab === 'ARMORY') return `${ASSETS_BASE_PATH}bullets/${item.config.sprite}.svg`;
-    if (tab === 'BESTIARY') return `${ASSETS_BASE_PATH}enemies/${item.config.sprite}.svg`;
-    if (tab === 'BOSSES') return `${ASSETS_BASE_PATH}bosses/${item.config.sprite}.svg`;
-    return '';
+  const getSpriteSrc = (item: FighterItem | WeaponItem | EnemyItem | BossItem): string => {
+    return getSpritePath(item.entry.sprite);
   };
 
   // Data Sources
-  const fighters: FighterItem[] = [
-    {
-      name: PlayerConfig.name,
-      chineseName: PlayerConfig.chineseName,
-      chineseDescription: PlayerConfig.describe,
-      config: PlayerConfig
-    }
-  ];
-
-  const weapons: WeaponItem[] = Object.values(WeaponConfig).map((config) => ({
-    type: config.type,
-    name: config.name,
-    chineseName: config.chineseName,
-    chineseDescription: config.describe,
-    config,
-    isUnlocked: isWeaponUnlocked(config.type)
+  const fighters: FighterItem[] = Object.values(GALLERY_FIGHTERS).map((entry) => ({
+    id: entry.id as FighterId,
+    name: entry.name,
+    chineseName: entry.chineseName,
+    description: entry.description,
+    entry,
+    isUnlocked: isFighterUnlocked(entry.id as FighterId)
   }));
 
-  const enemies: EnemyItem[] = Object.values(EnemyConfig).map((config) => ({
-    type: config.type,
-    name: config.name,
-    chineseName: config.chineseName,
-    chineseDescription: config.describe,
-    config,
-    isUnlocked: isEnemyUnlocked(config.type)
+  const weapons: WeaponItem[] = Object.values(GALLERY_WEAPONS).map((entry) => ({
+    id: entry.id as WeaponId,
+    name: entry.name,
+    chineseName: entry.chineseName,
+    description: entry.description,
+    entry,
+    isUnlocked: isWeaponUnlocked(entry.id as WeaponId)
   }));
 
-  const bosses: BossItem[] = Object.values(BossConfig).map((config) => ({
-    name: config.name,
-    chineseName: config.chineseName,
-    chineseDescription: config.describe,
-    level: config.level,
-    config,
-    isUnlocked: isBossUnlocked(config.level),
-    weapons: config.weapons || [],
-    wingmenCount: config.wingmen ? config.wingmen.count : 0,
-    wingmenType: config.wingmen ? config.wingmen.type : ''
+  const enemies: EnemyItem[] = Object.values(GALLERY_ENEMIES).map((entry) => ({
+    id: entry.id as EnemyId,
+    name: entry.name,
+    chineseName: entry.chineseName,
+    description: entry.description,
+    entry,
+    isUnlocked: isEnemyUnlocked(entry.id as EnemyId)
+  }));
+
+  const bosses: BossItem[] = Object.values(GALLERY_BOSSES).map((entry) => ({
+    id: entry.id as BossId,
+    name: entry.name,
+    chineseName: entry.chineseName,
+    description: entry.description,
+    entry,
+    isUnlocked: isBossUnlocked(entry.id as BossId)
   }));
 
   // Auto-select first unlocked item when tab changes (but don't show detail)
@@ -152,10 +147,10 @@ export const Gallery: React.FC<GalleryProps> = ({ onClose, maxLevelReached, play
 
       <div className="flex flex-1 overflow-hidden min-h-0 flex-col sm:flex-row">
         {/* Tabs Navigation */}
-        <Tabs 
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
-          playClick={playClick} 
+        <Tabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          playClick={playClick}
         />
 
         {/* Main Content Area - 手机竖屏上下布局，桌面左右布局 */}

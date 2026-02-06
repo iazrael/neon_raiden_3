@@ -43,7 +43,7 @@ class MockResizeObserver {
 const PLAYER_BLUEPRINT: Blueprint = {
     Transform: { x: 400, y: 500, rot: 0 },
     Velocity: { vx: 0, vy: 0, vrot: 0 },
-    Sprite: { spriteKey: SpriteKey.PLAYER, color: '#00ff00' }
+    Sprite: { spriteKey: SpriteKey.FIGHTER_NEON, color: '#00ff00' }
 };
 
 describe('Engine 初始化', () => {
@@ -68,9 +68,9 @@ describe('Engine 初始化', () => {
         }
     });
 
-    it('levelState 应该正确初始化', () => {
+    it('levelState 应该正确初始化', async () => {
         // 启动引擎
-        engine.start(PLAYER_BLUEPRINT);
+        await engine.start(PLAYER_BLUEPRINT);
 
         // 验证 world.levelState 已初始化
         const world = engine['world'];

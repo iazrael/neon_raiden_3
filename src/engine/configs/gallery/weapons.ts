@@ -1,5 +1,6 @@
 import { WeaponId } from '../../types';
-import { GalleryEntry } from '../index';
+import { GalleryEntry } from '../base';
+import { SpriteKey } from '../sprites/base';
 
 export const GALLERY_WEAPONS: Record<WeaponId, GalleryEntry> = {
   [WeaponId.VULCAN]: {
@@ -10,6 +11,8 @@ export const GALLERY_WEAPONS: Record<WeaponId, GalleryEntry> = {
     rarity: 'common',
     unlock: 'default',
     unlockParam: 0,
+    sprite: SpriteKey.BULLET_VULCAN,
+    color: '#ebdd17ff',
   },
   [WeaponId.LASER]: {
     id: WeaponId.LASER,
@@ -19,6 +22,8 @@ export const GALLERY_WEAPONS: Record<WeaponId, GalleryEntry> = {
     rarity: 'rare',
     unlock: 'level',
     unlockParam: 5,
+    sprite: SpriteKey.BULLET_LASER,
+    color: '#3fc4f0ff',
   },
   [WeaponId.PLASMA]: {
     id: WeaponId.PLASMA,
@@ -28,6 +33,8 @@ export const GALLERY_WEAPONS: Record<WeaponId, GalleryEntry> = {
     rarity: 'epic',
     unlock: 'achievement',
     unlockParam: 10001,
+    sprite: SpriteKey.BULLET_PLASMA,
+    color: '#ed64a6',
   },
   [WeaponId.MISSILE]: {
     id: WeaponId.MISSILE,
@@ -37,6 +44,8 @@ export const GALLERY_WEAPONS: Record<WeaponId, GalleryEntry> = {
     rarity: 'rare',
     unlock: 'level',
     unlockParam: 3,
+    sprite: SpriteKey.BULLET_MISSILE,
+    color: '#ec6f73',
   },
   [WeaponId.WAVE]: {
     id: WeaponId.WAVE,
@@ -46,6 +55,8 @@ export const GALLERY_WEAPONS: Record<WeaponId, GalleryEntry> = {
     rarity: 'epic',
     unlock: 'level',
     unlockParam: 7,
+    sprite: SpriteKey.BULLET_WAVE,
+    color: '#1e8de7ff',
   },
   [WeaponId.TESLA]: {
     id: WeaponId.TESLA,
@@ -55,6 +66,8 @@ export const GALLERY_WEAPONS: Record<WeaponId, GalleryEntry> = {
     rarity: 'legendary',
     unlock: 'achievement',
     unlockParam: 20001,
+    sprite: SpriteKey.BULLET_TESLA,
+    color: '#1053d9ff',
   },
   [WeaponId.MAGMA]: {
     id: WeaponId.MAGMA,
@@ -64,6 +77,8 @@ export const GALLERY_WEAPONS: Record<WeaponId, GalleryEntry> = {
     rarity: 'epic',
     unlock: 'level',
     unlockParam: 8,
+    sprite: SpriteKey.BULLET_MAGMA,
+    color: '#f60',
   },
   [WeaponId.SHURIKEN]: {
     id: WeaponId.SHURIKEN,
@@ -73,5 +88,7 @@ export const GALLERY_WEAPONS: Record<WeaponId, GalleryEntry> = {
     rarity: 'rare',
     unlock: 'level',
     unlockParam: 6,
+    sprite: SpriteKey.BULLET_SHURIKEN,
+    color: '#ccccccff',
   },
 };

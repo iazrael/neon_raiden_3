@@ -31,7 +31,7 @@ export const EnemyListItem: React.FC<EnemyListItemProps> = ({ enemy, isSelected,
     >
       <div className="font-bold text-base sm:text-sm">{isLocked ? '???' : enemy.chineseName || enemy.name}</div>
       <div className="text-xs opacity-70 mt-1.5">
-        {isLocked ? `Defeat this enemy to unlock` : `HP: ${enemy.config.baseHp}`}
+        {isLocked ? `Defeat this enemy to unlock` : enemy.entry.rarity}
       </div>
     </div>
   );

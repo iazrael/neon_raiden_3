@@ -1,6 +1,6 @@
 import { FighterId } from "../../types";
-import { GalleryEntry } from '../index';
-
+import { GalleryEntry } from '../base';
+import { SpriteKey } from '../sprites/base';
 
 export const GALLERY_FIGHTERS: Record<FighterId, GalleryEntry> = {
     [FighterId.NEON]: {
@@ -11,5 +11,7 @@ export const GALLERY_FIGHTERS: Record<FighterId, GalleryEntry> = {
         rarity: 'legendary',
         unlock: 'level',
         unlockParam: 0,
+        sprite: SpriteKey.FIGHTER_NEON,
+        color: '#00ffff',
     }
 }

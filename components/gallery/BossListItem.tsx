@@ -1,6 +1,7 @@
 import React from 'react';
 import { BossItem } from './types';
 import { intToRoman } from '@/src/views/utils/numbers';
+import { BOSS_LEVEL_MAP } from './constants';
 
 interface BossListItemProps {
   boss: BossItem;
@@ -10,6 +11,7 @@ interface BossListItemProps {
 
 export const BossListItem: React.FC<BossListItemProps> = ({ boss, isSelected, onSelect }) => {
   const isLocked = !boss.isUnlocked;
+  const level = BOSS_LEVEL_MAP[boss.id] || 1;
 
   return (
     <div
@@ -32,10 +34,10 @@ export const BossListItem: React.FC<BossListItemProps> = ({ boss, isSelected, on
     >
       <div className="flex justify-between items-center">
         <div className="font-bold text-base sm:text-sm">{isLocked ? '???' : boss.chineseName || boss.name}</div>
-        <div className="text-sm font-mono px-2 py-0.5 bg-purple-500/20 rounded">Stage {intToRoman(boss.level)}</div>
+        <div className="text-sm font-mono px-2 py-0.5 bg-purple-500/20 rounded">Stage {intToRoman(level)}</div>
       </div>
       <div className="text-xs opacity-70 mt-2">
-        {isLocked ? `Defeat this Boss to unlock` : `HP: ${boss.config.hp} | SCORE: ${boss.config.score}`}
+        {isLocked ? `Defeat this Boss to unlock` : boss.entry.rarity}
       </div>
     </div>
   );

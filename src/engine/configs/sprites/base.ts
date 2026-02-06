@@ -37,7 +37,7 @@ export interface SpriteEntry {
  */
 export enum SpriteKey {
     // Fighters
-    PLAYER = "player",
+    FIGHTER_NEON = "player",
     OPTION = "option",
 
     // Bullets (玩家)
@@ -138,8 +138,8 @@ export function buildSpritePath(key: SpriteKey, file: string): string {
  */
 export const SPRITE_REGISTRY: Record<SpriteKey, SpriteEntry> = {
     // ==================== Fighters ====================
-    [SpriteKey.PLAYER]: {
-        key: SpriteKey.PLAYER,
+    [SpriteKey.FIGHTER_NEON]: {
+        key: SpriteKey.FIGHTER_NEON,
         file: "player.svg",
         width: 48,
         height: 48,

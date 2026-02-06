@@ -15,7 +15,7 @@ interface ItemDetailPanelProps {
   showDetail: boolean;
   onClose: () => void;
   playClick?: (type?: ClickType) => void;
-  getSpriteSrc: (item: any, tab: Tab) => string;
+  getSpriteSrc: (item: FighterItem | WeaponItem | EnemyItem | BossItem) => string;
 }
 
 export const ItemDetailPanel: React.FC<ItemDetailPanelProps> = ({
@@ -87,7 +87,7 @@ export const ItemDetailPanel: React.FC<ItemDetailPanelProps> = ({
             <div className="absolute inset-0 rounded-full border border-cyan-500/30 animate-[spin_10s_linear_infinite]"></div>
             <div className="absolute inset-2 rounded-full border border-cyan-500/10 animate-[spin_15s_linear_infinite_reverse]"></div>
             <CachedImage
-              src={getSpriteSrc(selectedItem, activeTab)}
+              src={getSpriteSrc(selectedItem)}
               alt={selectedItem.name}
               className="relative z-10 filter drop-shadow-[0_0_15px_rgba(6,182,212,0.5)] group-hover:scale-110 transition-transform duration-500 w-28 h-28 sm:w-32 object-contain"
             />
@@ -98,15 +98,15 @@ export const ItemDetailPanel: React.FC<ItemDetailPanelProps> = ({
               <h3 className="text-2xl sm:text-3xl font-bold text-cyan-100">{selectedItem.chineseName || selectedItem.name || 'Unknown'}</h3>
               <p className="text-lg font-bold text-cyan-300">{selectedItem.name || ''}</p>
               <div className="text-cyan-500 text-sm tracking-widest uppercase opacity-70 mt-1">
-                {activeTab === 'BOSSES' ? `Threat Level: ${(selectedItem as BossItem).level}` : activeTab}
+                {activeTab}
               </div>
             </div>
 
             {renderDetailComponent()}
 
-            {selectedItem.chineseDescription && (
+            {selectedItem.description && (
               <p className="text-cyan-300 italic text-base mt-2 border-l-2 border-cyan-500/50 pl-4 leading-relaxed">
-                {selectedItem.chineseDescription}
+                {selectedItem.description}
               </p>
             )}
           </div>

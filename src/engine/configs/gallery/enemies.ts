@@ -1,5 +1,6 @@
 import { EnemyId } from "../../types";
-import { GalleryEntry } from '../index';
+import { GalleryEntry } from '../base';
+import { SpriteKey } from '../sprites/base';
 
 export const GALLERY_ENEMIES: Record<EnemyId, GalleryEntry> = {
   [EnemyId.NORMAL]: {
@@ -10,6 +11,8 @@ export const GALLERY_ENEMIES: Record<EnemyId, GalleryEntry> = {
     rarity: 'common',
     unlock: 'default',
     unlockParam: 0,
+    sprite: SpriteKey.ENEMY_NORMAL,
+    color: '#ff4444',
   },
   [EnemyId.FAST]: {
     id: EnemyId.FAST,
@@ -19,6 +22,8 @@ export const GALLERY_ENEMIES: Record<EnemyId, GalleryEntry> = {
     rarity: 'common',
     unlock: 'level',
     unlockParam: 1,
+    sprite: SpriteKey.ENEMY_FAST,
+    color: '#aa44ff',
   },
   [EnemyId.TANK]: {
     id: EnemyId.TANK,
@@ -28,6 +33,8 @@ export const GALLERY_ENEMIES: Record<EnemyId, GalleryEntry> = {
     rarity: 'common',
     unlock: 'level',
     unlockParam: 1,
+    sprite: SpriteKey.ENEMY_TANK,
+    color: '#44ff44',
   },
   [EnemyId.KAMIKAZE]: {
     id: EnemyId.KAMIKAZE,
@@ -37,6 +44,8 @@ export const GALLERY_ENEMIES: Record<EnemyId, GalleryEntry> = {
     rarity: 'uncommon',
     unlock: 'level',
     unlockParam: 2,
+    sprite: SpriteKey.ENEMY_KAMIKAZE,
+    color: '#ffaa44',
   },
   [EnemyId.ELITE_GUNBOAT]: {
     id: EnemyId.ELITE_GUNBOAT,
@@ -46,6 +55,8 @@ export const GALLERY_ENEMIES: Record<EnemyId, GalleryEntry> = {
     rarity: 'rare',
     unlock: 'level',
     unlockParam: 3,
+    sprite: SpriteKey.ENEMY_GUNBOAT,
+    color: '#4444ff',
   },
   [EnemyId.LASER_INTERCEPTOR]: {
     id: EnemyId.LASER_INTERCEPTOR,
@@ -55,6 +66,8 @@ export const GALLERY_ENEMIES: Record<EnemyId, GalleryEntry> = {
     rarity: 'rare',
     unlock: 'level',
     unlockParam: 4,
+    sprite: SpriteKey.ENEMY_INTERCEPTOR,
+    color: '#44ffff',
   },
   [EnemyId.MINE_LAYER]: {
     id: EnemyId.MINE_LAYER,
@@ -64,6 +77,8 @@ export const GALLERY_ENEMIES: Record<EnemyId, GalleryEntry> = {
     rarity: 'rare',
     unlock: 'level',
     unlockParam: 4,
+    sprite: SpriteKey.ENEMY_LAYER,
+    color: '#aaaa44',
   },
   [EnemyId.PULSAR]: {
     id: EnemyId.PULSAR,
@@ -73,6 +88,8 @@ export const GALLERY_ENEMIES: Record<EnemyId, GalleryEntry> = {
     rarity: 'uncommon',
     unlock: 'level',
     unlockParam: 2,
+    sprite: SpriteKey.ENEMY_PULSAR,
+    color: '#ff44ff',
   },
   [EnemyId.FORTRESS]: {
     id: EnemyId.FORTRESS,
@@ -82,6 +99,8 @@ export const GALLERY_ENEMIES: Record<EnemyId, GalleryEntry> = {
     rarity: 'epic',
     unlock: 'level',
     unlockParam: 5,
+    sprite: SpriteKey.ENEMY_FORTRESS,
+    color: '#666666',
   },
   [EnemyId.STALKER]: {
     id: EnemyId.STALKER,
@@ -91,6 +110,8 @@ export const GALLERY_ENEMIES: Record<EnemyId, GalleryEntry> = {
     rarity: 'uncommon',
     unlock: 'level',
     unlockParam: 3,
+    sprite: SpriteKey.ENEMY_STALKER,
+    color: '#ff8844',
   },
   [EnemyId.BARRAGE]: {
     id: EnemyId.BARRAGE,
@@ -100,5 +121,7 @@ export const GALLERY_ENEMIES: Record<EnemyId, GalleryEntry> = {
     rarity: 'rare',
     unlock: 'level',
     unlockParam: 4,
+    sprite: SpriteKey.ENEMY_BARRAGE,
+    color: '#8844ff',
   },
 };
