@@ -26,7 +26,7 @@ import { FighterId } from './types/ids';
  */
 export class ReactEngine {
     private engine: Engine;
-    private canvas: HTMLCanvasElement | null = null;
+    private canvas: HTMLCanvasElement;
 
     // ========== 存储模块 ==========
     private storage: GameStorage | null = null;
@@ -89,7 +89,7 @@ export class ReactEngine {
     private onLevelEventChange: (event: typeof ReactEngine.prototype.levelEvent) => void = () => {};
 
     constructor(
-        canvas: HTMLCanvasElement | null = null,
+        canvas: HTMLCanvasElement,
         onScoreChange?: (s: number) => void,
         onLevelChange?: (l: number) => void,
         onStateChange?: (s: GameState) => void,
@@ -101,8 +101,10 @@ export class ReactEngine {
         onBossChange?: (boss: { hp: number; maxHp: number } | null) => void,
         onLevelEventChange?: (event: typeof ReactEngine.prototype.levelEvent) => void
     ) {
-        this.engine = new Engine();
-        this.canvas = canvas ?? null;
+        this.canvas = canvas;
+        this.engine = new Engine(canvas);
+        // 初始化输入管理器
+        inputManager.init(canvas);
 
         // 设置回调
         if (onScoreChange) this.onScoreChange = onScoreChange;
@@ -156,14 +158,13 @@ export class ReactEngine {
 
                 // 处理存储事件（每帧）
                 if (this.storageListener) {
-                    const world = this.engine.getWorld();
-                    this.storageListener.processEvents(world.events).catch(console.error);
+                    this.storageListener.processEvents(snapshot.events).catch(console.error);
                 }
             }
         });
 
         // 启动引擎
-        this.engine.start(canvas, blueprint);
+        this.engine.start(blueprint);
 
         // 更新状态
         this.setState(GameState.PLAYING);

@@ -8,7 +8,7 @@ import { PerformanceMonitor, FrameSnapshot } from './utils/performance';
 import { DebugConfig } from './config/DebugConfig';
 
 // ============== 导入所有系统
-import { AISteerSystem } from './systems/AISteerSystem';
+// import { AISteerSystem } from './systems/AISteerSystem';
 import { AudioSystem } from './systems/AudioSystem';
 import { BombSystem } from './systems/BombSystem';
 import { BlinkSystem } from './systems/BlinkSystem';
@@ -30,8 +30,8 @@ import { MovementSystem } from './systems/MovementSystem';
 import { PickupSystem } from './systems/PickupSystem';
 import { RenderSystem } from './systems/RenderSystem';
 import { SpawnSystem } from './systems/SpawnSystem';
-import { SpecialWeaponSystem } from './systems/SpecialWeaponSystem';
-import { WeaponSynergySystem } from './systems/WeaponSynergySystem';
+// import { SpecialWeaponSystem } from './systems/SpecialWeaponSystem';
+// import { WeaponSynergySystem } from './systems/WeaponSynergySystem';
 import { WeaponSystem } from './systems/WeaponSystem';
 import { HomingSystem } from './systems/HomingSystem';
 import { ChainSystem } from './systems/ChainSystem';
@@ -40,9 +40,9 @@ import { BounceSystem } from './systems/BounceSystem';
 
 export class Engine {
     private raf = 0;
-    private world: World;
+    private world: World | null = null;
     private canvas: HTMLCanvasElement;
-    private resizeObserver: ResizeObserver;
+    private resizeObserver?: ResizeObserver;
     public snapshot$ = new BehaviorSubject<GameSnapshot | null>(null);
 
     /**
@@ -51,17 +51,17 @@ export class Engine {
     private performanceMonitor = new PerformanceMonitor(DebugConfig.performance);
 
     /**
-     * 流星生成计时器
-     */
-    private meteorTimer = { value: 0 };
-
-    /**
      * 最大时间增量（毫秒）
      *
      * 防止页面失焦后重新聚焦时的巨大时间增量导致实体位置跳跃。
      * 正常情况下每帧约 16.67ms，设置为 100ms 约等于 6 帧，足够处理偶发卡顿。
      */
     private static readonly MAX_DT = 100;
+
+
+    constructor(canvas: HTMLCanvasElement) {
+        this.canvas = canvas;
+    }
 
     /**
      * 初始化或更新渲染上下文
@@ -90,11 +90,13 @@ export class Engine {
         ctx.scale(dpr, dpr);
 
         // 更新 World（逻辑像素）
-        this.world.width = logicalWidth;
-        this.world.height = logicalHeight;
+        if (this.world) {
+            this.world.width = logicalWidth;
+            this.world.height = logicalHeight;
 
-        // 存储 RenderContext 到 World
-        this.world.renderContext = { canvas, context: ctx };
+            // 存储 RenderContext 到 World
+            this.world.renderContext = { canvas, context: ctx };
+        }
     }
 
     // ========== 调试模式：只测试渲染 ==========
@@ -102,24 +104,13 @@ export class Engine {
     private static DEBUG_RENDER_ONLY = false;
     // ==========================================
 
-    start(canvas: HTMLCanvasElement, bp: Blueprint) {
-        this.canvas = canvas;
+    start(bp: Blueprint) {
         this.world = createWorld();
 
-        // 初始化输入管理器
-        inputManager.init(canvas);
-
-
         // 初始化渲染上下文（使用统一方法）
-        const initialWidth = canvas.clientWidth;
-        const initialHeight = canvas.clientHeight;
-        this.initRenderContext(canvas, initialWidth, initialHeight);
-
-        this.world.worldId = spawnWorld(this.world);
-        this.world.playerId = spawnPlayer(this.world, bp, this.world.width / 2, this.world.height - 80, 0);
-
-        // 初始化 timeScale
-        this.world.timeScale = 1.0;
+        const initialWidth = this.canvas.clientWidth;
+        const initialHeight = this.canvas.clientHeight;
+        this.initRenderContext(this.canvas, initialWidth, initialHeight);
 
         // 监听尺寸变化
         this.resizeObserver = new ResizeObserver(entries => {
@@ -128,7 +119,14 @@ export class Engine {
                 this.initRenderContext(this.canvas, width, height);
             }
         });
-        this.resizeObserver.observe(canvas);
+        this.resizeObserver.observe(this.canvas);
+
+        // 初始化核心实体
+        this.world.worldId = spawnWorld(this.world);
+        this.world.playerId = spawnPlayer(this.world, bp, this.world.width / 2, this.world.height - 80, 0);
+
+        // 初始化 timeScale
+        this.world.timeScale = 1.0;
 
         this.loop();
     }
@@ -144,14 +142,17 @@ export class Engine {
 
     stop() {
         cancelAnimationFrame(this.raf);
-        this.resizeObserver.disconnect();
-        this.world.events.length = 0;
-        this.world.entities.clear();
+        this.resizeObserver?.disconnect();
+        this.world = null; // 全部清理掉
         this.snapshot$.next(null);
     }
 
     private loop() {
         const step = (t: number) => {
+            if (!this.world){
+                // 防止意外情况
+                return
+            }
             // 限制 dt 最大值，防止页面失焦后重新聚焦时的巨大时间增量
             const rawDt = t - (this.world.time || t);
             const dt = Math.min(rawDt, Engine.MAX_DT);
@@ -248,10 +249,4 @@ export class Engine {
         return this.performanceMonitor.stream;
     }
 
-    /**
-     * 获取 World 实例（供存储模块等使用）
-     */
-    getWorld(): World {
-        return this.world;
-    }
 }

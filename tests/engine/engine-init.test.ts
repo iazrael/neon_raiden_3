@@ -57,7 +57,7 @@ describe('Engine 初始化', () => {
 
     beforeEach(() => {
         mockCanvas = new MockCanvas() as any;
-        engine = new Engine();
+        engine = new Engine(mockCanvas as any);
     });
 
     afterEach(() => {
@@ -70,7 +70,7 @@ describe('Engine 初始化', () => {
 
     it('levelState 应该正确初始化', () => {
         // 启动引擎
-        engine.start(mockCanvas as any, PLAYER_BLUEPRINT);
+        engine.start(PLAYER_BLUEPRINT);
 
         // 验证 world.levelState 已初始化
         const world = engine['world'];

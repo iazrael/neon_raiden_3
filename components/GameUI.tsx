@@ -191,6 +191,7 @@ export const GameUI: React.FC<GameUIProps> = ({
           </div>
           <div className="text-xs mt-1 text-gray-400 tracking-wider">HP / SHIELD</div>
         </div>
+
       </div>
 
       {/* P2 Combo Display */}
@@ -352,19 +353,7 @@ export const GameUI: React.FC<GameUIProps> = ({
             </svg>
           </button>
 
-          {/* 性能监控 - PAUSE 按钮下方 */}
-          {performanceData && (
-            <div className="mt-2 pointer-events-none">
-              <div
-                className={`text-xs font-mono font-bold tracking-wider drop-shadow-md ${
-                  performanceData.fps >= 55 ? 'text-green-400' :
-                  performanceData.fps >= 30 ? 'text-yellow-400' : 'text-red-400'
-                }`}
-              >
-                {Math.round(performanceData.fps)} FPS • {performanceData.frameTime.toFixed(1)}ms
-              </div>
-            </div>
-          )}
+          
         </div>
       )}
 
@@ -545,6 +534,19 @@ export const GameUI: React.FC<GameUIProps> = ({
           DRAG TO MOVE • COLLECT ITEMS
         </div>
       )}
+      {/* 性能监控 - 左下角 */}
+        {performanceData && (
+        <div className="mt-2 pointer-events-none">
+            <div
+            className={`text-xs font-mono font-bold tracking-wider drop-shadow-md ${
+                performanceData.fps >= 55 ? 'text-green-400' :
+                performanceData.fps >= 30 ? 'text-yellow-400' : 'text-red-400'
+            }`}
+            >
+            {Math.round(performanceData.fps)} FPS • {performanceData.frameTime.toFixed(1)}ms
+            </div>
+        </div>
+        )}
     </div>
   );
 };

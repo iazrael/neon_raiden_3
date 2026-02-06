@@ -71,7 +71,7 @@ describe('Engine Pipeline 集成测试', () => {
 
     beforeEach(() => {
         mockCanvas = new MockCanvas() as any;
-        engine = new Engine();
+        engine = new Engine(mockCanvas as any);
     });
 
     afterEach(() => {
@@ -165,7 +165,7 @@ describe('Engine Pipeline 集成测试', () => {
 
     describe('引擎生命周期', () => {
         it('应该正确启动引擎', () => {
-            engine.start(mockCanvas as any, PLAYER_BLUEPRINT);
+            engine.start(PLAYER_BLUEPRINT);
 
             // getContext 在 getRenderContext 中被调用，而 getRenderContext 在渲染时被调用
             // 验证引擎已启动的最简单方式是检查 world 是否被创建
@@ -173,14 +173,14 @@ describe('Engine Pipeline 集成测试', () => {
         });
 
         it('应该支持暂停和恢复', () => {
-            engine.start(mockCanvas as any, PLAYER_BLUEPRINT);
+            engine.start(PLAYER_BLUEPRINT);
 
             expect(() => engine.pause()).not.toThrow();
             expect(() => engine.resume()).not.toThrow();
         });
 
         it('应该正确停止引擎', () => {
-            engine.start(mockCanvas as any, PLAYER_BLUEPRINT);
+            engine.start(PLAYER_BLUEPRINT);
 
             expect(() => engine.stop()).not.toThrow();
         });
@@ -193,7 +193,7 @@ describe('Engine Pipeline 集成测试', () => {
         });
 
         it('启动后快照应该被创建', () => {
-            engine.start(mockCanvas as any, PLAYER_BLUEPRINT);
+            engine.start(PLAYER_BLUEPRINT);
 
             // 快照在第一帧后才会被创建
             // 这里只验证快照流存在

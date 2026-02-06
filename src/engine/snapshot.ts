@@ -12,6 +12,7 @@ import {
     Bomb,
 } from "./components";
 import { World, getComponents, getComponentsFromComps, getEntity, view } from "./world";
+import { GameEvent } from "./events";
 
 // ========== 游戏快照接口 ==========
 export interface GameSnapshot {
@@ -24,6 +25,8 @@ export interface GameSnapshot {
     levelTransitionTimer: number;
     showBossWarning: boolean;
     comboState: ComboState | null;
+    /** 所有事件 */
+    events: GameEvent[];
 
     /** 游戏状态事件：失败或胜利 */
     gameStateEvent: 'defeat' | 'victory' | null;
@@ -101,6 +104,7 @@ export function buildSnapshot(world: World, t: number): GameSnapshot {
             boss: null,
             bullets: [],
             enemies: [],
+            events: [],
         };
     }
 
@@ -110,15 +114,15 @@ export function buildSnapshot(world: World, t: number): GameSnapshot {
         [Transform, Health, Weapon, Shield, InvulnerableState, Bomb],
     );
     const player = {
-        hp: hl.hp,
-        maxHp: hl.max,
-        x: tr.x,
-        y: tr.y,
+        hp: hl!.hp,
+        maxHp: hl!.max,
+        x: tr!.x,
+        y: tr!.y,
         bombs: bombs?.count || 0,
-        shieldPercent: (shield.value / shield.max) * 100,
-        weaponId: wp.id as WeaponId,
+        shieldPercent: (shield!.value / shield!.max) * 100,
+        weaponId: wp!.id as WeaponId,
         secondaryWeapon: null, // TODO: 从SecondaryWeapon组件获取
-        weaponLevel: wp.level,
+        weaponLevel: wp!.level,
         invulnerable: !!invuln,
     };
 
@@ -150,11 +154,11 @@ export function buildSnapshot(world: World, t: number): GameSnapshot {
             BossTag,
         ]);
         bossInfo = {
-            hp: h.hp,
-            maxHp: h.max,
-            x: t.x,
-            y: t.y,
-            bossId: tag.id,
+            hp: h!.hp,
+            maxHp: h!.max,
+            x: t!.x,
+            y: t!.y,
+            bossId: tag!.id,
         };
     }
 
@@ -225,5 +229,6 @@ export function buildSnapshot(world: World, t: number): GameSnapshot {
         boss:bossInfo,
         bullets,
         enemies,
+        events: world.events,
     };
 }
