@@ -73,7 +73,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ gameSettings, onCl
     };
 
     return (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm pointer-events-auto">
             <div className="relative w-[90%] max-w-2xl p-1 rounded-lg bg-gradient-to-r from-[#00ffff] via-[#ff00ff] to-[#00ff88]">
                 <div className="bg-[#0a0a0a] rounded-lg p-6 border border-[#00ffff]/30 shadow-[0_0_30px_rgba(0,255,255,0.3)]">
                     {/* Header */}
