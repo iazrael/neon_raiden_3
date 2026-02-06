@@ -6,6 +6,7 @@ import { buildSnapshot, GameSnapshot } from './snapshot';
 import { inputManager } from './input/InputManager';
 import { PerformanceMonitor, FrameSnapshot } from './utils/performance';
 import { DebugConfig } from './config/DebugConfig';
+import { GameSettings } from './settings';
 
 // ============== 导入所有系统
 // import { AISteerSystem } from './systems/AISteerSystem';
@@ -44,6 +45,11 @@ export class Engine {
     private canvas: HTMLCanvasElement;
     private resizeObserver?: ResizeObserver;
     public snapshot$ = new BehaviorSubject<GameSnapshot | null>(null);
+
+    /**
+     * 游戏设置管理器
+     */
+    private gameSettings!: GameSettings;
 
     /**
      * 性能监控器
@@ -104,7 +110,21 @@ export class Engine {
     private static DEBUG_RENDER_ONLY = false;
     // ==========================================
 
-    start(bp: Blueprint) {
+    /**
+     * 初始化设置管理器
+     */
+    private async initSettings(): Promise<void> {
+        if (!this.gameSettings) {
+            this.gameSettings = await GameSettings.initialize({
+                storageKey: 'game_settings',
+            });
+        }
+    }
+
+    async start(bp: Blueprint) {
+        // 初始化设置
+        await this.initSettings();
+
         this.world = createWorld();
 
         // 初始化渲染上下文（使用统一方法）
@@ -178,6 +198,10 @@ export class Engine {
 
         // 辅助函数：记录系统耗时
         const recordSys = (name: string, layer: string, fn: () => void) => {
+            // 检查系统是否启用，禁用则跳过
+            if (!this.gameSettings.isSystemEnabled(name)) {
+                return;
+            }
             const startMs = performance.now();
             fn();
             this.performanceMonitor.recordSystem(name, layer, performance.now() - startMs);
@@ -247,6 +271,13 @@ export class Engine {
      */
     get performanceStream(): BehaviorSubject<FrameSnapshot | null> {
         return this.performanceMonitor.stream;
+    }
+
+    /**
+     * 获取游戏设置实例
+     */
+    get settings(): GameSettings {
+        return this.gameSettings;
     }
 
 }
