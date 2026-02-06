@@ -133,3 +133,34 @@ vrot: number;
 
 ❌ **错误**：在 MovementSystem 中转换 `vx = moveIntent.dx * 1000`
 ✅ **正确**：直接使用 `vx = moveIntent.dx`
+
+---
+
+## Settings Module
+
+The `settings` module provides game-wide configuration management with LocalStorage persistence.
+
+### Usage
+
+```typescript
+import { GameSettings } from './settings';
+
+// Initialize (typically done in Engine)
+const settings = await GameSettings.initialize();
+
+// Check if a system is enabled
+if (settings.isSystemEnabled('AudioSystem')) {
+    // Run audio logic
+}
+
+// Toggle a system
+await settings.setSystemEnabled('AudioSystem', false);
+
+// Reset to defaults
+await settings.resetToDefaults();
+```
+
+### System Toggling
+
+Systems can be toggled at runtime via the Settings Panel (Q key during gameplay).
+Disabled systems are skipped in the `framePipeline` without performance overhead.
