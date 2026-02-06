@@ -9,6 +9,8 @@ import { ComboState, GameState } from './src/engine';
 import { GAME_CONFIG } from './src/engine/configs';
 import { audioPlayer } from './src/engine/audio';
 import { DebugConfig } from './src/engine/config/DebugConfig';
+import { GameSettings } from './src/engine/settings';
+import { SettingsPanel } from './components/SettingsPanel';
 
 function App() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -32,6 +34,8 @@ function App() {
     const [weaponLevel, setWeaponLevel] = useState<number>(1);
     const [boss, setBoss] = useState<{ hp: number; maxHp: number } | null>(null); // Boss 血条数据
     const [performanceData, setPerformanceData] = useState<{ fps: number; frameTime: number } | null>(null); // 性能监控数据
+    const [showSettings, setShowSettings] = useState(false);
+    const [gameSettings, setGameSettings] = useState<GameSettings | null>(null);
 
     // 性能监控滑动窗口（保存最近 60 帧的数据）
     const frameTimesRef = useRef<number[]>([]);
@@ -155,6 +159,37 @@ function App() {
         return () => window.removeEventListener('keydown', handleKeyPress);
     }, []);
 
+    // Q 键切换设置面板
+    useEffect(() => {
+        const handleKeyPress = (e: KeyboardEvent) => {
+            if ((e.key === 'q' || e.key === 'Q') && gameState === GameState.PLAYING) {
+                setShowSettings((prev) => {
+                    const newState = !prev;
+                    if (newState) {
+                        engineRef.current?.pause();
+                    } else {
+                        engineRef.current?.resume();
+                    }
+                    return newState;
+                });
+            }
+        };
+        window.addEventListener('keydown', handleKeyPress);
+        return () => window.removeEventListener('keydown', handleKeyPress);
+    }, [gameState]);
+
+    // 获取 GameSettings 实例
+    useEffect(() => {
+        const engine = engineRef.current;
+        if (engine) {
+            try {
+                setGameSettings(engine.getGameSettings());
+            } catch {
+                // Engine 尚未初始化，忽略
+            }
+        }
+    }, [engineRef.current]);
+
     const handleStart = () => {
         engineRef.current?.startGame();
     };
@@ -213,6 +248,9 @@ function App() {
                 }}
                 onPause={() => engineRef.current?.pause()}
                 onResume={() => engineRef.current?.resume()}
+                showSettings={showSettings}
+                onSettingsClose={() => setShowSettings(false)}
+                gameSettings={gameSettings}
             />
             {
                 // <ReloadPrompt />
