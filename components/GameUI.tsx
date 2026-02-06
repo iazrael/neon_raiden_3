@@ -7,6 +7,8 @@ import { Gallery } from "./Gallery";
 import type { ComboState } from "@/game/systems/ComboSystem";
 import type { SynergyConfig } from "@/game/systems/WeaponSynergySystem";
 import { intToRoman } from "@/src/views/utils/numbers";
+import type { GameSettings } from "@/src/engine/settings";
+import { SettingsPanel } from "./SettingsPanel";
 
 
 
@@ -38,6 +40,10 @@ interface GameUIProps {
   boss?: { hp: number; maxHp: number } | null; // Boss 血条数据
   /** 性能监控数据 */
   performanceData?: { fps: number; frameTime: number } | null;
+  /** 设置面板状态 */
+  showSettings?: boolean;
+  onSettingsClose?: () => void;
+  gameSettings?: GameSettings | null;
 }
 
 export const GameUI: React.FC<GameUIProps> = ({
@@ -67,6 +73,9 @@ export const GameUI: React.FC<GameUIProps> = ({
   shieldPercent = 0,
   boss = null,
   performanceData,
+  showSettings = false,
+  onSettingsClose,
+  gameSettings,
 }) => {
   const [showExitDialog, setShowExitDialog] = React.useState(false);
 
@@ -547,6 +556,10 @@ export const GameUI: React.FC<GameUIProps> = ({
             </div>
         </div>
         )}
+      {/* Settings Panel */}
+      {showSettings && gameSettings && (
+        <SettingsPanel gameSettings={gameSettings} onClose={onSettingsClose!} />
+      )}
     </div>
   );
 };
