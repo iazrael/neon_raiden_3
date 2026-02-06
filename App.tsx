@@ -243,7 +243,10 @@ function App() {
                 onPause={() => engineRef.current?.pause()}
                 onResume={() => engineRef.current?.resume()}
                 showSettings={showSettings}
-                onSettingsClose={() => setShowSettings(false)}
+                onSettingsClose={() => {
+                    setShowSettings(false);
+                    engineRef.current?.resume();
+                }}
                 gameSettings={gameSettings}
             />
             {
