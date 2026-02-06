@@ -17,6 +17,7 @@ import type { GameSnapshot } from './snapshot';
 import { ComboState, GameState, WeaponId } from './types';
 import { inputManager } from './input/InputManager';
 import { GameStorage, StorageEventListener, CURRENT_SAVE_VERSION, LocalStorageBackend } from './storage';
+import { GameSettings } from './settings';
 import { FighterId } from './types/ids';
 
 
@@ -394,5 +395,12 @@ export class ReactEngine {
             throw new Error('Storage not initialized');
         }
         return this.storage;
+    }
+
+    /**
+     * 获取游戏设置实例（供 UI 使用）
+     */
+    getGameSettings(): GameSettings {
+        return this.engine.settings;
     }
 }
