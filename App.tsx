@@ -162,7 +162,7 @@ function App() {
     // Q 键切换设置面板
     useEffect(() => {
         const handleKeyPress = (e: KeyboardEvent) => {
-            if ((e.key === 'q' || e.key === 'Q') && gameState === GameState.PLAYING) {
+            if (e.key === 'q' || e.key === 'Q') {
                 setShowSettings((prev) => {
                     const newState = !prev;
                     if (newState) {
@@ -176,7 +176,7 @@ function App() {
         };
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [gameState]);
+    }, []);
 
     // 获取 GameSettings 实例
     useEffect(() => {
