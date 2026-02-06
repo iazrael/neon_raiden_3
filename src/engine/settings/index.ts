@@ -6,6 +6,8 @@ export { type GameSettingsData, type SystemToggleState, KNOWN_SYSTEMS, type Syst
 /**
  * 初始化 GameSettings 单例的便捷函数
  */
+import { GameSettings } from './GameSettings';
+
 export async function initGameSettings(options?: import('./GameSettings').GameSettingsOptions): Promise<GameSettings> {
     return await GameSettings.initialize(options);
 }
