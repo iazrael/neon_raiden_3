@@ -167,6 +167,12 @@ function App() {
                     const newState = !prev;
                     if (newState) {
                         engineRef.current?.pause();
+                        // 确保获取 gameSettings
+                        try {
+                            setGameSettings(engineRef.current?.getGameSettings() ?? null);
+                        } catch {
+                            // ignore
+                        }
                     } else {
                         engineRef.current?.resume();
                     }
@@ -177,18 +183,6 @@ function App() {
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
     }, []);
-
-    // 获取 GameSettings 实例
-    useEffect(() => {
-        const engine = engineRef.current;
-        if (engine) {
-            try {
-                setGameSettings(engine.getGameSettings());
-            } catch {
-                // Engine 尚未初始化，忽略
-            }
-        }
-    }, [engineRef.current]);
 
     const handleStart = () => {
         engineRef.current?.startGame();
