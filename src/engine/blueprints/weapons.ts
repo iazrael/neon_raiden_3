@@ -21,7 +21,7 @@ export const WEAPON_TABLE: Record<WeaponId, WeaponSpec> = {
         cooldown: 150,
         curCD: 0,
         maxLevel: 6,
-        pattern: WeaponPattern.SPREAD,
+        pattern: WeaponPattern.STRAIGHT,
         bulletCount: 1,
         spread: 0,
         pierceBonus: 0,
