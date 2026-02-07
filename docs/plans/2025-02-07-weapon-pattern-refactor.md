@@ -631,3 +631,31 @@ git commit -m "docs: 完成武器模式重构实施总结"
 6. ✅ 手动游戏测试通过
 7. ✅ `pnpm build` 和 `pnpm test` 全部通过
 8. ✅ 文档更新完成
+
+---
+
+## 实施完成记录
+
+**实施日期**: 2025-02-07
+
+**完成状态**: ✅ 全部完成
+
+**提交记录**:
+1. `4cf7da3` - refactor(types): 重构 WeaponPattern 枚举以符合 STG 规范
+2. `3c11642` - feat(weapon): 实现 AIMED 瞄准逻辑和 FIXED_REAR 反向发射
+3. `6f58816` - refactor(weapons): VULCAN 使用 STRAIGHT 模式
+4. `811300d` - refactor(weapons): 更新敌人武器模式语义
+5. `f3de898` - test(weapon): 添加 WeaponPattern 单元测试 (STRAIGHT, AIMED, FIXED_REAR)
+
+**测试结果**:
+- 单元测试: 562 passed
+- 测试套件: 51 passed
+- 构建状态: ✅ 成功
+
+**实施总结**:
+- 成功添加 `STRAIGHT` 模式，语义更清晰
+- `AIMED` 模式现在通过 `FireIntent.targetId` 自动追踪目标
+- `FIXED_REAR` 模式已实现，使用 `fireAngle + Math.PI` 计算反向
+- 所有武器配置已更新为正确的模式枚举
+- 新增 3 个测试用例覆盖 STRAIGHT、AIMED (含目标追踪和降级)、FIXED_REAR 模式
+- 所有现有测试通过，向后兼容性保持
