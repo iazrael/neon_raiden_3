@@ -28,7 +28,7 @@ describe('WeaponSystem', () => {
                 ammoType: AmmoType.VULCAN_SPREAD,
                 cooldown: 200,
                 bulletCount: 1,
-                pattern: WeaponPattern.SPREAD
+                pattern: WeaponPattern.STRAIGHT
             }));
             addComponent(world, playerId, new PlayerTag());
             addComponent(world, playerId, new FireIntent({ firing: true }));
@@ -51,7 +51,7 @@ describe('WeaponSystem', () => {
                 cooldown: 200,
                 curCD: 150, // 冷却中
                 bulletCount: 1,
-                pattern: WeaponPattern.SPREAD
+                pattern: WeaponPattern.STRAIGHT
             });
             addComponent(world, playerId, weapon);
             addComponent(world, playerId, new PlayerTag());
@@ -76,7 +76,7 @@ describe('WeaponSystem', () => {
                 ammoType: AmmoType.VULCAN_SPREAD,
                 cooldown: 200,
                 bulletCount: 1,
-                pattern: WeaponPattern.SPREAD
+                pattern: WeaponPattern.STRAIGHT
             }));
             addComponent(world, playerId, new PlayerTag());
             addComponent(world, playerId, new FireIntent({ firing: true }));
@@ -102,7 +102,7 @@ describe('WeaponSystem', () => {
                 cooldown: 100,
                 bulletCount: 5,
                 spread: 30, // 30度扩散
-                pattern: WeaponPattern.SPREAD
+                pattern: WeaponPattern.STRAIGHT
             }));
             addComponent(world, playerId, new PlayerTag());
             addComponent(world, playerId, new FireIntent({ firing: true }));
@@ -195,7 +195,7 @@ describe('WeaponSystem', () => {
                 ammoType: AmmoType.ENEMY_ORB_RED,
                 cooldown: 100,
                 bulletCount: 1,
-                pattern: WeaponPattern.SPREAD
+                pattern: WeaponPattern.STRAIGHT
             }));
             addComponent(world, enemyId, new EnemyTag({ id: EnemyId.NORMAL }));
             addComponent(world, enemyId, new FireIntent({ firing: true }));
@@ -219,7 +219,7 @@ describe('WeaponSystem', () => {
                 ammoType: AmmoType.VULCAN_SPREAD,
                 cooldown: 100,
                 bulletCount: 1,
-                pattern: WeaponPattern.SPREAD
+                pattern: WeaponPattern.STRAIGHT
             }));
             addComponent(world, playerId, new PlayerTag());
             addComponent(world, playerId, new FireIntent({ firing: true }));
@@ -247,7 +247,7 @@ describe('WeaponSystem', () => {
                 ammoType: AmmoType.VULCAN_SPREAD,
                 cooldown: 200,
                 bulletCount: 1,
-                pattern: WeaponPattern.SPREAD,
+                pattern: WeaponPattern.STRAIGHT,
                 fireRateMultiplier: 1.5
             });
             addComponent(world, playerId, weapon);
@@ -275,7 +275,7 @@ describe('WeaponSystem', () => {
                 ammoType: AmmoType.VULCAN_SPREAD,
                 cooldown: 100,
                 bulletCount: 1,
-                pattern: WeaponPattern.SPREAD,
+                pattern: WeaponPattern.STRAIGHT,
                 fireOffset: { x: 0, y: offsetY }
             }));
             addComponent(world, playerId, new PlayerTag());
@@ -311,7 +311,7 @@ describe('WeaponSystem', () => {
                 ammoType: AmmoType.ENEMY_ORB_RED,
                 cooldown: 100,
                 bulletCount: 1,
-                pattern: WeaponPattern.SPREAD
+                pattern: WeaponPattern.STRAIGHT
                 // 没有 fireOffset
             }));
             addComponent(world, enemyId, new EnemyTag({ id: EnemyId.NORMAL }));
@@ -360,7 +360,7 @@ describe('WeaponSystem', () => {
                 ammoType: AmmoType.VULCAN_SPREAD,
                 cooldown: 100,
                 bulletCount: 1,
-                pattern: WeaponPattern.SPREAD
+                pattern: WeaponPattern.STRAIGHT
             }));
             addComponent(world, playerId, new PlayerTag());
             // 向上发射，angle = -Math.PI / 2
@@ -396,7 +396,7 @@ describe('WeaponSystem', () => {
                 ammoType: AmmoType.ENEMY_ORB_RED,
                 cooldown: 100,
                 bulletCount: 1,
-                pattern: WeaponPattern.SPREAD
+                pattern: WeaponPattern.STRAIGHT
             }));
             addComponent(world, enemyId, new EnemyTag({ id: EnemyId.NORMAL }));
             // 向下发射，angle = Math.PI / 2
@@ -432,7 +432,7 @@ describe('WeaponSystem', () => {
                 ammoType: AmmoType.VULCAN_SPREAD,
                 cooldown: 100,
                 bulletCount: 1,
-                pattern: WeaponPattern.SPREAD
+                pattern: WeaponPattern.STRAIGHT
             }));
             addComponent(world, playerId, new PlayerTag());
             // 向右发射，angle = 0
@@ -468,7 +468,7 @@ describe('WeaponSystem', () => {
                 ammoType: AmmoType.VULCAN_SPREAD,
                 cooldown: 100,
                 bulletCount: 1,
-                pattern: WeaponPattern.SPREAD
+                pattern: WeaponPattern.STRAIGHT
             }));
             addComponent(world, playerId, new PlayerTag());
             // 向左发射，angle = Math.PI
@@ -504,7 +504,7 @@ describe('WeaponSystem', () => {
                 ammoType: AmmoType.VULCAN_SPREAD,
                 cooldown: 100,
                 bulletCount: 1,
-                pattern: WeaponPattern.SPREAD
+                pattern: WeaponPattern.STRAIGHT
             }));
             addComponent(world, playerId, new PlayerTag());
             addComponent(world, playerId, new FireIntent({
@@ -527,6 +527,123 @@ describe('WeaponSystem', () => {
             expect(bullets.length).toBeGreaterThan(0);
             // Transform.rot 应为 0，旋转由 Sprite.rotate 控制
             expect(bullets[0].transform.rot).toBe(0);
+        });
+    });
+
+    describe('STRAIGHT 模式', () => {
+        it('应该朝固定方向发射子弹', () => {
+            const playerId = generateId();
+
+            world.entities.set(playerId, []);
+            addComponent(world, playerId, new Transform({ x: 400, y: 500 }));
+            addComponent(world, playerId, new Weapon({
+                id: WeaponId.VULCAN,
+                ammoType: AmmoType.VULCAN_SPREAD,
+                cooldown: 100,
+                bulletCount: 1,
+                pattern: WeaponPattern.STRAIGHT
+            }));
+            addComponent(world, playerId, new PlayerTag());
+            addComponent(world, playerId, new FireIntent({
+                firing: true,
+                angle: -Math.PI / 2 // 向上
+            }));
+
+            const beforeEvents = world.events.filter(e => e.type === 'WeaponFired').length;
+            WeaponSystem(world, 0.016);
+            const afterEvents = world.events.filter(e => e.type === 'WeaponFired').length;
+
+            expect(afterEvents - beforeEvents).toBe(1);
+        });
+    });
+
+    describe('AIMED 模式', () => {
+        it('应该朝目标方向发射', () => {
+            const enemyId = generateId();
+            const playerId = generateId();
+
+            // 创建玩家实体作为目标
+            world.entities.set(playerId, []);
+            addComponent(world, playerId, new Transform({ x: 500, y: 300 }));
+
+            // 创建敌人实体
+            world.entities.set(enemyId, []);
+            addComponent(world, enemyId, new Transform({ x: 400, y: 100 }));
+            addComponent(world, enemyId, new Weapon({
+                id: EnemyWeaponId.GENERIC_TARGETED,
+                ammoType: AmmoType.ENEMY_ORB_RED,
+                cooldown: 100,
+                bulletCount: 1,
+                pattern: WeaponPattern.AIMED
+            }));
+            addComponent(world, enemyId, new EnemyTag({ id: EnemyId.NORMAL }));
+            addComponent(world, enemyId, new FireIntent({
+                firing: true,
+                angle: -Math.PI / 2, // 默认向上，但 AIMED 应该忽略
+                targetId: playerId
+            }));
+
+            const beforeEvents = world.events.filter(e => e.type === 'WeaponFired').length;
+            WeaponSystem(world, 0.016);
+            const afterEvents = world.events.filter(e => e.type === 'WeaponFired').length;
+
+            // 应该产生武器发射事件
+            expect(afterEvents - beforeEvents).toBe(1);
+        });
+
+        it('无目标时应该降级为 STRAIGHT', () => {
+            const enemyId = generateId();
+
+            world.entities.set(enemyId, []);
+            addComponent(world, enemyId, new Transform({ x: 400, y: 100 }));
+            addComponent(world, enemyId, new Weapon({
+                id: EnemyWeaponId.GENERIC_TARGETED,
+                ammoType: AmmoType.ENEMY_ORB_RED,
+                cooldown: 100,
+                bulletCount: 1,
+                pattern: WeaponPattern.AIMED
+            }));
+            addComponent(world, enemyId, new EnemyTag({ id: EnemyId.NORMAL }));
+            addComponent(world, enemyId, new FireIntent({
+                firing: true,
+                angle: -Math.PI / 2,
+                // 不传 targetId
+            }));
+
+            const beforeEvents = world.events.filter(e => e.type === 'WeaponFired').length;
+            WeaponSystem(world, 0.016);
+            const afterEvents = world.events.filter(e => e.type === 'WeaponFired').length;
+
+            // 应该正常发射（使用 baseAngle）
+            expect(afterEvents - beforeEvents).toBe(1);
+        });
+    });
+
+    describe('FIXED_REAR 模式', () => {
+        it('应该朝相反方向发射', () => {
+            const enemyId = generateId();
+
+            world.entities.set(enemyId, []);
+            addComponent(world, enemyId, new Transform({ x: 400, y: 200 }));
+            addComponent(world, enemyId, new Weapon({
+                id: EnemyWeaponId.ENEMY_LAYER,
+                ammoType: AmmoType.ENEMY_ORB_GREEN,
+                cooldown: 100,
+                bulletCount: 1,
+                pattern: WeaponPattern.FIXED_REAR
+            }));
+            addComponent(world, enemyId, new EnemyTag({ id: EnemyId.NORMAL }));
+            addComponent(world, enemyId, new FireIntent({
+                firing: true,
+                angle: Math.PI / 2 // 向下
+            }));
+
+            const beforeEvents = world.events.filter(e => e.type === 'WeaponFired').length;
+            WeaponSystem(world, 0.016);
+            const afterEvents = world.events.filter(e => e.type === 'WeaponFired').length;
+
+            // 应该产生武器发射事件（子弹向上，反方向）
+            expect(afterEvents - beforeEvents).toBe(1);
         });
     });
 });
