@@ -52,6 +52,8 @@ export enum SpriteKey {
 
     // Bullets (敌人)
     BULLET_ENEMY_ORB = "bullet.enemy.orb",
+    BULLET_ENEMY_ORB_BLUE = "bullet.enemy.orb_blue",
+    BULLET_ENEMY_ORB_GREEN= "bullet.enemy.orb_green",
     BULLET_ENEMY_BEAM = "bullet.enemy.beam",
     BULLET_ENEMY_RAPID = "bullet.enemy.rapid",
     BULLET_ENEMY_HEAVY = "bullet.enemy.heavy",
@@ -224,6 +226,22 @@ export const SPRITE_REGISTRY: Record<SpriteKey, SpriteEntry> = {
     // ==================== Bullets (敌人) ====================
     [SpriteKey.BULLET_ENEMY_ORB]: {
         key: SpriteKey.BULLET_ENEMY_ORB,
+        file: "bullet_enemy_orb.svg",
+        width: 14,
+        height: 14,
+        pivotX: 0.5,
+        pivotY: 0.5,
+    },
+    [SpriteKey.BULLET_ENEMY_ORB_BLUE]: {
+        key: SpriteKey.BULLET_ENEMY_ORB_BLUE,
+        file: "bullet_enemy_orb_blue.svg",
+        width: 14,
+        height: 14,
+        pivotX: 0.5,
+        pivotY: 0.5,
+    },
+    [SpriteKey.BULLET_ENEMY_ORB_GREEN]: {
+        key: SpriteKey.BULLET_ENEMY_ORB_GREEN,
         file: "bullet_enemy_orb.svg",
         width: 14,
         height: 14,

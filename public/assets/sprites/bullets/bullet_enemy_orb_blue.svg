@@ -3,8 +3,8 @@
   <defs>
     <radialGradient id="grad" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(10 10) rotate(90) scale(10)">
       <stop stop-color="white"/>
-      <stop offset="0.5" stop-color="#ff9999"/>
-      <stop offset="1" stop-color="#F56565" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#9999ff"/>
+      <stop offset="1" stop-color="#2a38d2" stop-opacity="0"/>
     </radialGradient>
   </defs>
 </svg>

@@ -112,11 +112,11 @@ export const ENEMY_BULLET_SPRITES: Record<EnemyAmmoType, BulletSpriteSpec> = {
         color: '#ff9999ff',
     },
     [AmmoType.ENEMY_ORB_BLUE]: {
-        spriteKey: SpriteKey.BULLET_ENEMY_ORB,
+        spriteKey: SpriteKey.BULLET_ENEMY_ORB_BLUE,
         color: '#9999ffff',
     },
     [AmmoType.ENEMY_ORB_GREEN]: {
-        spriteKey: SpriteKey.BULLET_ENEMY_ORB,
+        spriteKey: SpriteKey.BULLET_ENEMY_ORB_GREEN,
         color: '#99ff99ff',
     },
     // 光束类子弹 - 共用 beam SpriteKey

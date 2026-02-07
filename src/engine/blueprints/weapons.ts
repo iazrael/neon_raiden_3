@@ -217,17 +217,17 @@ export const ENEMY_WEAPON_TABLE: Record<EnemyWeaponId, WeaponSpec> = {
     // === Guardian ===
     [EnemyWeaponId.GUARDIAN_RADIAL]: {
         id: EnemyWeaponId.GUARDIAN_RADIAL,
-        ammoType: AmmoType.ENEMY_ORB_BLUE,
+        ammoType: AmmoType.ENEMY_ORB_RED,
         cooldown: 1000,
         bulletCount: 8,
         spread: 180,
-        pattern: WeaponPattern.RADIAL
+        pattern: WeaponPattern.AIMED
     },
     [EnemyWeaponId.GUARDIAN_RADIAL_ENRAGED]: {
         id: EnemyWeaponId.GUARDIAN_RADIAL_ENRAGED,
         cooldown: 600,
-        ammoType: AmmoType.ENEMY_ORB_RED,
-        bulletCount: 12,
+        ammoType: AmmoType.ENEMY_ORB_BLUE,
+        bulletCount: 16,
         spread: 360,
         pattern: WeaponPattern.RADIAL
     },
