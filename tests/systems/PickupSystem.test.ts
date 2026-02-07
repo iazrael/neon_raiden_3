@@ -56,12 +56,12 @@ describe('PickupSystem', () => {
                 ammoType: AmmoType.VULCAN_SPREAD,
                 cooldown: 150,
                 bulletCount: 3,
-                level: 1
+                level: 1,
+                maxLevel: 10
             });
             addComponent(world, playerId, existingWeapon);
 
             const initialLevel = existingWeapon.level;
-            const initialBulletCount = existingWeapon.bulletCount;
 
             // 拾取相同武器
             pushEvent(world, {
@@ -74,7 +74,6 @@ describe('PickupSystem', () => {
             PickupSystem(world, 0.016);
 
             expect(existingWeapon.level).toBe(initialLevel + 1);
-            expect(existingWeapon.bulletCount).toBe(initialBulletCount + 1);
         });
 
         it('替换已有武器', () => {
@@ -119,7 +118,8 @@ describe('PickupSystem', () => {
                 ammoType: AmmoType.VULCAN_SPREAD,
                 cooldown: 150,
                 bulletCount: 3,
-                level: 2
+                level: 2,
+                maxLevel: 10
             });
             addComponent(world, playerId, weapon);
 

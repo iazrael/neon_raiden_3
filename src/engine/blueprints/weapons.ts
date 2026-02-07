@@ -3,6 +3,7 @@
 // 包含游戏中所有武器类型的蓝图定义
 //
 
+import { getWeaponMaxLevel } from '../configs';
 import { AmmoType, EnemyWeaponId, WeaponId, WeaponPattern } from '../types';
 import { WeaponSpec } from './base';
 
@@ -20,7 +21,7 @@ export const WEAPON_TABLE: Record<WeaponId, WeaponSpec> = {
         ammoType: AmmoType.VULCAN_SPREAD,
         cooldown: 150,
         curCD: 0,
-        maxLevel: 6,
+        maxLevel: getWeaponMaxLevel(WeaponId.VULCAN),
         pattern: WeaponPattern.STRAIGHT,
         bulletCount: 1,
         spread: 0,
@@ -38,7 +39,7 @@ export const WEAPON_TABLE: Record<WeaponId, WeaponSpec> = {
         ammoType: AmmoType.LASER_BEAM,
         cooldown: 180,
         curCD: 0,
-        maxLevel: 3,
+        maxLevel: getWeaponMaxLevel(WeaponId.LASER),
         pattern: WeaponPattern.AIMED,
         bulletCount: 1,
         spread: 0,
@@ -56,7 +57,7 @@ export const WEAPON_TABLE: Record<WeaponId, WeaponSpec> = {
         ammoType: AmmoType.MISSILE_HOMING,
         cooldown: 1000,
         curCD: 0,
-        maxLevel: 3,
+        maxLevel: getWeaponMaxLevel(WeaponId.MISSILE),
         pattern: WeaponPattern.AIMED,
         bulletCount: 1,
         spread: 0,
@@ -73,7 +74,7 @@ export const WEAPON_TABLE: Record<WeaponId, WeaponSpec> = {
         ammoType: AmmoType.WAVE_PULSE,
         cooldown: 400,
         curCD: 0,
-        maxLevel: 3,
+        maxLevel: getWeaponMaxLevel(WeaponId.WAVE),
         pattern: WeaponPattern.AIMED,
         bulletCount: 1,
         spread: 0,
@@ -90,7 +91,7 @@ export const WEAPON_TABLE: Record<WeaponId, WeaponSpec> = {
         ammoType: AmmoType.PLASMA_ORB,
         cooldown: 600,
         curCD: 0,
-        maxLevel: 6,
+        maxLevel: getWeaponMaxLevel(WeaponId.PLASMA),
         pattern: WeaponPattern.AIMED,
         bulletCount: 1,
         spread: 0,
@@ -107,7 +108,7 @@ export const WEAPON_TABLE: Record<WeaponId, WeaponSpec> = {
         ammoType: AmmoType.TESLA_CHAIN,
         cooldown: 500,
         curCD: 0,
-        maxLevel: 6,
+        maxLevel: getWeaponMaxLevel(WeaponId.TESLA),
         pattern: WeaponPattern.AIMED,
         bulletCount: 1,
         spread: 0,
@@ -124,7 +125,7 @@ export const WEAPON_TABLE: Record<WeaponId, WeaponSpec> = {
         ammoType: AmmoType.MAGMA_POOL,
         cooldown: 220,
         curCD: 0,
-        maxLevel: 6,
+        maxLevel: getWeaponMaxLevel(WeaponId.MAGMA),
         pattern: WeaponPattern.AIMED,
         bulletCount: 1,
         spread: 0,
@@ -142,7 +143,7 @@ export const WEAPON_TABLE: Record<WeaponId, WeaponSpec> = {
         ammoType: AmmoType.SHURIKEN_BOUNCE,
         cooldown: 300,
         curCD: 0,
-        maxLevel: 6,
+        maxLevel: getWeaponMaxLevel(WeaponId.SHURIKEN),
         pattern: WeaponPattern.RANDOM,
         bulletCount: 1,
         spread: 90,

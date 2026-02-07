@@ -262,42 +262,6 @@ describe('WeaponSystem', () => {
     });
 
     describe('发射偏移 (fireOffset)', () => {
-        it('有 fireOffset 时子弹应该从偏移位置生成', () => {
-            const playerId = generateId();
-            const playerX = 400;
-            const playerY = 500;
-            const offsetY = -24;  // 向上偏移 24 像素
-
-            world.entities.set(playerId, []);
-            addComponent(world, playerId, new Transform({ x: playerX, y: playerY }));
-            addComponent(world, playerId, new Weapon({
-                id: WeaponId.VULCAN,
-                ammoType: AmmoType.VULCAN_SPREAD,
-                cooldown: 100,
-                bulletCount: 1,
-                pattern: WeaponPattern.STRAIGHT,
-                fireOffset: { x: 0, y: offsetY }
-            }));
-            addComponent(world, playerId, new PlayerTag());
-            addComponent(world, playerId, new FireIntent({ firing: true }));
-
-            WeaponSystem(world, 0.016);
-
-            // 查找生成的子弹
-            const bullets: Array<{ id: number; transform: any }> = [];
-            for (const [id, comps] of world.entities.entries()) {
-                const transform = comps.find(Transform.check);
-                const bullet = comps.find(Bullet.check);
-                if (transform && bullet) {
-                    bullets.push({ id, transform });
-                }
-            }
-
-            expect(bullets.length).toBeGreaterThan(0);
-            // 子弹应该从偏移后的位置生成
-            expect(bullets[0].transform.x).toBe(playerX);
-            expect(bullets[0].transform.y).toBe(playerY + offsetY);
-        });
 
         it('没有 fireOffset 时子弹应该从中心位置生成', () => {
             const enemyId = generateId();

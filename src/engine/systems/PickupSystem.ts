@@ -10,7 +10,7 @@
  * 执行顺序：P5 - 在交互层之后
  */
 
-import { Component } from "../types";
+import { Component, EntityId } from "../types";
 import {
     Transform,
     Weapon,
@@ -29,7 +29,6 @@ import { addComponent, ensureComponent, getEvents, pushEvent, World } from "../w
 import { PickupEvent, PlaySoundEvent } from "../events";
 import { WEAPON_TABLE } from "../blueprints/weapons";
 import {
-    POWERUP_LIMITS,
     BUFF_CONFIG,
     OPTION_BLUEPRINT_MAP,
     POWERUP_CONFIG,
@@ -42,14 +41,14 @@ import { spawnOption } from "../factory";
  * 拾取处理器接口
  */
 interface PickupHandler {
-    handle(world: World, playerId: number, itemId: string): void;
+    handle(world: World, playerId: number, itemId: string,  count?: number): void;
 }
 
 /**
  * 武器拾取处理器
  */
 const weaponPickupHandler: PickupHandler = {
-    handle(world: World, playerId: number, weaponId: string): void {
+    handle(world: World, playerId: number, weaponId: string, count: number = 1): void {
         const playerComps = world.entities.get(playerId);
         if (!playerComps) return;
 
@@ -59,13 +58,8 @@ const weaponPickupHandler: PickupHandler = {
         if (existingWeapon && existingWeapon.id === weaponId) {
             // 已有该武器，升级武器等级
             existingWeapon.level = Math.min(
-                existingWeapon.level + 1,
-                POWERUP_LIMITS.MAX_WEAPON_LEVEL,
-            );
-            // 升级时可能增加子弹数量或减少冷却
-            existingWeapon.bulletCount = Math.min(
-                existingWeapon.bulletCount + 1,
-                POWERUP_LIMITS.MAX_BULLET_COUNT,
+                existingWeapon.level + count,
+                existingWeapon.maxLevel,
             );
         } else {
             // 移除旧武器，添加新武器
@@ -76,7 +70,12 @@ const weaponPickupHandler: PickupHandler = {
 
             // 根据武器ID创建新武器
             const weaponConfig = WEAPON_TABLE[weaponId as WeaponId];
-            playerComps.push(new Weapon(weaponConfig));
+            const weapon = new Weapon(weaponConfig)
+            weapon.level = Math.min(
+                weapon.level + count,
+                weapon.maxLevel,
+            );
+            playerComps.push(weapon);
         }
 
         // 播放音效
@@ -100,7 +99,7 @@ const buffPickupHandler: PickupHandler = {
 
         // 一次性效果直接应用
         if (category === BuffCategory.INSTANT) {
-            applyInstantBuff(world, playerComps, type);
+            applyInstantBuff(world, playerId, playerComps, type);
         } else {
             // 持续效果添加 Buff 组件
             addDurationBuff(world, playerId, playerComps, type);
@@ -179,6 +178,7 @@ const PICKUP_HANDLERS = {
  */
 function applyInstantBuff(
     world: World,
+    playerId: EntityId,
     playerComps: Component[],
     buffType: BuffType,
 ): void {
@@ -187,10 +187,9 @@ function applyInstantBuff(
             // POWER: 武器升级
             const weapon = playerComps.find(Weapon.check);
             if (weapon) {
-                weapon.level = Math.min(
-                    weapon.level + BUFF_CONFIG[BuffType.POWER].levelIncrease,
-                    BUFF_CONFIG[BuffType.POWER].maxLevel,
-                );
+                // power buf 相当于把当前武器升一级
+                const count = BUFF_CONFIG[BuffType.POWER].levelIncrease;
+                PICKUP_HANDLERS.weapons.handle(world, playerId, weapon.id, count);
             }
             break;
 

@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ReactEngine } from './src/engine/ReactEngine';
 import { GameUI } from './components/GameUI';
-import { WeaponType, ClickType } from './types';
+import { ClickType } from './types';
+import { WeaponId } from './src/engine/types';
 
 import { SpriteManager } from './src/engine/SpriteManager';
 // import ReloadPrompt from './src/views/components/ReloadPrompt';
@@ -29,8 +30,8 @@ function App() {
     const [stateBeforeGallery, setStateBeforeGallery] = useState<GameState>(GameState.MENU);
     const [showBossWarning, setShowBossWarning] = useState(false);
     const [comboState, setComboState] = useState<ComboState>({ count: 0, timer: 0, level: 0, maxCombo: 0, hasBerserk: false }); // P2 Combo
-    const [weaponType, setWeaponType] = useState<WeaponType>(WeaponType.VULCAN); // P2 Current weapon
-    const [secondaryWeapon, setSecondaryWeapon] = useState<WeaponType | null>(null); // P2 Secondary weapon
+    const [mainWeapon, setMainWeapon] = useState<WeaponId>(WeaponId.VULCAN); // P2 Current weapon
+    const [secondaryWeapon, setSecondaryWeapon] = useState<WeaponId | null>(null); // P2 Secondary weapon
     const [weaponLevel, setWeaponLevel] = useState<number>(1);
     const [boss, setBoss] = useState<{ hp: number; maxHp: number } | null>(null); // Boss 血条数据
     const [performanceData, setPerformanceData] = useState<{ fps: number; frameTime: number } | null>(null); // 性能监控数据
@@ -88,8 +89,8 @@ function App() {
         const syncInterval = setInterval(() => {
             setShowLevelTransition(engine.showLevelTransition);
             setLevelTransitionTimer(engine.levelTransitionTimer);
-            setWeaponType(engine.weaponId as any as WeaponType);
-            setSecondaryWeapon(engine.secondaryWeapon as any as WeaponType);
+            setMainWeapon(engine.weaponId);
+            setSecondaryWeapon(engine.secondaryWeapon);
             setWeaponLevel(engine.weaponLevel);
             setShieldPercent(engine.getShieldPercent());
             setBombs(engine.bombs);
@@ -216,7 +217,7 @@ function App() {
                 maxLevelReached={maxLevelReached}
                 showBossWarning={showBossWarning}
                 comboState={comboState}
-                weaponType={weaponType}
+                mainWeapon={mainWeapon}
                 secondaryWeapon={secondaryWeapon}
                 weaponLevel={weaponLevel}
                 shieldPercent={shieldPercent}

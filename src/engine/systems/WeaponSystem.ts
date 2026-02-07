@@ -141,7 +141,7 @@ function fireWeapon(
         }
     }
 
-    const fireContext = {
+    const fireContext: FireContext = {
         world,
         transform,
         weapon,
@@ -152,6 +152,8 @@ function fireWeapon(
         sizeMultiplier,
         ownerId: id,
         isPlayer: entity.isPlayer,
+        // FIXME: 这里更合理的是从 hitbox 或者 sprite 读, 往实体的正前方推算机头发射位置, 但是也可能跟具体战机有关系
+        fireOffset: entity.isPlayer ? { x: 0, y: -24 } : { x: 0, y: 0 }
     };
 
     // 根据弹幕模式生成子弹
@@ -194,6 +196,7 @@ interface FireContext {
     spriteSpec: BulletSpriteSpec;
     upgradeConfig: WeaponLevelSpec;
     sizeMultiplier: number;
+    fireOffset: { x: number, y: number };
     ownerId: number;
     isPlayer: boolean;
 }
@@ -251,7 +254,8 @@ function fireRandom(ctx: FireContext, count: number, spread: number, baseAngle: 
  * - 最终反弹 = 弹药基础反弹 + 武器反弹加成
  */
 function createBullet(ctx: FireContext, angle: number): void {
-    const { world, transform, weapon, weaponSpec, ammoSpec, spriteSpec, upgradeConfig, sizeMultiplier, ownerId } = ctx;
+    const { world, transform, weapon, fireOffset, weaponSpec,
+        ammoSpec, spriteSpec, upgradeConfig, sizeMultiplier, ownerId } = ctx;
 
     // 计算最终属性
     const finalDamage = ammoSpec.damage * upgradeConfig.damageMultiplier;
@@ -259,7 +263,6 @@ function createBullet(ctx: FireContext, angle: number): void {
     const finalBounces = ammoSpec.bounces + (weaponSpec.bouncesBonus ?? 0);
 
     // 计算发射偏移（相对于实体中心）
-    const fireOffset = weapon.fireOffset ?? { x: 0, y: 0 };
     const spawnX = transform.x + fireOffset.x;
     const spawnY = transform.y + fireOffset.y;
 
