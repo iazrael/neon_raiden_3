@@ -19,14 +19,14 @@ interface GalleryProps {
 type Tab = 'FIGHTERS' | 'ARMORY' | 'BESTIARY' | 'BOSSES';
 
 export const Gallery: React.FC<GalleryProps> = ({ onClose, maxLevelReached, playClick }) => {
-  const [activeTab, setActiveTab] = useState<Tab>('FIGHTERS');
-  const [selectedItem, setSelectedItem] = useState<FighterItem | WeaponItem | EnemyItem | BossItem | null>(null);
-  const [showDetail, setShowDetail] = useState(false);
+    const [activeTab, setActiveTab] = useState<Tab>('FIGHTERS');
+    const [selectedItem, setSelectedItem] = useState<FighterItem | WeaponItem | EnemyItem | BossItem | null>(null);
+    const [showDetail, setShowDetail] = useState(false);
 
-  // Add scrollbar hiding styles
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
+    // Add scrollbar hiding styles
+    useEffect(() => {
+        const style = document.createElement('style');
+        style.textContent = `
       .scrollbar-hide::-webkit-scrollbar {
         display: none;
       }
@@ -50,134 +50,134 @@ export const Gallery: React.FC<GalleryProps> = ({ onClose, maxLevelReached, play
         background: rgba(6, 182, 212, 0.5);
       }
     `;
-    document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
+        document.head.appendChild(style);
+        return () => {
+            document.head.removeChild(style);
+        };
+    }, []);
+
+    const getSpriteSrc = (item: FighterItem | WeaponItem | EnemyItem | BossItem): string => {
+        return getSpritePath(item.entry.sprite);
     };
-  }, []);
 
-  const getSpriteSrc = (item: FighterItem | WeaponItem | EnemyItem | BossItem): string => {
-    return getSpritePath(item.entry.sprite);
-  };
+    // Data Sources
+    const fighters: FighterItem[] = Object.values(GALLERY_FIGHTERS).map((entry) => ({
+        id: entry.id as FighterId,
+        name: entry.name,
+        chineseName: entry.chineseName,
+        description: entry.description,
+        entry,
+        isUnlocked: isFighterUnlocked(entry.id as FighterId)
+    }));
 
-  // Data Sources
-  const fighters: FighterItem[] = Object.values(GALLERY_FIGHTERS).map((entry) => ({
-    id: entry.id as FighterId,
-    name: entry.name,
-    chineseName: entry.chineseName,
-    description: entry.description,
-    entry,
-    isUnlocked: isFighterUnlocked(entry.id as FighterId)
-  }));
+    const weapons: WeaponItem[] = Object.values(GALLERY_WEAPONS).map((entry) => ({
+        id: entry.id as WeaponId,
+        name: entry.name,
+        chineseName: entry.chineseName,
+        description: entry.description,
+        entry,
+        isUnlocked: isWeaponUnlocked(entry.id as WeaponId)
+    }));
 
-  const weapons: WeaponItem[] = Object.values(GALLERY_WEAPONS).map((entry) => ({
-    id: entry.id as WeaponId,
-    name: entry.name,
-    chineseName: entry.chineseName,
-    description: entry.description,
-    entry,
-    isUnlocked: isWeaponUnlocked(entry.id as WeaponId)
-  }));
+    const enemies: EnemyItem[] = Object.values(GALLERY_ENEMIES).map((entry) => ({
+        id: entry.id as EnemyId,
+        name: entry.name,
+        chineseName: entry.chineseName,
+        description: entry.description,
+        entry,
+        isUnlocked: isEnemyUnlocked(entry.id as EnemyId)
+    }));
 
-  const enemies: EnemyItem[] = Object.values(GALLERY_ENEMIES).map((entry) => ({
-    id: entry.id as EnemyId,
-    name: entry.name,
-    chineseName: entry.chineseName,
-    description: entry.description,
-    entry,
-    isUnlocked: isEnemyUnlocked(entry.id as EnemyId)
-  }));
+    const bosses: BossItem[] = Object.values(GALLERY_BOSSES).map((entry) => ({
+        id: entry.id as BossId,
+        name: entry.name,
+        chineseName: entry.chineseName,
+        description: entry.description,
+        entry,
+        isUnlocked: isBossUnlocked(entry.id as BossId)
+    }));
 
-  const bosses: BossItem[] = Object.values(GALLERY_BOSSES).map((entry) => ({
-    id: entry.id as BossId,
-    name: entry.name,
-    chineseName: entry.chineseName,
-    description: entry.description,
-    entry,
-    isUnlocked: isBossUnlocked(entry.id as BossId)
-  }));
+    // Auto-select first unlocked item when tab changes (but don't show detail)
+    useEffect(() => {
+        setShowDetail(false);
+        if (activeTab === 'FIGHTERS') {
+            setSelectedItem(fighters[0] || null);
+        } else if (activeTab === 'ARMORY') {
+            // Try to select first unlocked weapon, otherwise first locked weapon
+            const unlockedWeapon = weapons.find(w => w.isUnlocked);
+            setSelectedItem(unlockedWeapon || weapons[0] || null);
+        } else if (activeTab === 'BESTIARY') {
+            // Try to select first unlocked enemy, otherwise first locked enemy
+            const unlockedEnemy = enemies.find(e => e.isUnlocked);
+            setSelectedItem(unlockedEnemy || enemies[0] || null);
+        } else if (activeTab === 'BOSSES') {
+            // Try to select first unlocked boss, otherwise first locked boss
+            const unlockedBoss = bosses.find(b => b.isUnlocked);
+            setSelectedItem(unlockedBoss || bosses[0] || null);
+        }
+    }, [activeTab]);
 
-  // Auto-select first unlocked item when tab changes (but don't show detail)
-  useEffect(() => {
-    setShowDetail(false);
-    if (activeTab === 'FIGHTERS') {
-      setSelectedItem(fighters[0] || null);
-    } else if (activeTab === 'ARMORY') {
-      // Try to select first unlocked weapon, otherwise first locked weapon
-      const unlockedWeapon = weapons.find(w => w.isUnlocked);
-      setSelectedItem(unlockedWeapon || weapons[0] || null);
-    } else if (activeTab === 'BESTIARY') {
-      // Try to select first unlocked enemy, otherwise first locked enemy
-      const unlockedEnemy = enemies.find(e => e.isUnlocked);
-      setSelectedItem(unlockedEnemy || enemies[0] || null);
-    } else if (activeTab === 'BOSSES') {
-      // Try to select first unlocked boss, otherwise first locked boss
-      const unlockedBoss = bosses.find(b => b.isUnlocked);
-      setSelectedItem(unlockedBoss || bosses[0] || null);
-    }
-  }, [activeTab]);
+    // Handle item selection
+    const handleItemSelect = (item: FighterItem | WeaponItem | EnemyItem | BossItem) => {
+        playClick?.(ClickType.DEFAULT);
+        setSelectedItem(item);
+        setShowDetail(true);
+    };
 
-  // Handle item selection
-  const handleItemSelect = (item: FighterItem | WeaponItem | EnemyItem | BossItem) => {
-    playClick?.(ClickType.DEFAULT);
-    setSelectedItem(item);
-    setShowDetail(true);
-  };
+    // Handle detail close
+    const handleDetailClose = () => {
+        playClick?.(ClickType.CANCEL);
+        setShowDetail(false);
+    };
 
-  // Handle detail close
-  const handleDetailClose = () => {
-    playClick?.(ClickType.CANCEL);
-    setShowDetail(false);
-  };
+    return (
+        <div className="absolute inset-0 z-50 bg-black/95 text-white flex flex-col font-mono backdrop-blur-xl pointer-events-auto pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+            {/* Header */}
+            <div className="p-3 sm:p-4 border-b border-gray-800 flex justify-between items-center bg-black/50 flex-shrink-0">
+                <h2 className="text-lg sm:text-2xl font-bold text-cyan-400 tracking-widest flex items-center gap-1 sm:gap-2 flex-1 min-w-0">
+                    <span className="text-2xl sm:text-3xl flex-shrink-0">❖</span> <span className="truncate">LIBRARY</span>
+                </h2>
+                <button onClick={() => {
+                    playClick?.(ClickType.CANCEL);
+                    onClose();
+                }} className="ml-2 px-3 py-2 text-xs sm:text-sm border border-red-500/50 text-red-400 hover:bg-red-900/20 rounded transition-colors flex-shrink-0">
+                    CLOSE
+                </button>
+            </div>
 
-  return (
-    <div className="absolute inset-0 z-50 bg-black/95 text-white flex flex-col font-mono backdrop-blur-xl pointer-events-auto pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
-      {/* Header */}
-      <div className="p-3 sm:p-4 border-b border-gray-800 flex justify-between items-center bg-black/50 flex-shrink-0">
-        <h2 className="text-lg sm:text-2xl font-bold text-cyan-400 tracking-widest flex items-center gap-1 sm:gap-2 flex-1 min-w-0">
-          <span className="text-2xl sm:text-3xl flex-shrink-0">❖</span> <span className="truncate">LIBRARY</span>
-        </h2>
-        <button onClick={() => {
-          playClick?.(ClickType.CANCEL);
-          onClose();
-        }} className="ml-2 px-3 py-2 text-xs sm:text-sm border border-red-500/50 text-red-400 hover:bg-red-900/20 rounded transition-colors flex-shrink-0">
-          CLOSE
-        </button>
-      </div>
+            <div className="flex flex-1 overflow-hidden min-h-0 flex-col sm:flex-row">
+                {/* Tabs Navigation */}
+                <Tabs
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                    playClick={playClick}
+                />
 
-      <div className="flex flex-1 overflow-hidden min-h-0 flex-col sm:flex-row">
-        {/* Tabs Navigation */}
-        <Tabs
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          playClick={playClick}
-        />
+                {/* Main Content Area - 手机竖屏上下布局，桌面左右布局 */}
+                <div className="flex-1 flex flex-col sm:flex-row overflow-hidden min-w-0 relative">
+                    {/* List View - 全屏显示 */}
+                    <ItemList
+                        activeTab={activeTab}
+                        fighters={fighters}
+                        weapons={weapons}
+                        enemies={enemies}
+                        bosses={bosses}
+                        selectedItem={selectedItem}
+                        onSelectItem={handleItemSelect}
+                        playClick={playClick}
+                    />
 
-        {/* Main Content Area - 手机竖屏上下布局，桌面左右布局 */}
-        <div className="flex-1 flex flex-col sm:flex-row overflow-hidden min-w-0 relative">
-          {/* List View - 全屏显示 */}
-          <ItemList
-            activeTab={activeTab}
-            fighters={fighters}
-            weapons={weapons}
-            enemies={enemies}
-            bosses={bosses}
-            selectedItem={selectedItem}
-            onSelectItem={handleItemSelect}
-            playClick={playClick}
-          />
-
-          {/* Detail Overlay - 浮动详情页 */}
-          <ItemDetailPanel
-            activeTab={activeTab}
-            selectedItem={selectedItem}
-            showDetail={showDetail}
-            onClose={handleDetailClose}
-            playClick={playClick}
-            getSpriteSrc={getSpriteSrc}
-          />
+                    {/* Detail Overlay - 浮动详情页 */}
+                    <ItemDetailPanel
+                        activeTab={activeTab}
+                        selectedItem={selectedItem}
+                        showDetail={showDetail}
+                        onClose={handleDetailClose}
+                        playClick={playClick}
+                        getSpriteSrc={getSpriteSrc}
+                    />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
