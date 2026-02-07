@@ -1,15 +1,16 @@
 import React from "react";
-import { GameState, ClickType } from "@/types";
-import { WeaponId } from "@/src/engine/types";
-import { GALLERY_WEAPONS } from "@/src/engine/configs/gallery/weapons";
-import { getWeaponMaxLevel } from "@/src/engine/configs/weaponGrowth";
-import { capitalize } from "@/utils/string";
+import { ClickType } from "./types";
+import { GameState, WeaponId } from "@/engine/types";
+import { GALLERY_WEAPONS } from "@/engine/configs/gallery/weapons";
+import { getWeaponMaxLevel } from "@/engine/configs/weaponGrowth";
+import { capitalize } from "@/views/utils/string";
 import { Gallery } from "./Gallery";
-import { intToRoman } from "@/src/views/utils/numbers";
-import type { GameSettings } from "@/src/engine/settings";
-import { SettingsPanel } from "./SettingsPanel";
-import { ComboState } from "@/src/engine";
-import { getVersion } from "@/src/version";
+import { intToRoman } from "@/views/utils/numbers";
+import type { GameSettings } from "@/engine/settings";
+import { SettingsPanel } from "./components/SettingsPanel";
+import { ComboState } from "@/engine";
+import { getVersion } from "@/version";
+
 
 
 

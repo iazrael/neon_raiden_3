@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ClickType } from '@/types';
-import { GALLERY_WEAPONS, GALLERY_ENEMIES, GALLERY_BOSSES, GALLERY_FIGHTERS } from '../src/engine/configs/gallery';
-import { isWeaponUnlocked, isEnemyUnlocked, isBossUnlocked, isFighterUnlocked } from '../src/engine/configs/gallery/unlock';
-import { getSpritePath } from '../src/engine/configs/sprites/base';
-import { WeaponId, EnemyId, BossId, FighterId } from '../src/engine/types/ids';
+import { ClickType } from './types';
+import { GALLERY_WEAPONS, GALLERY_ENEMIES, GALLERY_BOSSES, GALLERY_FIGHTERS } from '@/engine/configs/gallery';
+import { isWeaponUnlocked, isEnemyUnlocked, isBossUnlocked, isFighterUnlocked } from '@/engine/configs/gallery/unlock';
+import { getSpritePath } from '@/engine/configs/sprites/base';
+import { WeaponId, EnemyId, BossId, FighterId } from '@/engine/types/ids';
 import { Tabs } from './gallery/Tabs';
 import { ItemList } from './gallery/ItemList';
 import { ItemDetailPanel } from './gallery/ItemDetailPanel';

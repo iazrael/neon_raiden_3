@@ -1,4 +1,4 @@
-import { ClickType } from '@/types';
+import { ClickType } from '@/views/types';
 import { WeaponId } from '../types';
 
 

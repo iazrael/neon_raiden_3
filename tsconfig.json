@@ -22,12 +22,14 @@
         "jsx": "react-jsx",
         "paths": {
             "@/*": [
-                "./*"
+                "./src/*"
             ]
         },
         "sourceMap": true,
         "allowImportingTsExtensions": true,
         "noEmit": true
     },
-    "exclude": []
+    "exclude": [
+        "./game/*"
+    ]
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { BossItem } from './types';
-import { intToRoman } from '@/src/views/utils/numbers';
+import { intToRoman } from '@/views/utils/numbers';
 import { BOSS_LEVEL_MAP } from './constants';
 
 interface BossListItemProps {

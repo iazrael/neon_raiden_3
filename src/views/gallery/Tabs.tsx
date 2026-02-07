@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClickType } from '@/types';
+import { ClickType } from '../types';
 
 type Tab = 'FIGHTERS' | 'ARMORY' | 'BESTIARY' | 'BOSSES';
 

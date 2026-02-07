@@ -1,5 +1,5 @@
 import React from 'react';
-import { ClickType } from '@/types';
+import { ClickType } from '../types';
 import { FighterItem, WeaponItem, EnemyItem, BossItem } from './types';
 import { FighterListItem } from './FighterListItem';
 import { WeaponListItem } from './WeaponListItem';

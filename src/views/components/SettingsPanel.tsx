@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Settings, RotateCcw, X } from 'lucide-react';
-import type { GameSettings } from '@/src/engine/settings';
+import type { GameSettings } from '@/engine/settings';
 
 interface SettingsPanelProps {
     gameSettings: GameSettings;

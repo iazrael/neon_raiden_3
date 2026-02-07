@@ -1,5 +1,5 @@
-import { WeaponId, EnemyId, BossId, FighterId } from '../../src/engine/types/ids';
-import { GalleryEntry } from '../../src/engine/configs/base';
+import { WeaponId, EnemyId, BossId, FighterId } from '@/engine/types/ids';
+import { GalleryEntry } from '@/engine/configs/base';
 
 export interface BaseItem {
     name: string;

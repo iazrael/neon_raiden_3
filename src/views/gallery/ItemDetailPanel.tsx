@@ -1,11 +1,10 @@
 import React from 'react';
-import { ClickType } from '@/types';
+import { ClickType } from '../types';
 import { FighterItem, WeaponItem, EnemyItem, BossItem } from './types';
 import { FighterDetail } from './FighterDetail';
 import { WeaponDetail } from './WeaponDetail';
 import { EnemyDetail } from './EnemyDetail';
 import { BossDetail } from './BossDetail';
-import { CachedImage } from './CachedImage';
 
 type Tab = 'FIGHTERS' | 'ARMORY' | 'BESTIARY' | 'BOSSES';
 
@@ -86,7 +85,7 @@ export const ItemDetailPanel: React.FC<ItemDetailPanelProps> = ({
                     <div className="w-32 h-32 sm:w-40 sm:h-40 border border-cyan-500/20 rounded-full flex items-center justify-center bg-black/50 mb-6 relative group flex-shrink-0">
                         <div className="absolute inset-0 rounded-full border border-cyan-500/30 animate-[spin_10s_linear_infinite]"></div>
                         <div className="absolute inset-2 rounded-full border border-cyan-500/10 animate-[spin_15s_linear_infinite_reverse]"></div>
-                        <CachedImage
+                        <img
                             src={getSpriteSrc(selectedItem)}
                             alt={selectedItem.name}
                             className="relative z-10 filter drop-shadow-[0_0_15px_rgba(6,182,212,0.5)] group-hover:scale-110 transition-transform duration-500 w-28 h-28 sm:w-32 object-contain"

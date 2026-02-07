@@ -1,17 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ReactEngine } from './src/engine/ReactEngine';
-import { GameUI } from './components/GameUI';
-import { ClickType } from './types';
-import { WeaponId } from './src/engine/types';
+import { ReactEngine } from '@/engine/ReactEngine';
+import { GameUI } from '@/views/GameUI';
+import { ClickType } from '@/views/types';
+import { WeaponId } from '@/engine/types';
 
-import { SpriteManager } from './src/engine/SpriteManager';
-// import ReloadPrompt from './src/views/components/ReloadPrompt';
-import { ComboState, GameState } from './src/engine';
-import { GAME_CONFIG } from './src/engine/configs';
-import { audioPlayer } from './src/engine/audio';
-import { DebugConfig } from './src/engine/config/DebugConfig';
-import { GameSettings } from './src/engine/settings';
-import { SettingsPanel } from './components/SettingsPanel';
+import { SpriteManager } from '@/engine/SpriteManager';
+// import ReloadPrompt from '@/views/components/ReloadPrompt';
+import { ComboState, GameState } from '@/engine';
+import { GAME_CONFIG } from '@/engine/configs';
+import { audioPlayer } from '@/engine/audio';
+import { DebugConfig } from '@/engine/config/DebugConfig';
+import { GameSettings } from '@/engine/settings';
 
 function App() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
