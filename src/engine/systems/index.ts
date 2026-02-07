@@ -19,7 +19,7 @@ export { AISteerSystem } from "./AISteerSystem";
 
 // P2: 状态层
 export { BuffSystem } from "./BuffSystem";
-export { WeaponSynergySystem } from "./WeaponSynergySystem";
+// export { WeaponSynergySystem } from "./WeaponSynergySystem";
 export { WeaponSystem } from "./WeaponSystem";
 
 // P3: 物理层
@@ -50,13 +50,13 @@ export {
 } from "./SpawnSystem";
 export { BossSystem } from "./BossSystem";
 // export { BossPhaseSystem, resetBossPhases, removeBossPhase } from './BossPhaseSystem';
-export {
-    DifficultySystem,
-    resetDifficulty,
-    getDifficultyConfig,
-    getEliteChance,
-    getEnemyMultipliers,
-} from "./DifficultySystem";
+// export {
+//     DifficultySystem,
+//     resetDifficulty,
+//     getDifficultyConfig,
+//     getEliteChance,
+//     getEnemyMultipliers,
+// } from "./DifficultySystem";
 
 // P7: 表现层
 export * from "./CameraSystem";

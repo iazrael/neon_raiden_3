@@ -21,7 +21,7 @@ import { CleanupSystem } from './systems/CleanupSystem';
 import { CollisionSystem } from './systems/CollisionSystem';
 import { ComboSystem } from './systems/ComboSystem';
 import { DamageResolutionSystem } from './systems/DamageResolutionSystem';
-import { DifficultySystem } from './systems/DifficultySystem';
+// import { DifficultySystem } from './systems/DifficultySystem';
 import { EffectSystem } from './systems/EffectSystem';
 import { InputSystem } from './systems/InputSystem';
 import { LevelSystem } from './systems/LevelSystem';
@@ -105,11 +105,6 @@ export class Engine {
         }
     }
 
-    // ========== 调试模式：只测试渲染 ==========
-    // 设为 true 时只运行渲染系统，用于调试渲染问题
-    private static DEBUG_RENDER_ONLY = false;
-    // ==========================================
-
     /**
      * 初始化设置管理器
      */
@@ -184,12 +179,6 @@ export class Engine {
     }
 
     private framePipeline(world: World, dt: number) {
-        // ========== 调试模式：只测试渲染 ==========
-        if (Engine.DEBUG_RENDER_ONLY) {
-            // 只运行渲染相关的系统
-            RenderSystem(world, dt);
-            return;
-        }
         // ==========================================
 
         // 性能监控：帧开始
@@ -255,15 +244,6 @@ export class Engine {
         // 性能监控：帧结束
         const frameTimeMs = performance.now() - frameStartMs;
         this.performanceMonitor.endFrame(frameTimeMs);
-    }
-
-    /**
-     * 设置调试模式
-     * @param enabled true 时只运行渲染系统
-     */
-    public static setDebugRenderOnly(enabled: boolean): void {
-        Engine.DEBUG_RENDER_ONLY = enabled;
-        console.log('[Engine] Debug Render Only:', enabled ? 'ENABLED' : 'DISABLED');
     }
 
     /**
