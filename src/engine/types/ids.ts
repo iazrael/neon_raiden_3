@@ -64,12 +64,13 @@ export enum EnemyWeaponId {
 
 // 武器的发射模式
 export enum WeaponPattern {
-    RADIAL = 'radial', // 径向发射
-    SPREAD = 'spread', // 扩散发射
-    AIMED = 'aimed', // 准星发射
-    RANDOM = 'random', // 随机发射
-    SPIRAL = 'spiral', // 螺旋发射
-    FIXED_REAR = 'fixed_rear' // 子弹从后方发射
+    STRAIGHT = 'straight',   // 直弹 - 固定方向发射
+    SPREAD = 'spread',       // 散射 - 扇形分布
+    AIMED = 'aimed',         // 瞄准 - 通过 targetId 追踪目标
+    RADIAL = 'radial',       // 全方位 - 360度均匀
+    SPIRAL = 'spiral',       // 螺旋 - 角度递增
+    RANDOM = 'random',       // 随机 - 随机偏移
+    FIXED_REAR = 'fixed_rear'// 反向 - 固定后方发射
 }
 
 // | 武器枚举       | 弹种 ID              | 语义说明  |
