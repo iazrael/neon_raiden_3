@@ -27,6 +27,7 @@ import { BULLET_SPRITE_CONFIG } from '../configs/sprites/bullets';
 import { getWeaponUpgrade } from '../configs/weaponGrowth';
 import { BulletSpriteSpec } from '../configs/sprites/bullets';
 import { getEffectiveTimeScale } from '../utils/timeUtils';
+import { WeaponPattern } from '../types';
 
 /**
  * 武器系统主函数
@@ -141,13 +142,13 @@ function fireWeapon(
     };
 
     // 根据弹幕模式生成子弹
-    if (weaponSpec.pattern === 'radial') {
+    if (weaponSpec.pattern === WeaponPattern.RADIAL) {
         // 径向发射 - 360度均匀分布
         fireRadial(fireContext, bulletCount);
-    } else if (weaponSpec.pattern === 'spiral') {
+    } else if (weaponSpec.pattern === WeaponPattern.SPIRAL) {
         // 螺旋发射
         fireSpiral(fireContext, bulletCount, spread, baseAngle);
-    } else if (weaponSpec.pattern === 'random') {
+    } else if (weaponSpec.pattern === WeaponPattern.RANDOM) {
         // 随机发射
         fireRandom(fireContext, bulletCount, spread, baseAngle);
     } else {

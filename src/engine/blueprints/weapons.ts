@@ -143,7 +143,7 @@ export const WEAPON_TABLE: Record<WeaponId, WeaponSpec> = {
         cooldown: 300,
         curCD: 0,
         maxLevel: 6,
-        pattern: WeaponPattern.AIMED,
+        pattern: WeaponPattern.RANDOM,
         bulletCount: 1,
         spread: 0,
         pierceBonus: 0,
