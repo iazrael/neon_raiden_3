@@ -158,21 +158,21 @@ export const ENEMY_WEAPON_TABLE: Record<EnemyWeaponId, WeaponSpec> = {
         ammoType: AmmoType.ENEMY_ORB_RED,
         cooldown: 2000,
         bulletCount: 1,
-        pattern: WeaponPattern.AIMED
+        pattern: WeaponPattern.STRAIGHT
     },
     [EnemyWeaponId.ENEMY_FAST]: { // 飞翼: 稍微快一点
         id: EnemyWeaponId.ENEMY_FAST,
         ammoType: AmmoType.ENEMY_PULSE,
         cooldown: 1200,
         bulletCount: 1,
-        pattern: WeaponPattern.AIMED
+        pattern: WeaponPattern.STRAIGHT
     },
     [EnemyWeaponId.ENEMY_TANK]: { // 坦克: 慢速重弹
         id: EnemyWeaponId.ENEMY_TANK,
         ammoType: AmmoType.ENEMY_ORB_BLUE,
         cooldown: 3000,
         bulletCount: 1,
-        pattern: WeaponPattern.AIMED
+        pattern: WeaponPattern.STRAIGHT
     },
     [EnemyWeaponId.ENEMY_ELITE]: { // 精英炮艇: 快速连射
         id: EnemyWeaponId.ENEMY_ELITE,
@@ -180,7 +180,7 @@ export const ENEMY_WEAPON_TABLE: Record<EnemyWeaponId, WeaponSpec> = {
         cooldown: 800,
         bulletCount: 3,
         spread: 15,
-        pattern: WeaponPattern.AIMED
+        pattern: WeaponPattern.SPREAD
     },
     [EnemyWeaponId.ENEMY_SNIPER]: { // 拦截机: 激光
         id: EnemyWeaponId.ENEMY_SNIPER,
@@ -264,7 +264,7 @@ export const ENEMY_WEAPON_TABLE: Record<EnemyWeaponId, WeaponSpec> = {
         ammoType: AmmoType.ENEMY_BEAM_THICK,
         spread: 0,
         bulletCount: 1,
-        pattern: WeaponPattern.AIMED
+        pattern: WeaponPattern.STRAIGHT
     },
     [EnemyWeaponId.TITAN_LASER_RAPID]: {
         id: EnemyWeaponId.TITAN_LASER_RAPID,
