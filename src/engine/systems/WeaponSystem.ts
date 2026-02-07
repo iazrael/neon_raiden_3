@@ -21,7 +21,7 @@ import { CollisionLayer } from '../types/collision';
 import { AMMO_TABLE } from '../blueprints/ammo';
 import { ALL_WEAPONS_TABLE } from '../blueprints/weapons';
 import { Blueprint, WeaponSpec, AmmoSpec, WeaponLevelSpec } from '../blueprints';
-import { pushEvent, removeComponent, view } from '../world';
+import { pushEvent, removeComponent, view, getEntity } from '../world';
 import { WeaponFiredEvent } from '../events';
 import { BULLET_SPRITE_CONFIG } from '../configs/sprites/bullets';
 import { getWeaponUpgrade } from '../configs/weaponGrowth';
@@ -125,8 +125,21 @@ function fireWeapon(
     const spread = upgradeConfig.spread ?? weaponSpec.spread ?? 0;
     const sizeMultiplier = upgradeConfig.sizeMultiplier ?? 1.0;
 
-    // 发射后的飞行方向
-    const baseAngle = intent.angle ?? -Math.PI / 2; // 默认向上
+    // 计算发射角度
+    let fireAngle = intent.angle ?? -Math.PI / 2; // 默认向上
+
+    // AIMED 模式：通过 targetId 查找目标位置
+    if (weaponSpec.pattern === WeaponPattern.AIMED && intent.targetId) {
+        const targetComps = getEntity(world, intent.targetId);
+        if (targetComps) {
+            const targetTransform = targetComps.find(c => c instanceof Transform) as Transform | undefined;
+            if (targetTransform) {
+                const dx = targetTransform.x - transform.x;
+                const dy = targetTransform.y - transform.y;
+                fireAngle = Math.atan2(dy, dx);
+            }
+        }
+    }
 
     const fireContext = {
         world,
@@ -145,15 +158,18 @@ function fireWeapon(
     if (weaponSpec.pattern === WeaponPattern.RADIAL) {
         // 径向发射 - 360度均匀分布
         fireRadial(fireContext, bulletCount);
+    } else if (weaponSpec.pattern === WeaponPattern.FIXED_REAR) {
+        // 反向发射：朝实体朝向的相反方向
+        fireSpread(fireContext, bulletCount, spread, fireAngle + Math.PI);
     } else if (weaponSpec.pattern === WeaponPattern.SPIRAL) {
         // 螺旋发射
-        fireSpiral(fireContext, bulletCount, spread, baseAngle);
+        fireSpiral(fireContext, bulletCount, spread, fireAngle);
     } else if (weaponSpec.pattern === WeaponPattern.RANDOM) {
         // 随机发射
-        fireRandom(fireContext, bulletCount, spread, baseAngle);
+        fireRandom(fireContext, bulletCount, spread, fireAngle);
     } else {
-        // 默认扇形发射（SPREAD/AIMED）
-        fireSpread(fireContext, bulletCount, spread, baseAngle);
+        // STRAIGHT, SPREAD, AIMED (计算后) 都使用这个函数
+        fireSpread(fireContext, bulletCount, spread, fireAngle);
     }
 
     // 重置冷却：实际冷却 = 武器冷却 / 射速倍率
