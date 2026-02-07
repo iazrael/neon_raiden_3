@@ -36,7 +36,7 @@ export const BLUEPRINT_FIGHTER_NEON: Blueprint = {
     /** 武器组件 - 设置战机的初始武器 */
     // Weapon: WEAPON_TABLE[WeaponId.SHURIKEN],
     Weapon: {
-        ...WEAPON_TABLE[WeaponId.VULCAN],
+        ...WEAPON_TABLE[WeaponId.SHURIKEN],
         fireOffset: { x: 0, y: -24 }  // 从机头发射，向上偏移 24px
     },
 
@@ -67,7 +67,6 @@ export const BLUEPRINT_OPTION_VULCAN: Blueprint = {
     /** 武器组件 - 使用 Vulcan 武器（伤害减半，瞄准模式） */
     Weapon: {
         ...WEAPON_TABLE[WeaponId.VULCAN],
-        damageMultiplier: 0.5,
-        pattern: WeaponPattern.AIMED
+        damageMultiplier: 0.5
     },
 };

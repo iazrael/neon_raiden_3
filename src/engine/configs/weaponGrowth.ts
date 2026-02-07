@@ -124,12 +124,12 @@ export const WEAPON_UPGRADE_TABLE: Record<WeaponId, WeaponUpgradeSpec> = {
     [WeaponId.SHURIKEN]: {
         id: WeaponId.SHURIKEN,
         levels: [
-            { level: 1, damageMultiplier: 1.0, fireRateMultiplier: 1.0, bulletCount: 1, spread: 0 },
-            { level: 2, damageMultiplier: 1.2, fireRateMultiplier: 1.1, bulletCount: 2, spread: 10 },
-            { level: 3, damageMultiplier: 1.4, fireRateMultiplier: 1.2, bulletCount: 3, spread: 15 },
-            { level: 4, damageMultiplier: 1.6, fireRateMultiplier: 1.3, bulletCount: 3, spread: 20 },
-            { level: 5, damageMultiplier: 1.8, fireRateMultiplier: 1.4, bulletCount: 4, spread: 25 },
-            { level: 6, damageMultiplier: 2.0, fireRateMultiplier: 1.5, bulletCount: 4, spread: 30 },
+            { level: 1, damageMultiplier: 1.0, fireRateMultiplier: 1.0, bulletCount: 1, },
+            { level: 2, damageMultiplier: 1.2, fireRateMultiplier: 1.1, bulletCount: 2, },
+            { level: 3, damageMultiplier: 1.4, fireRateMultiplier: 1.2, bulletCount: 3, },
+            { level: 4, damageMultiplier: 1.6, fireRateMultiplier: 1.3, bulletCount: 3, },
+            { level: 5, damageMultiplier: 1.8, fireRateMultiplier: 1.4, bulletCount: 4, },
+            { level: 6, damageMultiplier: 2.0, fireRateMultiplier: 1.5, bulletCount: 4, },
         ],
     },
 };

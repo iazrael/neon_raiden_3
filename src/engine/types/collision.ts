@@ -17,7 +17,9 @@ export enum CollisionLayer {
 const CollisionMatrix: Record<CollisionLayer, CollisionLayer> = {
     [CollisionLayer.Player]: CollisionLayer.Enemy | CollisionLayer.EnemyBullet | CollisionLayer.Pickup,
     [CollisionLayer.Enemy]: CollisionLayer.Player | CollisionLayer.PlayerBullet,
-    [CollisionLayer.PlayerBullet]: CollisionLayer.Enemy, // | CollisionLayer.EnemyBullet, 先不合敌方子弹互击
+    [CollisionLayer.PlayerBullet]: CollisionLayer.Enemy, 
+    // 先不合敌方子弹互击, 数量太多了, 也拖慢性能, 体验也不太好, 导弹被普通子弹抵消了很难受
+    // [CollisionLayer.PlayerBullet]: CollisionLayer.Enemy | CollisionLayer.EnemyBullet, 
     [CollisionLayer.EnemyBullet]: CollisionLayer.Player,
     [CollisionLayer.Pickup]: CollisionLayer.Player,
     [CollisionLayer.None]: 0,

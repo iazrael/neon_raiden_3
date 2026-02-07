@@ -145,7 +145,7 @@ export const WEAPON_TABLE: Record<WeaponId, WeaponSpec> = {
         maxLevel: 6,
         pattern: WeaponPattern.RANDOM,
         bulletCount: 1,
-        spread: 0,
+        spread: 90,
         pierceBonus: 0,
         bouncesBonus: 0
     }
