@@ -1,7 +1,7 @@
 import React from 'react';
 import { ClickType } from '../types';
 
-type Tab = 'FIGHTERS' | 'ARMORY' | 'BESTIARY' | 'BOSSES';
+type Tab = 'FIGHTERS' | 'ARMORY' | 'BESTIARY' | 'BOSSES' | 'SOUNDS';
 
 interface TabsProps {
     activeTab: Tab;
@@ -10,7 +10,7 @@ interface TabsProps {
 }
 
 export const Tabs: React.FC<TabsProps> = ({ activeTab, setActiveTab, playClick }) => {
-    const tabs: Tab[] = ['FIGHTERS', 'ARMORY', 'BESTIARY', 'BOSSES'];
+    const tabs: Tab[] = ['FIGHTERS', 'ARMORY', 'BESTIARY', 'BOSSES', 'SOUNDS'];
 
     return (
         <>

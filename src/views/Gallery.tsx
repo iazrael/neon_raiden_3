@@ -7,6 +7,7 @@ import { WeaponId, EnemyId, BossId, FighterId } from '@/engine/types/ids';
 import { Tabs } from './gallery/Tabs';
 import { ItemList } from './gallery/ItemList';
 import { ItemDetailPanel } from './gallery/ItemDetailPanel';
+import { SoundList } from './gallery/SoundList';
 import { FighterItem, WeaponItem, EnemyItem, BossItem } from './gallery/types';
 
 
@@ -16,7 +17,7 @@ interface GalleryProps {
     playClick?: (type?: ClickType) => void;
 }
 
-type Tab = 'FIGHTERS' | 'ARMORY' | 'BESTIARY' | 'BOSSES';
+type Tab = 'FIGHTERS' | 'ARMORY' | 'BESTIARY' | 'BOSSES' | 'SOUNDS';
 
 export const Gallery: React.FC<GalleryProps> = ({ onClose, maxLevelReached, playClick }) => {
     const [activeTab, setActiveTab] = useState<Tab>('FIGHTERS');
@@ -114,6 +115,9 @@ export const Gallery: React.FC<GalleryProps> = ({ onClose, maxLevelReached, play
             // Try to select first unlocked boss, otherwise first locked boss
             const unlockedBoss = bosses.find(b => b.isUnlocked);
             setSelectedItem(unlockedBoss || bosses[0] || null);
+        } else if (activeTab === 'SOUNDS') {
+            // 音效测试不需要选中项
+            setSelectedItem(null);
         }
     }, [activeTab]);
 
@@ -155,27 +159,34 @@ export const Gallery: React.FC<GalleryProps> = ({ onClose, maxLevelReached, play
 
                 {/* Main Content Area - 手机竖屏上下布局，桌面左右布局 */}
                 <div className="flex-1 flex flex-col sm:flex-row overflow-hidden min-w-0 relative">
-                    {/* List View - 全屏显示 */}
-                    <ItemList
-                        activeTab={activeTab}
-                        fighters={fighters}
-                        weapons={weapons}
-                        enemies={enemies}
-                        bosses={bosses}
-                        selectedItem={selectedItem}
-                        onSelectItem={handleItemSelect}
-                        playClick={playClick}
-                    />
+                    {activeTab === 'SOUNDS' ? (
+                        // 音效测试页面 - 全屏显示
+                        <SoundList playClick={playClick} />
+                    ) : (
+                        <>
+                            {/* List View - 全屏显示 */}
+                            <ItemList
+                                activeTab={activeTab}
+                                fighters={fighters}
+                                weapons={weapons}
+                                enemies={enemies}
+                                bosses={bosses}
+                                selectedItem={selectedItem}
+                                onSelectItem={handleItemSelect}
+                                playClick={playClick}
+                            />
 
-                    {/* Detail Overlay - 浮动详情页 */}
-                    <ItemDetailPanel
-                        activeTab={activeTab}
-                        selectedItem={selectedItem}
-                        showDetail={showDetail}
-                        onClose={handleDetailClose}
-                        playClick={playClick}
-                        getSpriteSrc={getSpriteSrc}
-                    />
+                            {/* Detail Overlay - 浮动详情页 */}
+                            <ItemDetailPanel
+                                activeTab={activeTab}
+                                selectedItem={selectedItem}
+                                showDetail={showDetail}
+                                onClose={handleDetailClose}
+                                playClick={playClick}
+                                getSpriteSrc={getSpriteSrc}
+                            />
+                        </>
+                    )}
                 </div>
             </div>
         </div>
