@@ -77,6 +77,20 @@ export class AudioEngine {
         }
     }
 
+    /**
+     * 设置主音量
+     * @param db - 音量值，单位为分贝(dB)，范围通常为 -40 到 0
+     */
+    setMasterVolume(db: number): void {
+        this.ensureContext();
+        if (this.masterGain && this.ctx) {
+            // 将分贝转换为线性增益值
+            const linearGain = Math.pow(10, db / 20);
+            const now = this.ctx.currentTime;
+            this.masterGain.gain.setTargetAtTime(linearGain, now, 0.01);
+        }
+    }
+
     playClick(type: ClickType = ClickType.DEFAULT) {
         if (!this.ctx || !this.masterGain) return;
         const osc = this.ctx.createOscillator();
@@ -487,9 +501,9 @@ export class AudioEngine {
             osc.frequency.value = note.f;
 
             const startTime = now + note.t;
-            const duration = i === notes.length - 1 ? 1.0 : 0.08; // Last note long
+            const duration = i === notes.length - 1 ? 0.15 : 0.08; // Last note long
 
-            gain.gain.setValueAtTime(0.3, startTime);
+            gain.gain.setValueAtTime(0.1, startTime);
             gain.gain.linearRampToValueAtTime(0.3, startTime + duration - 0.02);
             gain.gain.linearRampToValueAtTime(0.01, startTime + duration);
 

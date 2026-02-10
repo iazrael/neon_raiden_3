@@ -106,7 +106,7 @@ export const SoundList: React.FC<SoundListProps> = ({ playClick }) => {
                             min="-40"
                             max="0"
                             defaultValue="-10"
-                            // onChange={(e) => audioEngine.setMasterVolume(Number(e.target.value))}
+                            onChange={(e) => audioEngine.setMasterVolume(Number(e.target.value))}
                             className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-cyan-400"
                         />
                         <span className="text-gray-400 text-sm w-12">-10 dB</span>
