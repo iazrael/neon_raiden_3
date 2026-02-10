@@ -615,7 +615,7 @@ export class AudioEngine {
         osc.frequency.setValueAtTime(400, now);
         osc.frequency.exponentialRampToValueAtTime(50, now + 1.0);
 
-        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.setValueAtTime(0.3, now);
         gain.gain.linearRampToValueAtTime(0, now + 1.0);
 
         osc.start(now);
