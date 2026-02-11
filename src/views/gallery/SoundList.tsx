@@ -78,12 +78,12 @@ export const SoundList: React.FC<SoundListProps> = ({ playClick }) => {
     const [shieldLoopActive, setShieldLoopActive] = React.useState(false);
 
     const handlePlaySound = (item: SoundItem) => {
-        playClick?.(ClickType.DEFAULT);
+        // playClick?.(ClickType.DEFAULT);
         item.play(audioEngine);
     };
 
     const handleToggleShieldLoop = () => {
-        playClick?.(ClickType.DEFAULT);
+        // playClick?.(ClickType.DEFAULT);
         if (shieldLoopActive) {
             audioEngine.stopShieldLoop();
             setShieldLoopActive(false);
