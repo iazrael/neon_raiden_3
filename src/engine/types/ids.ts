@@ -70,7 +70,8 @@ export enum WeaponPattern {
     RADIAL = 'radial',       // 全方位 - 360度均匀
     SPIRAL = 'spiral',       // 螺旋 - 角度递增
     RANDOM = 'random',       // 随机 - 随机偏移
-    FIXED_REAR = 'fixed_rear'// 反向 - 固定后方发射
+    FIXED_REAR = 'fixed_rear',// 反向 - 固定后方发射
+    SPINNING_RADIAL = 'spinning_radial' // 旋转全向 - 持续旋转发射
 }
 
 // | 武器枚举       | 弹种 ID              | 语义说明  |

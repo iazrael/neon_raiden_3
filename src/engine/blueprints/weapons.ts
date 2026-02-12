@@ -228,8 +228,9 @@ export const ENEMY_WEAPON_TABLE: Record<EnemyWeaponId, WeaponSpec> = {
         cooldown: 600,
         ammoType: AmmoType.ENEMY_ORB_BLUE,
         bulletCount: 16,
-        spread: 360,
-        pattern: WeaponPattern.RADIAL
+        spread: 180,
+        pattern: WeaponPattern.SPINNING_RADIAL,
+        spinSpeed: 216  // 216°/秒 = 0.6 圈/秒，约 1.67 秒转一圈
     },
 
     // === Destroyer ===

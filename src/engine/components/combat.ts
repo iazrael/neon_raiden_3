@@ -71,6 +71,8 @@ export class Weapon extends Component {
         this.fireRateMultiplier = cfg.fireRateMultiplier ?? 1.0;
         this.pierce = cfg.pierce ?? 0;
         this.bounces = cfg.bounces ?? 0;
+        /** 旋转累积角度（弧度），用于 SPINNING_RADIAL 模式 */
+        this.spinAngle = 0;
     }
     public id: WeaponId | EnemyWeaponId;
     public ammoType: AmmoType;
@@ -87,6 +89,8 @@ export class Weapon extends Component {
     public fireRateMultiplier = 1.0;
     public pierce = 0;
     public bounces = 0;
+    /** 旋转累积角度（弧度），用于 SPINNING_RADIAL 模式 */
+    public spinAngle: number = 0;
     static check(c: any): c is Weapon { return c instanceof Weapon; }
 }
 

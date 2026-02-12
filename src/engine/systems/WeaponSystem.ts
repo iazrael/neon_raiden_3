@@ -13,27 +13,26 @@
  * 执行顺序：P2 - 在决策层之后，物理层之前
  */
 
-import { World } from '../world';
-import { Transform, Weapon, FireIntent, PlayerTag } from '../components';
-import { Homing, Chain } from '../components';
-import { spawnBullet } from '../factory';
-import { CollisionLayer } from '../types/collision';
-import { AMMO_TABLE } from '../blueprints/ammo';
-import { ALL_WEAPONS_TABLE } from '../blueprints/weapons';
-import { Blueprint, WeaponSpec, AmmoSpec, WeaponLevelSpec } from '../blueprints';
-import { pushEvent, removeComponent, view, getEntity } from '../world';
-import { WeaponFiredEvent } from '../events';
-import { BULLET_SPRITE_CONFIG } from '../configs/sprites/bullets';
-import { getWeaponUpgrade } from '../configs/weaponGrowth';
-import { BulletSpriteSpec } from '../configs/sprites/bullets';
-import { getEffectiveTimeScale } from '../utils/timeUtils';
-import { WeaponPattern } from '../types';
+import { World } from "../world";
+import { Transform, Weapon, FireIntent, PlayerTag } from "../components";
+import { Homing, Chain } from "../components";
+import { spawnBullet } from "../factory";
+import { CollisionLayer } from "../types/collision";
+import { AMMO_TABLE } from "../blueprints/ammo";
+import { ALL_WEAPONS_TABLE } from "../blueprints/weapons";
+import { Blueprint, WeaponSpec, AmmoSpec, WeaponLevelSpec } from "../blueprints";
+import { pushEvent, removeComponent, view, getEntity } from "../world";
+import { WeaponFiredEvent } from "../events";
+import { BULLET_SPRITE_CONFIG } from "../configs/sprites/bullets";
+import { getWeaponUpgrade } from "../configs/weaponGrowth";
+import { BulletSpriteSpec } from "../configs/sprites/bullets";
+import { getEffectiveTimeScale } from "../utils/timeUtils";
+import { WeaponPattern } from "../types";
 
 /**
  * 武器系统主函数
  */
 export function WeaponSystem(world: World, dt: number): void {
-
     for (const [id, [transform, weapon], comps] of view(world, [Transform, Weapon])) {
         // 第一步：更新所有武器的冷却时间
         if (weapon.curCD > 0) {
@@ -56,12 +55,12 @@ export function WeaponSystem(world: World, dt: number): void {
         // 第三步：发射武器
         const isPlayer = !!comps.find(PlayerTag.check);
         // console.log(`Entity ${id} firing weapon ${weapon.id}`);
-        fireWeapon(world, {
+        fireWeapon(world, dt, {
             id,
             transform,
             weapon,
             intent,
-            isPlayer
+            isPlayer,
         });
     }
 }
@@ -71,6 +70,7 @@ export function WeaponSystem(world: World, dt: number): void {
  */
 function fireWeapon(
     world: World,
+    dt: number,
     entity: {
         id: number;
         transform: Transform;
@@ -95,10 +95,10 @@ function fireWeapon(
     const upgradeConfig: WeaponLevelSpec = entity.isPlayer
         ? getWeaponUpgrade(weapon.id as any, weapon.level || 1)
         : {
-            level: 1,
-            damageMultiplier: weapon.damageMultiplier || 1.0,
-            fireRateMultiplier: weapon.fireRateMultiplier || 1.0,
-        };
+              level: 1,
+              damageMultiplier: weapon.damageMultiplier || 1.0,
+              fireRateMultiplier: weapon.fireRateMultiplier || 1.0,
+          };
 
     // === 合并组件级别的倍率（仅玩家） ===
     // 玩家可通过 Weapon 组件的 damageMultiplier/fireRateMultiplier 进一步调整升级表配置
@@ -132,7 +132,7 @@ function fireWeapon(
     if (weaponSpec.pattern === WeaponPattern.AIMED && intent.targetId) {
         const targetComps = getEntity(world, intent.targetId);
         if (targetComps) {
-            const targetTransform = targetComps.find(c => c instanceof Transform) as Transform | undefined;
+            const targetTransform = targetComps.find((c) => c instanceof Transform) as Transform | undefined;
             if (targetTransform) {
                 const dx = targetTransform.x - transform.x;
                 const dy = targetTransform.y - transform.y;
@@ -153,7 +153,7 @@ function fireWeapon(
         ownerId: id,
         isPlayer: entity.isPlayer,
         // FIXME: 这里更合理的是从 hitbox 或者 sprite 读, 往实体的正前方推算机头发射位置, 但是也可能跟具体战机有关系
-        fireOffset: entity.isPlayer ? { x: 0, y: -24 } : { x: 0, y: 0 }
+        fireOffset: entity.isPlayer ? { x: 0, y: -24 } : { x: 0, y: 0 },
     };
 
     // 根据弹幕模式生成子弹
@@ -169,6 +169,9 @@ function fireWeapon(
     } else if (weaponSpec.pattern === WeaponPattern.RANDOM) {
         // 随机发射
         fireRandom(fireContext, bulletCount, spread, fireAngle);
+    } else if (weaponSpec.pattern === WeaponPattern.SPINNING_RADIAL) {
+        // 旋转全向发射
+        fireSpinningRadial(fireContext, weapon, weaponSpec, dt);
     } else {
         // STRAIGHT, SPREAD, AIMED (计算后) 都使用这个函数
         fireSpread(fireContext, bulletCount, spread, fireAngle);
@@ -179,10 +182,10 @@ function fireWeapon(
 
     // 生成武器发射事件
     const firedEvent: WeaponFiredEvent = {
-        type: 'WeaponFired',
+        type: "WeaponFired",
         pos: { x: transform.x, y: transform.y },
         weaponId: weapon.id,
-        owner: id
+        owner: id,
     };
     pushEvent(world, firedEvent);
 }
@@ -196,7 +199,7 @@ interface FireContext {
     spriteSpec: BulletSpriteSpec;
     upgradeConfig: WeaponLevelSpec;
     sizeMultiplier: number;
-    fireOffset: { x: number, y: number };
+    fireOffset: { x: number; y: number };
     ownerId: number;
     isPlayer: boolean;
 }
@@ -206,9 +209,7 @@ interface FireContext {
  */
 function fireSpread(ctx: FireContext, count: number, spread: number, baseAngle: number): void {
     for (let i = 0; i < count; i++) {
-        const angleOffset = spread !== 0
-            ? (spread * (i / (count - 1) - 0.5)) * (Math.PI / 180)
-            : 0;
+        const angleOffset = spread !== 0 ? spread * (i / (count - 1) - 0.5) * (Math.PI / 180) : 0;
         const angle = baseAngle + angleOffset;
         createBullet(ctx, angle);
     }
@@ -229,7 +230,7 @@ function fireRadial(ctx: FireContext, count: number): void {
  */
 function fireSpiral(ctx: FireContext, count: number, spread: number, baseAngle: number): void {
     for (let i = 0; i < count; i++) {
-        const angle = baseAngle + (spread * i * Math.PI / 180);
+        const angle = baseAngle + (spread * i * Math.PI) / 180;
         createBullet(ctx, angle);
     }
 }
@@ -239,8 +240,40 @@ function fireSpiral(ctx: FireContext, count: number, spread: number, baseAngle: 
  */
 function fireRandom(ctx: FireContext, count: number, spread: number, baseAngle: number): void {
     for (let i = 0; i < count; i++) {
-        const randomOffset = (Math.random() - 0.5) * 2 * spread * Math.PI / 180;
+        const randomOffset = ((Math.random() - 0.5) * 2 * spread * Math.PI) / 180;
         const angle = baseAngle + randomOffset;
+        createBullet(ctx, angle);
+    }
+}
+
+/**
+ * 旋转全向发射
+ * 发射方向随时间持续旋转，每次发射累积角度增量
+ *
+ * @param ctx 发射上下文
+ * @param weapon 武器组件（持有 spinAngle 状态）
+ * @param weaponSpec 武器配置（包含 spinSpeed）
+ * @param deltaTimeMs 增量时间（毫秒）
+ */
+function fireSpinningRadial(ctx: FireContext, weapon: Weapon, weaponSpec: WeaponSpec, deltaTimeMs: number): void {
+    // 获取旋转速度，默认 180°/秒
+    const spinSpeedDegPerSec = weaponSpec.spinSpeed ?? 180;
+
+    // 计算本次角度增量（度 → 弧度）
+    const spinDelta = (spinSpeedDegPerSec * (deltaTimeMs / 1000) * Math.PI) / 180;
+
+    // 累积旋转角度
+    weapon.spinAngle += spinDelta;
+
+    // 防止精度累积溢出，保持在 [0, 2π) 范围
+    if (weapon.spinAngle >= Math.PI * 2) {
+        weapon.spinAngle -= Math.PI * 2;
+    }
+
+    // 发射子弹
+    const count = weaponSpec.bulletCount ?? 8;
+    for (let i = 0; i < count; i++) {
+        const angle = weapon.spinAngle + (Math.PI * 2 * i) / count;
         createBullet(ctx, angle);
     }
 }
@@ -254,8 +287,18 @@ function fireRandom(ctx: FireContext, count: number, spread: number, baseAngle: 
  * - 最终反弹 = 弹药基础反弹 + 武器反弹加成
  */
 function createBullet(ctx: FireContext, angle: number): void {
-    const { world, transform, weapon, fireOffset, weaponSpec,
-        ammoSpec, spriteSpec, upgradeConfig, sizeMultiplier, ownerId } = ctx;
+    const {
+        world,
+        transform,
+        weapon,
+        fireOffset,
+        weaponSpec,
+        ammoSpec,
+        spriteSpec,
+        upgradeConfig,
+        sizeMultiplier,
+        ownerId,
+    } = ctx;
 
     // 计算最终属性
     const finalDamage = ammoSpec.damage * upgradeConfig.damageMultiplier;
@@ -278,10 +321,10 @@ function createBullet(ctx: FireContext, angle: number): void {
     //   - 向下发射 (angle = π/2):  rotate = (π/2 + π/2) * 180/π = 180°
     //   - 向右发射 (angle = 0):     rotate = (0 + π/2) * 180/π = 90°
     //   - 向左发射 (angle = π):     rotate = (π + π/2) * 180/π = 270°
-    const spriteRotate = (angle + Math.PI / 2) * 180 / Math.PI;
+    const spriteRotate = ((angle + Math.PI / 2) * 180) / Math.PI;
 
     // 计算自转角速度（度/秒 → 弧度/秒）
-    const spinVrot = ammoSpec.spinSpeed ? ammoSpec.spinSpeed * Math.PI / 180 : 0;
+    const spinVrot = ammoSpec.spinSpeed ? (ammoSpec.spinSpeed * Math.PI) / 180 : 0;
 
     const bulletBlueprint: Blueprint = {
         Transform: { x: 0, y: 0, rot: 0 }, // 子弹位置由 spawnBullet 参数设置，rot 不参与渲染
@@ -300,7 +343,7 @@ function createBullet(ctx: FireContext, angle: number): void {
             bouncesLeft: finalBounces,
         },
         HitBox: {
-            shape: 'circle',
+            shape: "circle",
             radius: ammoSpec.radius * sizeMultiplier,
             layer: ctx.isPlayer ? CollisionLayer.PlayerBullet : CollisionLayer.EnemyBullet,
         },
@@ -341,7 +384,7 @@ function createBullet(ctx: FireContext, angle: number): void {
         bulletBlueprint.Bounce = {
             bouncesLeft: finalBounces,
             bounds: {
-                bounceX: true,   // 左右边界反弹
+                bounceX: true, // 左右边界反弹
                 bounceTop: true, // 顶部边界反弹
                 bounceBottom: false, // 底部不反弹（让子弹飞出屏幕）
             },

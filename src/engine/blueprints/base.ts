@@ -80,6 +80,8 @@ export interface WeaponSpec {
     pierceBonus?: number;
     /** 反弹次数加成（在弹药基础值上增加），仅玩家武器使用 */
     bouncesBonus?: number;
+    /** 旋转速度（度/秒），仅 SPINNING_RADIAL 模式使用 */
+    spinSpeed?: number;
 }
 
 // ============== 导弹索敌属性 =================
