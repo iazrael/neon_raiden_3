@@ -32,7 +32,9 @@ import {
     VisualCircle,
     BulletTimeLine,
     Meteor,
+    HitBox,
 } from "../components";
+import { CollisionLayer } from "../types/collision";
 import { DebugConfig } from "../config/DebugConfig";
 
 /**
@@ -379,6 +381,112 @@ function drawTimeSlowEffect(ctx: CanvasRenderingContext2D, lines: VisualLine[], 
 }
 
 /**
+ * HitBox 调试渲染颜色映射
+ * 按 CollisionLayer 区分颜色
+ */
+const HITBOX_COLORS: Partial<Record<CollisionLayer, string>> = {
+    [CollisionLayer.Player]: '#00ff00',        // 绿色 - 玩家
+    [CollisionLayer.Enemy]: '#ff4444',         // 红色 - 敌人
+    [CollisionLayer.PlayerBullet]: '#00ffff',    // 青色 - 玩家子弹
+    [CollisionLayer.EnemyBullet]: '#ff6b6b',    // 浅红 - 敌人子弹
+    [CollisionLayer.Pickup]: '#ffff00',         // 黄色 - 道具
+    [CollisionLayer.None]: '#888888',          // 灰色 - 默认
+};
+
+/**
+ * 绘制圆形 HitBox
+ * @param ctx Canvas 上下文
+ * @param x 中心 X 坐标
+ * @param y 中心 Y 坐标
+ * @param radius 半径
+ */
+function drawCircleHitbox(ctx: CanvasRenderingContext2D, x: number, y: number, radius: number): void {
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.stroke();
+}
+
+/**
+ * 绘制矩形 HitBox
+ * @param ctx Canvas 上下文
+ * @param x 中心 X 坐标
+ * @param y 中心 Y 坐标
+ * @param halfWidth 半宽
+ * @param halfHeight 半高
+ */
+function drawRectHitbox(ctx: CanvasRenderingContext2D, x: number, y: number, halfWidth: number, halfHeight: number): void {
+    ctx.beginPath();
+    ctx.rect(x - halfWidth, y - halfHeight, halfWidth * 2, halfHeight * 2);
+    ctx.stroke();
+}
+
+/**
+ * 绘制胶囊形 HitBox
+ * @param ctx Canvas 上下文
+ * @param x 中心 X 坐标
+ * @param y 中心 Y 坐标
+ * @param capRadius 胶囊半径
+ * @param capHeight 胶囊高度
+ */
+function drawCapsuleHitbox(ctx: CanvasRenderingContext2D, x: number, y: number, capRadius: number, capHeight: number): void {
+    const halfHeight = capHeight / 2;
+    ctx.beginPath();
+    // 上半圆
+    ctx.arc(x, y - halfHeight, capRadius, Math.PI, 0);
+    // 下半圆
+    ctx.arc(x, y + halfHeight, capRadius, 0, Math.PI);
+    ctx.closePath();
+    ctx.stroke();
+}
+
+/**
+ * 绘制调试用 HitBox 虚线框
+ *
+ * 遍历所有带 Transform + HitBox 的实体，按 CollisionLayer 颜色绘制虚线边框
+ *
+ * @param ctx Canvas 2D 渲染上下文
+ * @param world World 对象
+ * @param camX 相机 X 偏移
+ * @param camY 相机 Y 偏移
+ */
+function drawDebugHitBoxes(
+    ctx: CanvasRenderingContext2D,
+    world: World,
+    camX: number,
+    camY: number
+): void {
+    ctx.save();
+
+    // 遍历所有带 Transform + HitBox 的实体
+    for (const [id, [transform, hitbox]] of view(world, [Transform, HitBox])) {
+        const x = transform.x - camX;
+        const y = transform.y - camY;
+
+        // 获取颜色
+        const color = HITBOX_COLORS[hitbox.layer] || '#ffffff';
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 4]);  // 虚线效果
+
+        // 根据形状绘制
+        switch (hitbox.shape) {
+            case 'circle':
+                drawCircleHitbox(ctx, x, y, hitbox.radius!);
+                break;
+            case 'rect':
+                drawRectHitbox(ctx, x, y, hitbox.halfWidth!, hitbox.halfHeight!);
+                break;
+            case 'capsule':
+                drawCapsuleHitbox(ctx, x, y, hitbox.capRadius!, hitbox.capHeight!);
+                break;
+        }
+    }
+
+    ctx.restore();
+}
+
+/**
  * 渲染系统主函数
  *
  * 使用 world.renderContext 获取 Canvas 上下文
@@ -460,5 +568,10 @@ export function RenderSystem(world: World, dt: number): void {
     for (const [id, [line]] of view(world, [BulletTimeLine])) {
         // 这个不需要跟随相机移动
         drawTimeSlowEffect(context, line.lines, width, height);
+    }
+
+    // Debug: 绘制 HitBox 虚线框（在所有内容之上）
+    if (DebugConfig.render.showHitBoxes) {
+        drawDebugHitBoxes(context, world, camX, camY);
     }
 }

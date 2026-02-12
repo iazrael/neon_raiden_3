@@ -8,6 +8,8 @@ export const DebugConfig = {
     render: {
         enabled: false,
         logEntities: false,
+        /** 显示 HitBox 调试虚线框 */
+        showHitBoxes: false,
     },
     /** 物理系统调试 */
     physics: {
