@@ -52,7 +52,7 @@ export function DamageResolutionSystem(world: World, dt: number): void {
 function processKillCount(world: World): void {
     const state = world.levelState;
     if (!state) {
-        console.error('[DamageResolutionSystem] levelState未初始化');
+        // console.error('[DamageResolutionSystem] levelState未初始化');
         return;
     }
 

@@ -4,7 +4,7 @@ export default {
   roots: ['<rootDir>/tests'],
   moduleDirectories: ['node_modules', 'src', 'game'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/$1',
+    '^@/(.*)$': '<rootDir>/src/$1',
     '^@/game/(.*)$': '<rootDir>/game/$1',
     '^@/types/(.*)$': '<rootDir>/types/$1'
   },
