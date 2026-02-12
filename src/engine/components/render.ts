@@ -228,20 +228,6 @@ export class Sprite extends Component {
     }
 
     /**
-     * 获取原始宽度（像素）
-     */
-    get width(): number {
-        return this.config.width;
-    }
-
-    /**
-     * 获取原始高度（像素）
-     */
-    get height(): number {
-        return this.config.height;
-    }
-
-    /**
      * 获取缓存中的图片
      */
     get image(): HTMLImageElement | undefined {

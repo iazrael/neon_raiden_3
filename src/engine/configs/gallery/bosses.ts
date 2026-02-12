@@ -37,7 +37,7 @@ export const GALLERY_BOSSES: Record<BossId, GalleryEntry> = {
     color: '#44ff88',
   },
   [BossId.ANNIHILATOR]: {
-    id: BossId.ANNIHILATOR,
+    id: BossId.ANNIHILATOR, 
     name: 'Annihilator',
     chineseName: '幽灵歼灭者',
     description: '装备光学迷彩的幽灵战斗机,空间跃迁轨迹如鬼魅般难以捉摸,全方位弹雨与锁定追踪的双重威胁令人防不胜防。',

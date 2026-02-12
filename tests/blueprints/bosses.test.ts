@@ -139,9 +139,9 @@ describe('Boss蓝图测试', () => {
             });
         });
 
-        it('所有Boss的maxAngular应该是2', () => {
+        it('所有Boss的maxAngular应该是5', () => {
             Object.values(BOSSES_TABLE).forEach(blueprint => {
-                expect(blueprint.SpeedStat!.maxAngular).toBe(2);
+                expect(blueprint.SpeedStat!.maxAngular).toBe(5);
             });
         });
     });
