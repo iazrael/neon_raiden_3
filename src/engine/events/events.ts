@@ -186,3 +186,13 @@ export interface BossExitStartEvent extends BaseEvent<'BossExitStart'> {
 export interface StageOneIntroEvent extends BaseEvent<'StageOneIntro'> {
     duration: number;
 }
+
+// ㉚ 范围爆炸事件（用于 PLASMA 等武器的溅射伤害）
+export interface ExplosionEvent extends BaseEvent<'Explosion'> {
+    pos: { x: number; y: number }; // 爆炸中心位置
+    radius: number;                // 爆炸半径
+    damage: number;                // 最大伤害（用于距离衰减计算）
+    falloff: number;               // 衰减系数（0=无衰减，1=线性，>1=更陡峭）
+    owner: EntityId;               // 攻击者 ID
+    excludeId?: EntityId;          // 排除的实体 ID（主目标，避免重复伤害）
+}

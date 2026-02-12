@@ -37,6 +37,7 @@ import {
     ShieldBrokenEvent,
     TimeSlowEvent,
     GameEvent,
+    ExplosionEvent,
 } from "../events";
 import { triggerShake } from "./CameraSystem";
 import { getComponents, view } from "../world";
@@ -107,6 +108,9 @@ function processEvents(world: World, events: GameEvent[]): void {
                 break;
             case "TimeSlow":
                 handleTimeSlowEvent(world, event);
+                break;
+            case "Explosion":
+                handleExplosionEvent(world, event);
                 break;
         }
     }
@@ -279,6 +283,19 @@ function handleTimeSlowEvent(world: World, event: TimeSlowEvent): void {
             removeEntity(world, id);
         }
     }
+}
+
+/**
+ * 处理范围爆炸事件
+ * 生成冲击波视觉特效
+ */
+function handleExplosionEvent(world: World, event: ExplosionEvent): void {
+    // 生成冲击波特效（PLASMA 主题色 #ed64a6）
+    // 视觉半径 = 伤害半径，确保视觉与伤害一致
+    spawnShockwave(world, event.pos.x, event.pos.y, "#ed64a6", event.radius, 4);
+
+    // 生成相机震动（小幅度）
+    triggerShake(world, 3, 150);
 }
 
 //********************** 特效更新函数 ********************** */

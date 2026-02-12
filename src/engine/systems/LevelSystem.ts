@@ -91,7 +91,7 @@ function processBossDefeat(world: World, event: BossDefeatEvent): void {
     // 防护：检查是否已有退场组件
     const hasExitComponent = [...view(world, [BossExitComponent])].length > 0;
     if (hasExitComponent) {
-        console.warn('[LevelSystem] Boss退场已进行中，忽略重复触发');
+        console.log('[LevelSystem] Boss退场已进行中，忽略重复触发');
         return;
     }
 

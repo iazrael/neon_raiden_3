@@ -29,12 +29,14 @@ import {
     InvulnerableState,
     DestroyTag,
     Chain,
+    Explosion,
 } from "../components";
 import { CollisionLayer, shouldCheckCollision } from "../types/collision";
 import { pushEvent, view, World } from "../world";
 import { HitEvent, PickupEvent } from "../events";
 import { COLLISION_DAMAGE, ULTIMATE_DAMAGE } from "../configs";
 import { triggerChainLightning } from "./ChainSystem";
+import { triggerExplosionDamage } from "./ExplosionSystem";
 
 // ==================== 空间哈希网格 ====================
 
@@ -584,6 +586,20 @@ function handleBulletHit(
                 chainComp.count,
                 chainComp.range,
                 damage,
+                victimId,
+            );
+        }
+
+        // === 处理范围爆炸 ===
+        const explosionComp = bulletComps.find(Explosion.check);
+        if (explosionComp && bulletTransform) {
+            triggerExplosionDamage(
+                world,
+                bulletTransform.x,
+                bulletTransform.y,
+                damage,
+                explosionComp,
+                attackerId,
                 victimId,
             );
         }

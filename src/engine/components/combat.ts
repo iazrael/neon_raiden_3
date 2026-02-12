@@ -465,3 +465,38 @@ export class Chain extends Component {
 
 }
 
+// ==================== 爆炸组件 ====================
+
+/**
+ * Explosion 组件 - 范围爆炸功能
+ * 用于命中时对周围敌人造成距离衰减的范围伤害
+ */
+export class Explosion extends Component {
+    static check = (comp: Component): comp is Explosion => comp instanceof Explosion;
+
+    /**
+     * 构造函数
+     * @param cfg 爆炸配置
+     */
+    constructor(cfg: {
+        /** 基础爆炸半径（像素） */
+        baseRadius: number;
+        /** 衰减系数（0=无衰减，1=线性，>1=更陡峭） */
+        falloff?: number;
+        /** 半径倍率（来自升级配置） */
+        radiusMultiplier?: number;
+    }) {
+        super();
+        this.baseRadius = cfg.baseRadius;
+        this.falloff = cfg.falloff ?? 1;
+        this.radiusMultiplier = cfg.radiusMultiplier ?? 1;
+    }
+
+    /** 基础爆炸半径（像素） */
+    baseRadius: number;
+    /** 衰减系数（0=无衰减，1=线性，>1=更陡峭） */
+    falloff: number = 1;
+    /** 半径倍率（来自升级配置） */
+    radiusMultiplier: number = 1;
+}
+

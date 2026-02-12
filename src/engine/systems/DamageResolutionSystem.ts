@@ -9,7 +9,7 @@
  * - 处理护盾 (Shield)
  *
  * 系统类型：结算层
- * 执行顺序：P5 - 在 CollisionSystem 之后
+ * 执行顺序：P6 - 在 ExplosionSystem 之后
  */
 
 import { EntityId } from "../types";

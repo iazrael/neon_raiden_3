@@ -279,14 +279,18 @@ function createBullet(ctx: FireContext, angle: number): void {
     //   - 向右发射 (angle = 0):     rotate = (0 + π/2) * 180/π = 90°
     //   - 向左发射 (angle = π):     rotate = (π + π/2) * 180/π = 270°
     const spriteRotate = (angle + Math.PI / 2) * 180 / Math.PI;
+
+    // 计算自转角速度（度/秒 → 弧度/秒）
+    const spinVrot = ammoSpec.spinSpeed ? ammoSpec.spinSpeed * Math.PI / 180 : 0;
+
     const bulletBlueprint: Blueprint = {
         Transform: { x: 0, y: 0, rot: 0 }, // 子弹位置由 spawnBullet 参数设置，rot 不参与渲染
-        Velocity: { vx, vy },
+        Velocity: { vx, vy, vrot: spinVrot }, // vrot 用于自转效果
         Sprite: {
             spriteKey: spriteSpec.spriteKey,
             color: spriteSpec.color,
             scale: sizeMultiplier,
-            rotate: spriteRotate, // 精灵图旋转角度（度），控制子弹朝向
+            rotate: spriteRotate, // 精灵图旋转角度（度），控制子弹初始朝向
         },
         Bullet: {
             owner: ownerId,
@@ -320,6 +324,15 @@ function createBullet(ctx: FireContext, angle: number): void {
             count: upgradeConfig.chain.count,
             range: upgradeConfig.chain.range,
             chainedIds: new Set(),
+        };
+    }
+
+    // 如果弹药有爆炸配置，添加 Explosion 组件
+    if (ammoSpec.explosion) {
+        bulletBlueprint.Explosion = {
+            baseRadius: ammoSpec.explosion,
+            falloff: ammoSpec.falloff ?? 1,
+            radiusMultiplier: upgradeConfig.explosion?.radiusMultiplier ?? 1,
         };
     }
 

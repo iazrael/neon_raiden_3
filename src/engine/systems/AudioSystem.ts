@@ -28,6 +28,7 @@ import {
 } from "../events";
 import { audioPlayer } from "../audio";
 import { ExplosionSize } from "../audio/AudioEngine";
+import { WeaponId } from "../types";
 
 /**
  * 音频系统主函数
@@ -132,8 +133,7 @@ function handleWeaponFiredEvent(world: World, event: WeaponFiredEvent): void {
     // 根据武器 ID 和发射者确定音效
     const isPlayer = event.owner === world.playerId;
     if (isPlayer) {
-        // FIXME: 太吵了, 先注释掉测试其他音效
-        // audioPlayer.playShoot(event.weaponId as WeaponId)
+        audioPlayer.playShoot(event.weaponId as WeaponId)
     }
 }
 

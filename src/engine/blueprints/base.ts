@@ -46,6 +46,16 @@ export interface AmmoSpec {
     bounces: number;
     /** 命中时触发的效果 ID 列表 */
     onHit: string[];
+
+    // === 旋转效果 ===
+    /** 自转速度（角度/秒），0 或 undefined 表示不自转 */
+    spinSpeed?: number;
+
+    // === 范围爆炸 ===
+    /** 基础爆炸半径（像素），undefined 表示无爆炸能力 */
+    explosion?: number;
+    /** 伤害衰减系数（0=无衰减，1=线性，>1=更陡峭，默认=1） */
+    falloff?: number;
 }
 
 // ============== 武器配置（统一 - 玩家 + 敌人）=================
@@ -138,6 +148,11 @@ export interface ChainUpgrade {
     range: number;
 }
 
+export interface ExplosionUpgrade {
+    /** 半径倍率（最终半径 = 基础半径 × 此倍率） */
+    radiusMultiplier: number;
+}
+
 // ============== 激光光束属性 =================
 /** 激光光束升级属性 */
 export interface LaserUpgrade {
@@ -172,6 +187,8 @@ export interface WeaponLevelSpec {
     chain?: ChainUpgrade;
     /** 激光光束配置 */
     laser?: LaserUpgrade;
+    /** 爆炸配置（仅调整半径倍率） */
+    explosion?: ExplosionUpgrade;
 }
 
 export interface WeaponUpgradeSpec {

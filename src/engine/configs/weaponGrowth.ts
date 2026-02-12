@@ -82,15 +82,13 @@ export const WEAPON_UPGRADE_TABLE: Record<WeaponId, WeaponUpgradeSpec> = {
     },
 
     // ==================== PLASMA ====================
+    // 大范围低伤害武器，清杂兵神器
     [WeaponId.PLASMA]: {
         id: WeaponId.PLASMA,
         levels: [
-            { level: 1, damageMultiplier: 1.0, fireRateMultiplier: 1.0, sizeMultiplier: 1.0 },
-            { level: 2, damageMultiplier: 1.25, fireRateMultiplier: 1.1, sizeMultiplier: 1.3 },
-            { level: 3, damageMultiplier: 1.5, fireRateMultiplier: 1.2, sizeMultiplier: 1.6 },
-            { level: 4, damageMultiplier: 1.75, fireRateMultiplier: 1.3, sizeMultiplier: 1.9 },
-            { level: 5, damageMultiplier: 2.0, fireRateMultiplier: 1.4, sizeMultiplier: 2.2 },
-            { level: 6, damageMultiplier: 2.5, fireRateMultiplier: 1.5, sizeMultiplier: 2.5 },
+            { level: 1, damageMultiplier: 1.0, fireRateMultiplier: 1.0, sizeMultiplier: 1.0, explosion: { radiusMultiplier: 1.0 } },
+            { level: 2, damageMultiplier: 1.3, fireRateMultiplier: 1.15, sizeMultiplier: 1.2, explosion: { radiusMultiplier: 1.25 } },
+            { level: 3, damageMultiplier: 1.6, fireRateMultiplier: 1.3, sizeMultiplier: 1.4, explosion: { radiusMultiplier: 1.5 } },
         ],
     },
 

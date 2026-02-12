@@ -36,6 +36,7 @@ import { SpawnSystem } from './systems/SpawnSystem';
 import { WeaponSystem } from './systems/WeaponSystem';
 import { HomingSystem } from './systems/HomingSystem';
 import { ChainSystem } from './systems/ChainSystem';
+import { ExplosionSystem } from './systems/ExplosionSystem';
 import { BounceSystem } from './systems/BounceSystem';
 // ==============
 
@@ -219,8 +220,9 @@ export class Engine {
 
         // P5. 结算层 (事件处理)
         recordSys('PickupSystem', 'P5', () => PickupSystem(world, dt));
-        recordSys('DamageResolutionSystem', 'P5', () => DamageResolutionSystem(world, dt));
+        recordSys('ExplosionSystem', 'P5', () => ExplosionSystem(world, dt));
         recordSys('ChainSystem', 'P5', () => ChainSystem(world, dt));
+        recordSys('DamageResolutionSystem', 'P5', () => DamageResolutionSystem(world, dt));
         recordSys('LootSystem', 'P5', () => LootSystem(world, dt));
         recordSys('ComboSystem', 'P5', () => ComboSystem(world, dt));
         recordSys('LevelSystem', 'P5', () => LevelSystem(world, dt));

@@ -31,6 +31,8 @@ export { BombSystem } from "./BombSystem";
 export { HomingSystem } from "./HomingSystem";
 
 // P5: 结算层
+export { ExplosionSystem, triggerExplosionDamage } from "./ExplosionSystem";
+export { ChainSystem, triggerChainLightning } from "./ChainSystem";
 export { DamageResolutionSystem } from "./DamageResolutionSystem";
 export { PickupSystem } from "./PickupSystem";
 export { LootSystem } from "./LootSystem";
@@ -40,7 +42,6 @@ export {
     getComboDamageMultiplier,
     resetWorldCombo,
 } from "./ComboSystem";
-export { ChainSystem, triggerChainLightning } from "./ChainSystem";
 
 // P6: 刷怪层
 export {

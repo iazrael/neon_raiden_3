@@ -15,7 +15,7 @@ import { AmmoType } from '../types';
 // | LASER_BEAM      | 6    | 4    | 1200  | 99   | 0    | 无           | 高速光束，高穿透             |
 // | MISSILE_HOMING  | 35   | 8    | 400   | 0    | 0    | 无           | 追踪导弹                     |
 // | WAVE_PULSE      | 18   | 30   | 600   | 0    | 0    | 无           | 宽幅能量波，范围攻击         |
-// | PLASMA_ORB      | 45   | 16   | 300   | 0    | 0    | 爆炸         | 高威力等离子球               |
+// | PLASMA_ORB      | 20   | 16   | 350   | 0    | 0    | 大范围爆炸   | 清杂兵神器，80+像素爆炸范围  |
 // | TESLA_CHAIN     | 15   | 8    | 1200  | 5    | 0    | 无           | 连锁闪电，可跳跃5个目标      |
 // | MAGMA_POOL      | 15   | 12   | 500   | 0    | 0    | 持续伤害     | 熔岩弹，造成持续伤害         |
 // | SHURIKEN_BOUNCE | 15   | 12   | 700   | 0    | 3    | 无           | 反弹飞镖，可反弹3次          |
@@ -90,18 +90,24 @@ export const AMMO_TABLE: Record<AmmoType, AmmoSpec> = {
     [AmmoType.PLASMA_ORB]: {
         /** 弹种唯一键（与 WeaponSpec.ammoType 对应） */
         id: AmmoType.PLASMA_ORB,
-        /** 每发子弹的基础伤害值 */
-        damage: 45,
+        /** 每发子弹的基础伤害值（较低，依赖溅射清兵） */
+        damage: 20,
         /** 碰撞盒半径（像素） */
         radius: 16,
         /** 子弹飞行速度（像素/秒） */
-        speed: 300,
+        speed: 350,
         /** 可穿透敌人数（0 = 不穿透） */
         pierce: 0,
         /** 可反弹次数（0 = 不反弹） */
         bounces: 0,
         /** 命中时触发的效果 ID 列表（字符串引用） */
         onHit: ['explosion'],
+        /** 自转速度（度/秒），0.33 圈/秒 */
+        spinSpeed: 240,
+        /** 基础爆炸半径（像素）- 大范围清兵 */
+        explosion: 80,
+        /** 伤害衰减系数（1=线性衰减） */
+        falloff: 1,
     },
     [AmmoType.TESLA_CHAIN]: {
         /** 弹种唯一键（与 WeaponSpec.ammoType 对应） */

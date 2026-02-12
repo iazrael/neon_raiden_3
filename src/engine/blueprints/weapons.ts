@@ -84,12 +84,12 @@ export const WEAPON_TABLE: Record<WeaponId, WeaponSpec> = {
 
     /**
      * 等离子炮武器蓝图
-     * 高伤害武器，具有强大的破坏力
+     * 高伤害武器，命中时产生范围爆炸，子弹飞行时自转
      */
     [WeaponId.PLASMA]: {
         id: WeaponId.PLASMA,
         ammoType: AmmoType.PLASMA_ORB,
-        cooldown: 600,
+        cooldown: 900,
         curCD: 0,
         maxLevel: getWeaponMaxLevel(WeaponId.PLASMA),
         pattern: WeaponPattern.AIMED,

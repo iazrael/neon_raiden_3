@@ -179,7 +179,8 @@ function drawSprite(ctx: CanvasRenderingContext2D, item: RenderItem, camX: numbe
     ctx.translate(screenX, screenY);
 
     // 应用旋转: rotate 是角度，转换为弧度, 公式： degree * Math.PI / 180
-    const rotation = sprite.rotate * Math.PI / 180;
+    // 最终旋转 = Sprite.rotate（基础朝向）+ Transform.rot（自转，弧度→度）
+    const rotation = sprite.rotate * Math.PI / 180 + transform.rot;
     // ctx.rotate 的参数是弧度
     ctx.rotate(rotation);
 
@@ -415,7 +416,7 @@ export function RenderSystem(world: World, dt: number): void {
     const camY = camera.shakeY;
 
     // 收集精灵做排序
-    const sprites = []
+    const sprites: RenderItem[] = []
     for (const [id, [transform, sprite], comps] of view(world, [Transform, Sprite])) {
         sprites.push({
             layer: determineLayer(comps),
