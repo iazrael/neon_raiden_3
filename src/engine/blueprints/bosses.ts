@@ -45,7 +45,7 @@ interface BossHitBoxConfig {
  * 尺寸按精灵尺寸的 60% 计算（圆形直径或矩形边长）
  */
 const BOSS_HITBOX_CONFIG: Record<BossId, BossHitBoxConfig> = {
-    [BossId.GUARDIAN]: { shape: 'circle', radius: 60 },
+    [BossId.GUARDIAN]: { shape: 'circle', radius: 65 },
     [BossId.INTERCEPTOR]: { shape: 'rect', halfWidth: 70, halfHeight: 55 },
     [BossId.DESTROYER]: { shape: 'rect', halfWidth: 40, halfHeight: 80 },
     [BossId.DOMINATOR]: { shape: 'circle', radius: 50 },
