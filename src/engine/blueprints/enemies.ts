@@ -95,7 +95,7 @@ export const BLUEPRINT_ENEMY_TANK: Blueprint = {
     SpeedStat: { maxLinear: 100 },
 
     /** 碰撞盒组件 - 设置敌人的碰撞检测区域 */
-    HitBox: { shape: 'circle', radius: 30, layer: CollisionLayer.Enemy },
+    HitBox: { shape: 'rect', halfWidth: 40, halfHeight: 32, layer: CollisionLayer.Enemy },
     // 挂载掉落表组件，直接引用配置数组
     DropTable: { table: DROPTABLE_COMMON },
 
@@ -125,7 +125,7 @@ export const BLUEPRINT_ENEMY_KAMIKAZE: Blueprint = {
     SpeedStat: { maxLinear: 400 },
 
     /** 碰撞盒组件 - 设置敌人的碰撞检测区域 */
-    HitBox: { shape: 'circle', radius: 15, layer: CollisionLayer.Enemy },
+    HitBox: { shape: 'circle', radius: 16, layer: CollisionLayer.Enemy },
     // 挂载掉落表组件，直接引用配置数组
     DropTable: { table: DROPTABLE_COMMON },
 
@@ -155,7 +155,7 @@ export const BLUEPRINT_ENEMY_ELITE_GUNBOAT: Blueprint = {
     SpeedStat: { maxLinear: 80 },
 
     /** 碰撞盒组件 - 设置敌人的碰撞检测区域 */
-    HitBox: { shape: 'circle', radius: 35, layer: CollisionLayer.Enemy },
+    HitBox: { shape: 'rect', halfWidth: 48, halfHeight: 48, layer: CollisionLayer.Enemy },
     // 精英敌人使用精英掉落表
     DropTable: { table: DROPTABLE_ELITE },
 
@@ -215,7 +215,7 @@ export const BLUEPRINT_ENEMY_MINE_LAYER: Blueprint = {
     SpeedStat: { maxLinear: 100 },
 
     /** 碰撞盒组件 - 设置敌人的碰撞检测区域 */
-    HitBox: { shape: 'circle', radius: 30, layer: CollisionLayer.Enemy },
+    HitBox: { shape: 'circle', radius: 32, layer: CollisionLayer.Enemy },
     // 挂载掉落表组件，直接引用配置数组
     DropTable: { table: DROPTABLE_COMMON },
 
@@ -275,7 +275,7 @@ export const BLUEPRINT_ENEMY_FORTRESS: Blueprint = {
     SpeedStat: { maxLinear: 50 },
 
     /** 碰撞盒组件 - 设置敌人的碰撞检测区域 */
-    HitBox: { shape: 'circle', radius: 35, layer: CollisionLayer.Enemy },
+    HitBox: { shape: 'rect', halfWidth: 32, halfHeight: 32, layer: CollisionLayer.Enemy },
     // 堡垒敌人（高血量）使用精英掉落表
     DropTable: { table: DROPTABLE_ELITE },
 
@@ -335,7 +335,7 @@ export const BLUEPRINT_ENEMY_BARRAGE: Blueprint = {
     SpeedStat: { maxLinear: 100 },
 
     /** 碰撞盒组件 - 设置敌人的碰撞检测区域 */
-    HitBox: { shape: 'circle', radius: 25, layer: CollisionLayer.Enemy },
+    HitBox: { shape: 'rect', halfWidth: 35, halfHeight: 30, layer: CollisionLayer.Enemy },
     // 挂载掉落表组件，直接引用配置数组
     DropTable: { table: DROPTABLE_COMMON },
 
