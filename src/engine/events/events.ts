@@ -1,4 +1,4 @@
-import { BossId, EntityId, EnemyId } from "../types";
+import { BossId, EntityId, EnemyId, AmmoType } from "../types";
 import { BaseEvent } from "./base";
 
 
@@ -187,7 +187,31 @@ export interface StageOneIntroEvent extends BaseEvent<'StageOneIntro'> {
     duration: number;
 }
 
-// ㉚ 范围爆炸事件（用于 PLASMA 等武器的溅射伤害）
+// ㉚ 连锁待处理事件（由 CollisionSystem 生成，携带子弹状态）
+export interface ChainPendingEvent extends BaseEvent<'ChainPending'> {
+    /** 子弹实体 ID（用于复制属性） */
+    bulletId: EntityId;
+    /** 子弹位置（命中时位置） */
+    bulletPos: { x: number; y: number };
+    /** 被击中的目标位置（用于搜索下一跳的起点） */
+    victimPos: { x: number; y: number };
+    /** 子弹伤害（未衰减） */
+    damage: number;
+    /** 子弹剩余连锁次数（生成新子弹前需要 -1） */
+    count: number;
+    /** 子弹连锁范围 */
+    range: number;
+    /** 伤害衰减系数 */
+    falloff: number;
+    /** 已连锁的实体 ID 列表（需要包含当前受害者） */
+    chainedIds: Set<EntityId>;
+    /** 子弹拥有者 */
+    owner: EntityId;
+    /** 子弹类型 */
+    ammoType: AmmoType;
+}
+
+// ㉛ 范围爆炸事件（用于 PLASMA 等武器的溅射伤害）
 export interface ExplosionEvent extends BaseEvent<'Explosion'> {
     pos: { x: number; y: number }; // 爆炸中心位置
     radius: number;                // 爆炸半径
@@ -195,4 +219,12 @@ export interface ExplosionEvent extends BaseEvent<'Explosion'> {
     falloff: number;               // 衰减系数（0=无衰减，1=线性，>1=更陡峭）
     owner: EntityId;               // 攻击者 ID
     excludeId?: EntityId;          // 排除的实体 ID（主目标，避免重复伤害）
+}
+
+// ㉜ 连锁传导事件（供 EffectSystem 渲染电弧特效）
+export interface ChainingEvent extends BaseEvent<'Chaining'> {
+    /** 传导起点 */
+    from: { x: number; y: number };
+    /** 传导目标实体 ID */
+    to: EntityId;
 }

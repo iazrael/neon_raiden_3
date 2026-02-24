@@ -32,7 +32,7 @@ export { HomingSystem } from "./HomingSystem";
 
 // P5: 结算层
 export { ExplosionSystem, triggerExplosionDamage } from "./ExplosionSystem";
-export { ChainSystem, triggerChainLightning } from "./ChainSystem";
+export { ChainLightningSystem } from "./ChainLightningSystem";
 export { DamageResolutionSystem } from "./DamageResolutionSystem";
 export { PickupSystem } from "./PickupSystem";
 export { LootSystem } from "./LootSystem";

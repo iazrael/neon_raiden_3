@@ -123,7 +123,7 @@ export class Bullet extends Component {
         this.target = cfg.target;
     }
     public owner: EntityId;
-    public ammoType: string;
+    public ammoType: AmmoType;
     public damage?: number;
     public pierceLeft = 0;
     public bouncesLeft = 0;
@@ -453,11 +453,14 @@ export class Chain extends Component {
         range: number;
         /** 已连锁过的实体 ID 列表（防重复） */
         chainedIds?: Set<EntityId>;
+        /** 伤害衰减系数（从 AmmoSpec.falloff 读取） */
+        falloff?: number;
     }) {
         super();
         this.count = cfg.count;
         this.range = cfg.range;
         this.chainedIds = cfg.chainedIds ?? new Set();
+        this.falloff = cfg.falloff ?? 1;
     }
 
     /** 剩余连锁次数 */
@@ -466,7 +469,8 @@ export class Chain extends Component {
     range: number;
     /** 已连锁过的实体 ID 列表（防重复） */
     chainedIds: Set<EntityId>;
-
+    /** 伤害衰减系数 */
+    falloff: number = 1;
 }
 
 // ==================== 爆炸组件 ====================

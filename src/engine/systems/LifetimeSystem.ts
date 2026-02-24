@@ -22,10 +22,10 @@ import { addComponent, view } from '../world';
 export function LifetimeSystem(world: World, dt: number): void {
     for (const [id, [lifetime]] of view(world, [Lifetime])) {
         // 更新倒计时（timer 单位现在是毫秒，dt 也是毫秒，直接相减）
-        lifetime.timer -= dt;
+        lifetime.remaining -= dt;
 
         // 倒计时结束，标记为销毁
-        if (lifetime.timer <= 0) {
+        if (lifetime.remaining <= 0) {
             // 添加销毁标记
             addComponent(world, id, new DestroyTag({ reason: 'timeout' }));
         }

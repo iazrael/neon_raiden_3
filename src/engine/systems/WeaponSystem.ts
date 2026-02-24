@@ -286,7 +286,7 @@ function fireSpinningRadial(ctx: FireContext, weapon: Weapon, weaponSpec: Weapon
  * - 最终穿透 = 弹药基础穿透 + 武器穿透加成
  * - 最终反弹 = 弹药基础反弹 + 武器反弹加成
  */
-function createBullet(ctx: FireContext, angle: number): void {
+export function createBullet(ctx: FireContext, angle: number): void {
     const {
         world,
         transform,
@@ -348,7 +348,7 @@ function createBullet(ctx: FireContext, angle: number): void {
             layer: ctx.isPlayer ? CollisionLayer.PlayerBullet : CollisionLayer.EnemyBullet,
         },
         Lifetime: {
-            timer: 3000, // 3秒后销毁
+            remaining: 3000, // 3秒后销毁
         },
     };
 

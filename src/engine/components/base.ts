@@ -153,13 +153,13 @@ export class Lifetime extends Component {
      * @param cfg 生命周期配置
      */
     constructor(cfg: {
-        /** 倒计时时间, 单位毫秒 */
-        timer: number;
+        /** 倒计时剩余时间, 单位毫秒 */
+        remaining: number;
     }) {
         super();
-        this.timer = cfg.timer;
+        this.remaining = cfg.remaining;
     }
-    public timer: number;
+    public remaining: number;
     static check(c: any): c is Lifetime { return c instanceof Lifetime; }
 }
 

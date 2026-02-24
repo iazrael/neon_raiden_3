@@ -159,7 +159,7 @@ describe('EffectPlayer', () => {
 
             const id = generateId();
             addComponent(world, id, particle);
-            addComponent(world, id, new Lifetime({ timer: 1000 }));
+            addComponent(world, id, new Lifetime({ remaining: 1000 }));
 
             EffectSystem(world, 100); // 100ms
 
@@ -187,7 +187,7 @@ describe('EffectPlayer', () => {
 
             const id = generateId();
             addComponent(world, id, particle);
-            addComponent(world, id, new Lifetime({ timer: 1000 }));
+            addComponent(world, id, new Lifetime({ remaining: 1000 }));
 
             EffectSystem(world, 100); // 超过粒子生命周期
 
@@ -213,7 +213,7 @@ describe('EffectPlayer', () => {
 
             const id = generateId();
             addComponent(world, id, particle);
-            addComponent(world, id, new Lifetime({ timer: 1000 }));
+            addComponent(world, id, new Lifetime({ remaining: 1000 }));
 
             EffectSystem(world, 100); // 粒子过期
 

@@ -17,7 +17,8 @@ import {
   WeaponEffectEvent,
   ShieldBrokenEvent,
   TimeSlowEvent,
-  ChainLightningEvent,
+  ChainPendingEvent,
+  ChainingEvent,
   VictoryEvent,
   DefeatEvent,
   BossDefeatEvent,
@@ -60,7 +61,8 @@ export type GameEvent =
   | WeaponEffectEvent
   | ShieldBrokenEvent
   | TimeSlowEvent
-  | ChainLightningEvent
+  | ChainPendingEvent
+  | ChainingEvent
   | VictoryEvent
   | DefeatEvent
   | BossEntranceStartEvent

@@ -31,11 +31,9 @@ import { MovementSystem } from './systems/MovementSystem';
 import { PickupSystem } from './systems/PickupSystem';
 import { RenderSystem } from './systems/RenderSystem';
 import { SpawnSystem } from './systems/SpawnSystem';
-// import { SpecialWeaponSystem } from './systems/SpecialWeaponSystem';
-// import { WeaponSynergySystem } from './systems/WeaponSynergySystem';
 import { WeaponSystem } from './systems/WeaponSystem';
 import { HomingSystem } from './systems/HomingSystem';
-import { ChainSystem } from './systems/ChainSystem';
+import { ChainLightningSystem } from './systems/ChainLightningSystem';
 import { ExplosionSystem } from './systems/ExplosionSystem';
 import { BounceSystem } from './systems/BounceSystem';
 // ==============
@@ -221,7 +219,7 @@ export class Engine {
         // P5. 结算层 (事件处理)
         recordSys('PickupSystem', 'P5', () => PickupSystem(world, dt));
         recordSys('ExplosionSystem', 'P5', () => ExplosionSystem(world, dt));
-        recordSys('ChainSystem', 'P5', () => ChainSystem(world, dt));
+        recordSys('ChainLightningSystem', 'P5', () => ChainLightningSystem(world));
         recordSys('DamageResolutionSystem', 'P5', () => DamageResolutionSystem(world, dt));
         recordSys('LootSystem', 'P5', () => LootSystem(world, dt));
         recordSys('ComboSystem', 'P5', () => ComboSystem(world, dt));

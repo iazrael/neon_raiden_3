@@ -28,6 +28,11 @@ describe('SpawnSystem', () => {
             comboState: { count: 0, timer: 0, multiplier: 1 },
             removedEntities: [],
             bossState: { timer: 60000, spawned: false },
+            levelState: {
+                currentLevel: 1,
+                progress: 0,
+                elapsedTime: 0,
+            },
         } as unknown as World;
 
         // 重置 Boss 状态

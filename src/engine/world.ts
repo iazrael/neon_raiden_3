@@ -279,6 +279,30 @@ export function getComponents<T extends Ctor[]>(
 }
 
 /**
+ * 获取实体的单个组件（类型安全）
+ *
+ * @param w World 对象
+ * @param id 实体ID
+ * @param compCtor 组件构造函数
+ * @returns 组件实例或 undefined
+ *
+ * @example
+ * ```ts
+ * const health = getComponent(world, enemyId, Health);
+ * // health: Health | undefined
+ * ```
+ */
+export function getComponent<T extends Component>(
+    w: World,
+    id: EntityId,
+    compCtor: Ctor<T>
+): T | undefined {
+    const comps = w.entities.get(id);
+    if (!comps) return undefined;
+    return comps.find((c): c is T => c instanceof compCtor);
+}
+
+/**
  * 从 comps 一次取多个类型的组件（类型安全）
  *
  * @param comps 组件数组

@@ -447,7 +447,7 @@ function spawnParticles(world: World, x: number, y: number, config: ParticleEffe
             size: size,
         });
     }
-    spawnEntity(world, [particle, new Lifetime({ timer: config.life })]);
+    spawnEntity(world, [particle, new Lifetime({ remaining: config.life })]);
 }
 
 /**

@@ -33,9 +33,8 @@ import {
 } from "../components";
 import { CollisionLayer, shouldCheckCollision } from "../types/collision";
 import { pushEvent, view, World } from "../world";
-import { HitEvent, PickupEvent } from "../events";
+import { HitEvent, PickupEvent, ChainPendingEvent } from "../events";
 import { COLLISION_DAMAGE, ULTIMATE_DAMAGE } from "../configs";
-import { triggerChainLightning } from "./ChainSystem";
 import { triggerExplosionDamage } from "./ExplosionSystem";
 
 // ==================== 空间哈希网格 ====================
@@ -541,6 +540,8 @@ function handleBulletHit(
     let bulletComps: Component[];
     let bulletTransform: Transform | undefined;
 
+    let bulletId: EntityId;
+
     if (bullet1) {
         attackerId = bullet1.owner;
         victimId = id2;
@@ -548,6 +549,7 @@ function handleBulletHit(
         victimComps = comps2;
         bulletComps = comps1;
         bulletTransform = comps1.find(Transform.check);
+        bulletId = id1;
     } else {
         attackerId = bullet2!.owner;
         victimId = id1;
@@ -555,6 +557,7 @@ function handleBulletHit(
         victimComps = comps1;
         bulletComps = comps2;
         bulletTransform = comps2.find(Transform.check);
+        bulletId = id2;
     }
 
     // 从子弹组件获取伤害值
@@ -576,18 +579,26 @@ function handleBulletHit(
         };
         pushEvent(world, hitEvent);
 
-        // === 处理特斯拉连锁 ===
+        // === 处理特斯拉连锁：生成 ChainPendingEvent ===
         const chainComp = bulletComps.find(Chain.check);
-        if (chainComp && bulletTransform) {
-            triggerChainLightning(
-                world,
-                bulletTransform.x,
-                bulletTransform.y,
-                chainComp.count,
-                chainComp.range,
-                damage,
-                victimId,
-            );
+        if (chainComp && bullet && bulletTransform) {
+            // 将当前受害者加入已连锁列表
+            chainComp.chainedIds.add(victimId);
+
+            // 生成 ChainPendingEvent（携带子弹状态，索敌由 ChainLightningSystem 处理）
+            pushEvent(world, {
+                type: 'ChainPending',
+                bulletId,
+                bulletPos: { x: bulletTransform.x, y: bulletTransform.y },
+                victimPos: { x: victimTransform.x, y: victimTransform.y },
+                damage: bullet.damage ?? 0,
+                count: chainComp.count,
+                range: chainComp.range,
+                falloff: chainComp.falloff,
+                chainedIds: new Set(chainComp.chainedIds),
+                owner: bullet.owner,
+                ammoType: bullet.ammoType,
+            } as ChainPendingEvent);
         }
 
         // === 处理范围爆炸 ===
@@ -605,7 +616,7 @@ function handleBulletHit(
         }
     }
 
-    // 处理子弹穿透和销毁
+    // 处理子弹穿透和销毁（所有子弹都正常销毁）
     consumeBullet(bulletComps, bullet);
 }
 

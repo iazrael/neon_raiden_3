@@ -30,7 +30,7 @@ export const KNOWN_SYSTEMS = [
     // P4 交互层
     'BombSystem', 'CollisionSystem',
     // P5 结算层
-    'PickupSystem', 'DamageResolutionSystem', 'ChainSystem', 'LootSystem', 'ComboSystem', 'LevelSystem',
+    'PickupSystem', 'DamageResolutionSystem', 'ChainLightningSystem', 'LootSystem', 'ComboSystem', 'LevelSystem',
     // P7 表现层
     'CameraSystem', 'EffectSystem', 'BlinkSystem', 'AudioSystem',
     // P8 清理层
