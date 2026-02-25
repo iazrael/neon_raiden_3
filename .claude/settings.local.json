@@ -34,7 +34,9 @@
       "Skill(commit-commands:commit)",
       "Skill(commit-commands:commit:*)",
       "Bash(npx tsx:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(__NEW_LINE_396362f838b7f4ea__ node -e \":*)",
+      "Read(//Users/azraellong/workspaces/neon_raiden/**)"
     ],
     "additionalDirectories": [
       "/Users/azraellong/workspaces/neon_raiden/",

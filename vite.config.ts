@@ -1,38 +1,38 @@
-import path from 'path';
-import { defineConfig, loadEnv } from 'vite';
-import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
-import fs from 'fs';
-import checker from 'vite-plugin-checker';
-import { VitePWA } from 'vite-plugin-pwa';
+import path from "path";
+import { defineConfig, loadEnv } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import fs from "fs";
+import checker from "vite-plugin-checker";
+import { VitePWA } from "vite-plugin-pwa";
 
 // 读取package.json中的版本号
-const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
+const packageJson = JSON.parse(fs.readFileSync("package.json", "utf-8"));
 let appVersion = packageJson.version;
-const [major] = appVersion.split('.');
+const [major] = appVersion.split(".");
 // 用距离2025-01-01的天数作为 minor
-const minor = Math.floor((new Date().getTime() - new Date('2025-01-01').getTime()) / (24 * 60 * 60 * 1000)).toString();
+const minor = Math.floor((new Date().getTime() - new Date("2025-01-01").getTime()) / (24 * 60 * 60 * 1000)).toString();
 // 用当前的东八区时间的时分作为patch， hh:MM
 const now = new Date(new Date().getTime() + 8 * 60 * 60 * 1000); // 东八区时间
-const patch = now.getUTCHours().toString().padStart(2, '0') + now.getUTCMinutes().toString().padStart(2, '0');
+const patch = now.getUTCHours().toString().padStart(2, "0") + now.getUTCMinutes().toString().padStart(2, "0");
 appVersion = `${major}.${minor}.${patch}`;
 
 export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, '.', '');
+    const env = loadEnv(mode, ".", "");
     return {
-        base: './',
+        base: "./",
         server: {
             port: 3000,
-            host: '0.0.0.0',
+            host: "0.0.0.0",
         },
         plugins: [
             react(),
             tailwindcss(),
             checker({
                 typescript: {
-                    root: './',
-                    tsconfigPath: './tsconfig.json'
-                }
+                    root: "./",
+                    tsconfigPath: "./tsconfig.json",
+                },
             }),
             // VitePWA({
             //     registerType: 'prompt',
@@ -102,15 +102,16 @@ export default defineConfig(({ mode }) => {
             // })
         ],
         define: {
-            '__APP_VERSION__': JSON.stringify(appVersion),
-            '__APP_VERSION_MAJOR__': JSON.stringify(major),
-            '__APP_VERSION_MINOR__': JSON.stringify(minor),
-            '__APP_VERSION_PATCH__': JSON.stringify(patch),
+            __APP_VERSION__: JSON.stringify(appVersion),
+            __APP_VERSION_MAJOR__: JSON.stringify(major),
+            __APP_VERSION_MINOR__: JSON.stringify(minor),
+            __APP_VERSION_PATCH__: JSON.stringify(patch),
+            __DEV__: mode === "development",
         },
         resolve: {
             alias: {
-                '@': path.resolve(__dirname, './src'),
-            }
-        }
+                "@": path.resolve(__dirname, "./src"),
+            },
+        },
     };
 });

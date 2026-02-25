@@ -11,18 +11,20 @@
  * 执行顺序：P6 - 在结算层之后
  */
 
-import { BossId, EntityId } from '../types';
-import { EnemyPoolItem, LEVEL_CONFIGS } from '../configs/levels';
-import { spawnEnemy, spawnBoss } from '../factory';
-import { BossTag, Health, ScoreValue, Weapon, EnemyTag } from '../components';
-import { EnemyId } from '../types';
-import { ENEMIES_TABLE } from '../blueprints/enemies';
-import { BOSSES_TABLE } from '../blueprints/bosses';
-import { pushEvent, view, World } from '../world';
-import { getEnemyStats } from '../configs/enemyGrowth';
-import { BOSS_SPAWN_TIME } from '../configs/bossConstants';
-import { LEVEL_CONFIG } from '../configs/level-config';
+import { BossId, EntityId } from "../types";
+import { EnemyPoolItem, LEVEL_CONFIGS } from "../configs/levels";
+import { spawnEnemy, spawnBoss } from "../factory";
+import { BossTag, Health, ScoreValue, Weapon, EnemyTag } from "../components";
+import { EnemyId } from "../types";
+import { ENEMIES_TABLE } from "../blueprints/enemies";
+import { BOSSES_TABLE } from "../blueprints/bosses";
+import { pushEvent, view, World } from "../world";
+import { getEnemyStats } from "../configs/enemyGrowth";
+import { BOSS_SPAWN_TIME } from "../configs/bossConstants";
+import { LEVEL_CONFIG } from "../configs/level-config";
+import { logger } from "../logger";
 
+const log = logger.for("SpawnSystem");
 
 /**
  * 根据权重随机选择敌人
@@ -47,7 +49,7 @@ function getRandomSpawnPos(world: World): { x: number; y: number } {
     return {
         x: margin + Math.random() * (world.width - margin * 2),
         // y轴也随机一下，避免总是同一高度生成
-        y: -50 + Math.random() * 50 // 从屏幕上方生成
+        y: -50 + Math.random() * 50, // 从屏幕上方生成
     };
 }
 
@@ -60,7 +62,7 @@ function getRandomSpawnPos(world: World): { x: number; y: number } {
 function applyEnemyGrowth(world: World, enemyId: EntityId, enemyType: EnemyId): void {
     const state = world.levelState;
     if (!state) {
-        console.error('[applyEnemyGrowth] levelState未初始化');
+        log.error("levelState未初始化");
         return;
     }
 
@@ -70,7 +72,7 @@ function applyEnemyGrowth(world: World, enemyId: EntityId, enemyType: EnemyId): 
     // 获取敌人组件数组
     const comps = world.entities.get(enemyId);
     if (!comps) {
-        console.warn(`[applyEnemyGrowth] Enemy ${enemyId} not found`);
+        log.warn(`Enemy ${enemyId} not found`);
         return;
     }
 
@@ -99,17 +101,11 @@ function applyEnemyGrowth(world: World, enemyId: EntityId, enemyType: EnemyId): 
  * @param cost 消费点数
  * @param pos 生成位置
  */
-function doSpawnEnemy(
-    world: World,
-    enemyType: EnemyId,
-    cost: number,
-    pos: { x: number; y: number }
-): void {
-
+function doSpawnEnemy(world: World, enemyType: EnemyId, cost: number, pos: { x: number; y: number }): void {
     // 1. 获取蓝图
     const blueprint = ENEMIES_TABLE[enemyType];
     if (!blueprint) {
-        console.warn(`doSpawnEnemy: No blueprint found for '${enemyType}'`);
+        log.warn(`No blueprint found for '${enemyType}'`);
         return;
     }
 
@@ -121,9 +117,6 @@ function doSpawnEnemy(
 
     // 4. 扣除点数
     world.spawnCredits -= cost;
-
-    // 5. 日志
-    // console.log(`Spawned enemy '${enemyType}' costing ${cost} credits, remaining: ${world.spawnCredits.toFixed(2)} born at (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`);
 }
 
 /**
@@ -136,7 +129,7 @@ function shouldAffordEnemy(cost: number, credits: number, cap: number): boolean 
     // 如果是便宜货（成本低于上限的 30%），有概率拒绝
     if (cost < cap * 0.3) {
         // 基于成本比例决定拒绝概率：越便宜，拒绝概率越高
-        const rejectionProbability = 0.3 + (cap * 0.3 - cost) / cap * 0.4;
+        const rejectionProbability = 0.3 + ((cap * 0.3 - cost) / cap) * 0.4;
         return Math.random() >= rejectionProbability;
     }
 
@@ -151,13 +144,13 @@ function shouldAffordEnemy(cost: number, credits: number, cap: number): boolean 
 export function SpawnSystem(world: World, dt: number): void {
     const state = world.levelState;
     if (!state) {
-        console.error('[SpawnSystem] levelState未初始化');
+        log.error("levelState未初始化");
         return;
     }
 
     const config = LEVEL_CONFIGS[state.currentLevel];
     if (!config) {
-        console.error(`[SpawnSystem] 关卡${state.currentLevel}配置不存在`);
+        log.error(`关卡${state.currentLevel}配置不存在`);
         return;
     }
 
@@ -166,16 +159,13 @@ export function SpawnSystem(world: World, dt: number): void {
     // ==============================
     // 使用正弦波模拟"张弛有度"的刷怪节奏
     const timeFactor = (Math.sin(world.time) + 1) / 2; // 0.0 ~ 1.0 之间波动
-    const waveMultiplier = 0.5 + (1.5 * timeFactor); // 在 0.5倍 ~ 2.0倍之间波动
+    const waveMultiplier = 0.5 + 1.5 * timeFactor; // 在 0.5倍 ~ 2.0倍之间波动
 
     // dt 单位是毫秒，需要转换为秒
     const income = config.baseIncome * waveMultiplier * (dt / 1000);
 
     // 存入钱包，但不超过上限
-    world.spawnCredits = Math.min(
-        world.spawnCredits + income,
-        config.creditCap
-    );
+    world.spawnCredits = Math.min(world.spawnCredits + income, config.creditCap);
 
     // ==============================
     // 2. 消费 (Spending Phase)
@@ -196,7 +186,7 @@ export function SpawnSystem(world: World, dt: number): void {
     const maxEnemies = 50; // 性能保护：同屏最大敌人数量
 
     // 动态统计当前敌人数量（不包括 Boss）
-    const enemies = [...view(world, [EnemyTag])]
+    const enemies = [...view(world, [EnemyTag])];
     const currentEnemyCount = enemies.length;
 
     let attempts = 0;
@@ -225,15 +215,13 @@ export function SpawnSystem(world: World, dt: number): void {
     }
 }
 
-
-
 /**
  * 检查是否需要刷 Boss
  */
 function shouldSpawnBoss(world: World): boolean {
     const state = world.levelState;
     if (!state) {
-        console.error('[SpawnSystem] levelState未初始化');
+        log.error("levelState未初始化");
         return false;
     }
 
@@ -270,7 +258,7 @@ function shouldSpawnBoss(world: World): boolean {
 function spawnBossWithConfig(world: World, bossId: BossId): void {
     const blueprint = BOSSES_TABLE[bossId];
     if (!blueprint) {
-        console.warn(`SpawnSystem: No blueprint found for Boss ID '${bossId}'`);
+        log.warn(`No blueprint found for Boss ID '${bossId}'`);
         return;
     }
 
@@ -280,7 +268,7 @@ function spawnBossWithConfig(world: World, bossId: BossId): void {
     const id = spawnBoss(world, blueprint, x, y, 0);
     world.bossState.bossId = id;
 
-    console.log(`Spawned Boss '${bossId}' at (${x}, ${y})`);
+    log.info(`Spawned Boss '${bossId}' at (${x}, ${y})`);
 }
 
 /**

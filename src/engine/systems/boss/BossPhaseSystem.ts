@@ -11,11 +11,14 @@
  * 执行顺序：P6 - 在 BossSystem 之前
  */
 
-import { BossId, Component } from '../../types';
-import { Health, BossTag, BossAI, Weapon, SpeedStat, BossVisual } from '../../components';
-import { BOSS_DATA, BossPhaseSpec } from '../../configs/bossData';
-import { pushEvent, view, World } from '../../world';
-import { ENEMY_WEAPON_TABLE } from '../../blueprints/weapons';
+import { BossId, Component } from "../../types";
+import { Health, BossTag, BossAI, Weapon, SpeedStat, BossVisual } from "../../components";
+import { BOSS_DATA, BossPhaseSpec } from "../../configs/bossData";
+import { pushEvent, view, World } from "../../world";
+import { ENEMY_WEAPON_TABLE } from "../../blueprints/weapons";
+import { logger } from "../../logger";
+
+const log = logger.for("BossPhaseSystem");
 
 /**
  * 记录每个 Boss 的上一阶段
@@ -92,15 +95,15 @@ function applyPhaseModifiers(
 
     // 2. 生成阶段切换事件
     pushEvent(world, {
-        type: 'BossPhaseChange',
-        phase: phaseIndex + 1,  // 显示使用1-based索引（内部是0-based）
-        bossId: entityId
+        type: "BossPhaseChange",
+        phase: phaseIndex + 1, // 显示使用1-based索引（内部是0-based）
+        bossId: entityId,
     });
 
     // 3. 播放阶段切换音效
     pushEvent(world, {
-        type: 'PlaySound',
-        name: 'boss_phase_change'
+        type: "PlaySound",
+        name: "boss_phase_change",
     });
 
     // 4. 应用修正器
@@ -118,7 +121,7 @@ function applyPhaseModifiers(
         if (weapon) {
             const newWeaponSpec = ENEMY_WEAPON_TABLE[phaseSpec.weaponId];
             if (!newWeaponSpec) {
-                console.error(`[BossPhaseSystem] Weapon ID ${phaseSpec.weaponId} not found in ENEMY_WEAPON_TABLE`);
+                log.error(`Weapon ID ${phaseSpec.weaponId} not found in ENEMY_WEAPON_TABLE`);
                 return;
             }
             // 应用新武器配置
@@ -151,10 +154,10 @@ function applyPhaseModifiers(
     if (phaseSpec.specialEvents && phaseSpec.specialEvents.length > 0) {
         for (const eventName of phaseSpec.specialEvents) {
             pushEvent(world, {
-                type: 'BossSpecialEvent',
+                type: "BossSpecialEvent",
                 event: eventName,
                 bossId: entityId,
-                phase: phaseIndex
+                phase: phaseIndex,
             });
         }
     }

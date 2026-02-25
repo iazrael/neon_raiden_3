@@ -11,19 +11,22 @@
  * 执行顺序：P6 - 在 CollisionSystem 之后
  */
 
-import { World, getEvents, view, getComponent, pushEvent, getEntity } from '../world';
-import { ChainPendingEvent, ChainingEvent } from '../events';
-import { spawnBullet } from '../factory';
-import { Transform, Health, EnemyTag, Bullet, Sprite, HitBox, Lifetime, Chain, Velocity } from '../components';
-import { EntityId } from '../types';
-import { Blueprint } from '../blueprints/base';
+import { World, getEvents, view, getComponent, pushEvent, getEntity } from "../world";
+import { ChainPendingEvent, ChainingEvent } from "../events";
+import { spawnBullet } from "../factory";
+import { Transform, Health, EnemyTag, Bullet, Sprite, HitBox, Lifetime, Chain, Velocity } from "../components";
+import { EntityId } from "../types";
+import { Blueprint } from "../blueprints/base";
+import { logger } from "../logger";
+
+const log = logger.for("ChainLightningSystem");
 
 /**
  * 特斯拉连锁传导系统主函数
  */
 export function ChainLightningSystem(world: World): void {
     // 获取所有 ChainPendingEvent
-    const pendingEvents = getEvents<ChainPendingEvent>(world, 'ChainPending');
+    const pendingEvents = getEvents<ChainPendingEvent>(world, "ChainPending");
 
     for (const event of pendingEvents) {
         // 只有当还有连锁次数时才索敌并创建子弹
@@ -35,7 +38,7 @@ export function ChainLightningSystem(world: World): void {
             event.victimPos.x,
             event.victimPos.y,
             event.range,
-            event.chainedIds,
+            event.chainedIds
         );
 
         if (nextTarget) {
@@ -50,7 +53,7 @@ export function ChainLightningSystem(world: World): void {
 
                 // 生成 ChainingEvent 供特效系统渲染电弧
                 pushEvent(world, {
-                    type: 'Chaining',
+                    type: "Chaining",
                     from: event.bulletPos,
                     to: nextTarget,
                 } as ChainingEvent);
@@ -64,7 +67,7 @@ export function ChainLightningSystem(world: World): void {
                     nextDamage,
                     nextCount,
                     event.falloff,
-                    event.chainedIds,
+                    event.chainedIds
                 );
             }
         }
@@ -85,7 +88,7 @@ function findNextTargetForChain(
     fromX: number,
     fromY: number,
     range: number,
-    chainedIds: Set<number>,
+    chainedIds: Set<number>
 ): number | undefined {
     let nearestDist = range;
     let nearestId: number | undefined;
@@ -131,7 +134,7 @@ function spawnChainBullet(
     damage: number,
     count: number,
     falloff: number,
-    chainedIds: Set<number>,
+    chainedIds: Set<number>
 ): void {
     // 获取原子弹的所有组件
     const bulletComps = getEntity(world, bulletId);
@@ -144,7 +147,7 @@ function spawnChainBullet(
     const chain = bulletComps.find(Chain.check) as Chain | undefined;
 
     if (!bullet || !sprite || !hitbox || !lifetime || !chain) {
-        console.error('[ChainLightningSystem] 子弹缺少必要组件');
+        log.error("子弹缺少必要组件");
         return;
     }
 

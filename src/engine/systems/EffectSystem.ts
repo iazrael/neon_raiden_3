@@ -55,7 +55,6 @@ export function EffectSystem(world: World, dt: number): void {
 
     // 处理特效更新
     updateEffects(world, dt);
-
 }
 
 /**
@@ -186,7 +185,6 @@ function handleBloodFogEvent(world: World, event: BloodFogEvent): void {
     } else if (event.level === 3) {
         bloodKey = ParticleId.BloodHeavy;
     }
-    // console.log(`[EffectPlayer] bloodKey=${bloodKey}`)
     spawnParticles(world, event.pos.x, event.pos.y, PARTICLE_EFFECTS[bloodKey]);
 }
 
@@ -530,4 +528,3 @@ function spawnMeteor(world: World, dt: number, meteor: Meteor): void {
         vy: Math.random() * 10 + 10, // 10-20
     });
 }
-

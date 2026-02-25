@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useRegisterSW } from 'virtual:pwa-register/react';
+import React, { useEffect, useState } from "react";
+import { useRegisterSW } from "virtual:pwa-register/react";
+import { logger } from "@/engine/logger";
+
+const log = logger.for("ReloadPrompt");
 
 const ReloadPrompt: React.FC = () => {
     const [autoReloadCountdown, setAutoReloadCountdown] = useState(5);
@@ -10,20 +13,23 @@ const ReloadPrompt: React.FC = () => {
         updateServiceWorker,
     } = useRegisterSW({
         onRegistered(r) {
-            console.log('SW Registered: ' + r);
+            log.info("SW Registered: " + r);
             // 每隔1小时检查一次更新
             if (r) {
-                setInterval(() => {
-                    console.log('Checking for SW updates...');
-                    r.update();
-                }, 60 * 60 * 1000); // 1 hour
+                setInterval(
+                    () => {
+                        log.info("Checking for SW updates...");
+                        r.update();
+                    },
+                    60 * 60 * 1000
+                ); // 1 hour
             }
         },
         onRegisterError(error) {
-            console.log('SW registration error', error);
+            log.warn("SW registration error", error);
         },
         onNeedRefresh() {
-            console.log('New content available, update downloaded automatically');
+            log.info("New content available, update downloaded automatically");
         },
     });
 
@@ -62,7 +68,7 @@ const ReloadPrompt: React.FC = () => {
     }
 
     // 获取当前版本号
-    const currentVersion = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : 'Unknown';
+    const currentVersion = typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "Unknown";
 
     return (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-slideUp">
@@ -82,9 +88,7 @@ const ReloadPrompt: React.FC = () => {
                             <span>
                                 新版本已自动下载完成，点击刷新即可更新。
                                 <br />
-                                <span className="text-[#00ffff] text-xs mt-1 block">
-                                    Version: {currentVersion}
-                                </span>
+                                <span className="text-[#00ffff] text-xs mt-1 block">Version: {currentVersion}</span>
                                 <span className="text-[#ff00ff] text-xs mt-1 block">
                                     自动刷新倒计时: {autoReloadCountdown}秒
                                 </span>

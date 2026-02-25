@@ -133,7 +133,7 @@ function handleWeaponFiredEvent(world: World, event: WeaponFiredEvent): void {
     // 根据武器 ID 和发射者确定音效
     const isPlayer = event.owner === world.playerId;
     if (isPlayer) {
-        audioPlayer.playShoot(event.weaponId as WeaponId)
+        audioPlayer.playShoot(event.weaponId as WeaponId);
     }
 }
 
@@ -192,41 +192,23 @@ function handleTimeSlowEvent(world: World, event: TimeSlowEvent): void {
 /**
  * 播放 boss 进场音效
  */
-function handleBossEntranceStart(world: World, event: BossEntranceStartEvent){
-    audioPlayer.playWarning()
+function handleBossEntranceStart(world: World, event: BossEntranceStartEvent) {
+    audioPlayer.playWarning();
 }
 
 /**
  * 击败 boss
- * @param world 
- * @param event 
+ * @param world
+ * @param event
  */
-function handleBossDefeatEvent(world: World, event: BossDefeatEvent){
-    audioPlayer.playBossDefeat()
+function handleBossDefeatEvent(world: World, event: BossDefeatEvent) {
+    audioPlayer.playBossDefeat();
 }
-
-
-
 
 /**
  * 播放音效
  * @param soundKey 音效键名
  */
 export function playSound(soundKey: string): void {
-    // if (audioState.muted) return;
-    // const config = SOUND_CONFIGS[soundKey];
-    // if (!config) {
-    //     console.warn(`AudioSystem: No config found for sound '${soundKey}'`);
-    //     return;
-    // }
-    // // 计算最终音量
-    // const volume =
-    //     config.volume * audioState.masterVolume * audioState.sfxVolume;
-    // // 创建音频元素并播放
-    // const audio = new Audio(config.src);
-    // audio.volume = Math.max(0, Math.min(1, volume));
-    // audio.play().catch((err) => {
-    //     // 忽略播放失败（通常是用户未交互导致）
-    //     console.debug(`Audio play failed: ${err.message}`);
-    // });
+    // Audio functionality is now handled by AudioEngine
 }

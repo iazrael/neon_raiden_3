@@ -11,22 +11,25 @@
  * 执行顺序：P5 - 在交互层之后
  */
 
-import { World } from '../world';
-import { DropTable, Transform } from '../components';
-import { spawnPickup } from '../factory';
-import { PickupId } from '../types/ids';
-import { PICKUP_REGISTRY } from '../configs/droptables';
-import { KillEvent, PickupEvent } from '../events';
-import { getEvents, pushEvent } from '../world';
+import { World } from "../world";
+import { DropTable, Transform } from "../components";
+import { spawnPickup } from "../factory";
+import { PickupId } from "../types/ids";
+import { PICKUP_REGISTRY } from "../configs/droptables";
+import { KillEvent, PickupEvent } from "../events";
+import { getEvents, pushEvent } from "../world";
+import { logger } from "../logger";
+
+const log = logger.for("LootSystem");
 
 /**
  * 动态掉落率上下文
  */
 interface DropContext {
-    level: number;           // 当前关卡
-    playerScore: number;     // 玩家分数
+    level: number; // 当前关卡
+    playerScore: number; // 玩家分数
     playerWeaponLevel: number; // 玩家武器等级
-    playerHpRatio: number;   // 玩家生命值比例 (0-1)
+    playerHpRatio: number; // 玩家生命值比例 (0-1)
 }
 
 /**
@@ -36,7 +39,7 @@ let dropContext: DropContext = {
     level: 1,
     playerScore: 0,
     playerWeaponLevel: 1,
-    playerHpRatio: 1.0
+    playerHpRatio: 1.0,
 };
 
 /**
@@ -44,8 +47,8 @@ let dropContext: DropContext = {
  */
 interface GuaranteedDropConfig {
     enabled: boolean;
-    timer: number;           // 毫秒
-    lastDropTime: number;    // 上次掉落时间
+    timer: number; // 毫秒
+    lastDropTime: number; // 上次掉落时间
 }
 
 /**
@@ -53,8 +56,8 @@ interface GuaranteedDropConfig {
  */
 const guaranteedDropState: GuaranteedDropConfig = {
     enabled: false,
-    timer: 30000,            // 默认30秒
-    lastDropTime: 0
+    timer: 30000, // 默认30秒
+    lastDropTime: 0,
 };
 
 /**
@@ -67,7 +70,7 @@ export function LootSystem(world: World, dt: number): void {
     updateGuaranteedDropTimer(world, dt);
 
     // 收集本帧的所有死亡事件
-    const killEvents = getEvents<KillEvent>(world, 'Kill');
+    const killEvents = getEvents<KillEvent>(world, "Kill");
 
     if (killEvents.length === 0) return;
 
@@ -157,7 +160,7 @@ function spawnPickupFromItem(world: World, itemId: string, x: number, y: number)
     const blueprint = PICKUP_REGISTRY[itemId];
 
     if (!blueprint) {
-        console.warn(`LootSystem: No blueprint found for ID '${itemId}'`);
+        log.warn(`No blueprint found for ID '${itemId}'`);
         return;
     }
 
@@ -195,7 +198,7 @@ function updateGuaranteedDropTimer(world: World, dtMs: number): void {
  */
 function shouldTriggerGuaranteedDrop(world: World): boolean {
     const now = world.time;
-    return (now - guaranteedDropState.lastDropTime) >= guaranteedDropState.timer;
+    return now - guaranteedDropState.lastDropTime >= guaranteedDropState.timer;
 }
 
 /**
@@ -244,7 +247,7 @@ export function resetDropContext(): void {
         level: 1,
         playerScore: 0,
         playerWeaponLevel: 1,
-        playerHpRatio: 1.0
+        playerHpRatio: 1.0,
     };
 }
 
@@ -256,22 +259,22 @@ function getAdjustedDropTable(
     baseTable: Array<{ item: string; weight: number; min?: number; max?: number }>
 ): Array<{ item: string; weight: number; min?: number; max?: number }> {
     // 深拷贝基础掉落表，避免修改原配置
-    const adjustedTable = baseTable.map(item => ({ ...item }));
+    const adjustedTable = baseTable.map((item) => ({ ...item }));
 
     for (const item of adjustedTable) {
         // 根据玩家生命值调整 HP 道具掉率
         if (item.item === PickupId.HP) {
             if (dropContext.playerHpRatio < 0.3) {
-                item.weight = Math.floor(item.weight * 2.5);  // 低血量时翻2.5倍
+                item.weight = Math.floor(item.weight * 2.5); // 低血量时翻2.5倍
             } else if (dropContext.playerHpRatio < 0.5) {
-                item.weight = Math.floor(item.weight * 1.5);  // 中低血量时翻1.5倍
+                item.weight = Math.floor(item.weight * 1.5); // 中低血量时翻1.5倍
             }
         }
 
         // 根据玩家分数调整 POWER 道具掉率
         if (item.item === PickupId.POWER) {
             if (dropContext.playerScore < 10000) {
-                item.weight = Math.floor(item.weight * 1.5);  // 低分数时提高掉率
+                item.weight = Math.floor(item.weight * 1.5); // 低分数时提高掉率
             }
         }
 
@@ -279,14 +282,14 @@ function getAdjustedDropTable(
         if (item.item === PickupId.OPTION) {
             if (dropContext.level >= 5) {
                 const levelBonus = Math.min(5, (dropContext.level - 4) * 1);
-                item.weight += levelBonus;  // 每关增加1权重，最多+5
+                item.weight += levelBonus; // 每关增加1权重，最多+5
             }
         }
 
         // 根据玩家生命值调整容错道具掉率（无敌和时间减缓）
         if (dropContext.playerHpRatio < 0.3) {
             if (item.item === PickupId.INVINCIBILITY || item.item === PickupId.TIME_SLOW) {
-                item.weight = Math.floor(item.weight * 1.3);  // 低血量时提高容错道具掉率
+                item.weight = Math.floor(item.weight * 1.3); // 低血量时提高容错道具掉率
             }
         }
     }

@@ -1,16 +1,23 @@
-import * as Components from './components';
-import { Blueprint } from './blueprints';
-import { Meteor, EnemyTag, Transform, Sprite, Option } from './components';
-import { EntityId, Component } from './types';
-import { World, generateId, getFromPool } from './world';
-import { OPTION_LERP_FACTOR, OPTION_RADIUS, OPTION_ROTATION_SPEED } from './configs';
+import * as Components from "./components";
+import { Blueprint } from "./blueprints";
+import { Meteor, EnemyTag, Transform, Sprite, Option } from "./components";
+import { EntityId, Component } from "./types";
+import { World, generateId, getFromPool } from "./world";
+import { OPTION_LERP_FACTOR, OPTION_RADIUS, OPTION_ROTATION_SPEED } from "./configs";
+import { logger } from "./logger";
 
-type ComponentType = keyof typeof Components
+const log = logger.for("Factory");
+
+type ComponentType = keyof typeof Components;
 
 /** 根据蓝图生成实体，支持对象池 */
-export function spawnFromBlueprint(world: World, bp: Blueprint,
-    x = 0, y = 0, rot = 0,
-    pool?: 'bullet' | 'enemy' | 'pickup'
+export function spawnFromBlueprint(
+    world: World,
+    bp: Blueprint,
+    x = 0,
+    y = 0,
+    rot = 0,
+    pool?: "bullet" | "enemy" | "pickup"
 ): EntityId {
     const id = generateId();
     // 1. 拿数组（可能来自池）
@@ -25,7 +32,7 @@ export function spawnFromBlueprint(world: World, bp: Blueprint,
     for (const [key, args] of Object.entries(bp)) {
         const ComponentCtor = Components[key as ComponentType] as new (args?: any) => Component;
         if (!ComponentCtor) {
-            console.error('[factory] Missing component constructor for key:', key);
+            log.error("Missing component constructor for key:", key);
             continue;
         }
         const comp = new ComponentCtor(args);
@@ -39,10 +46,10 @@ export function spawnFromBlueprint(world: World, bp: Blueprint,
     }
 
     // 调试：如果是子弹，检查是否有 Sprite 组件
-    if (pool === 'bullet') {
+    if (pool === "bullet") {
         const hasSprite = comps.some(Sprite.check);
         if (!hasSprite) {
-            console.error('[factory] Bullet spawned without Sprite!', bp);
+            log.error("Bullet spawned without Sprite!", bp);
         }
     }
 
@@ -63,10 +70,7 @@ export function spawnEntity(world: World, comps: Component[]): EntityId {
  * @returns 世界实体 ID
  */
 export function spawnWorld(world: World): EntityId {
-    return spawnEntity(world, [
-        new Meteor({ spawnInterval: 200, spawnChance: 0.1 })
-    ])
-
+    return spawnEntity(world, [new Meteor({ spawnInterval: 200, spawnChance: 0.1 })]);
 }
 
 // 创建玩家战机
@@ -76,7 +80,7 @@ export function spawnPlayer(world: World, bp: Blueprint, x: number, y: number, r
 }
 
 export function spawnEnemy(world: World, bp: Blueprint, x: number, y: number, rot: number): EntityId {
-    const id = spawnFromBlueprint(world, bp, x, y, rot, 'enemy');
+    const id = spawnFromBlueprint(world, bp, x, y, rot, "enemy");
 
     // 给敌人的移动添加随机相位偏移，避免同步摆动
     const enemyComps = world.entities.get(id);
@@ -98,12 +102,12 @@ export function spawnBoss(world: World, bp: Blueprint, x: number, y: number, rot
 }
 
 export function spawnBullet(world: World, bp: Blueprint, x: number = 0, y: number = 0, rot: number = 0): EntityId {
-    const id = spawnFromBlueprint(world, bp, x, y, rot, 'bullet');
+    const id = spawnFromBlueprint(world, bp, x, y, rot, "bullet");
     return id;
 }
 
 export function spawnPickup(world: World, bp: Blueprint, x: number, y: number, rot: number): EntityId {
-    const id = spawnFromBlueprint(world, bp, x, y, rot, 'pickup');
+    const id = spawnFromBlueprint(world, bp, x, y, rot, "pickup");
     return id;
 }
 
@@ -116,20 +120,29 @@ export function spawnPickup(world: World, bp: Blueprint, x: number, y: number, r
  * @param y 初始 Y 坐标
  * @returns 僚机实体 ID
  */
-export function spawnOption(world: World, bp: Blueprint, x: number, y: number, ownerId: EntityId, index: number): EntityId {
+export function spawnOption(
+    world: World,
+    bp: Blueprint,
+    x: number,
+    y: number,
+    ownerId: EntityId,
+    index: number
+): EntityId {
     const id = spawnFromBlueprint(world, bp, x, y, 0);
 
     // 设置僚机的索引
     const optionComps = world.entities.get(id)!;
     // 配置僚机所有者
-    optionComps.push(new Option({
-        owner: ownerId,
-        index,
-        angle: index * Math.PI,
-        radius: OPTION_RADIUS,
-        lerpFactor: OPTION_LERP_FACTOR,
-        rotationSpeed: OPTION_ROTATION_SPEED,
-    }));
+    optionComps.push(
+        new Option({
+            owner: ownerId,
+            index,
+            angle: index * Math.PI,
+            radius: OPTION_RADIUS,
+            lerpFactor: OPTION_LERP_FACTOR,
+            rotationSpeed: OPTION_ROTATION_SPEED,
+        })
+    );
 
     return id;
 }

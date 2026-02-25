@@ -11,18 +11,21 @@
  * @module LevelSystem
  */
 
-import { World, pushEvent, getEvents, generateId, addComponent, removeEntity } from '../world';
-import { LEVEL_CONFIG, MAX_LEVEL } from '../configs/level-config';
-import { view } from '../world';
-import { LevelTransitionComponent, BossExitComponent } from '../components/transition';
+import { World, pushEvent, getEvents, generateId, addComponent, removeEntity } from "../world";
+import { LEVEL_CONFIG, MAX_LEVEL } from "../configs/level-config";
+import { view } from "../world";
+import { LevelTransitionComponent, BossExitComponent } from "../components/transition";
 import {
     BossDefeatEvent,
     BossExitStartEvent,
     LevelTransitionStartEvent,
     LevelTransitionCompleteEvent,
     StageOneIntroEvent,
-    VictoryEvent
-} from '../events';
+    VictoryEvent,
+} from "../events";
+import { logger } from "../logger";
+
+const log = logger.for("LevelSystem");
 
 /**
  * 更新关卡进度
@@ -45,7 +48,7 @@ function updateProgress(world: World, dt: number): void {
 
     // 边界检查：levelState 必须存在
     if (!state) {
-        console.error('[LevelSystem] levelState未初始化');
+        log.error("levelState未初始化");
         return;
     }
 
@@ -62,8 +65,10 @@ function updateProgress(world: World, dt: number): void {
     state.progress += timeBasedGrowth;
 
     // 3. 最低时间保护：确保即使没有击杀，也能在60秒内达到80%进度
-    const minProgress = (state.elapsedTime / LEVEL_CONFIG.PROGRESS.MIN_LEVEL_DURATION)
-        * 100 * LEVEL_CONFIG.PROGRESS.TIME_PROTECTION_COEFFICIENT;
+    const minProgress =
+        (state.elapsedTime / LEVEL_CONFIG.PROGRESS.MIN_LEVEL_DURATION) *
+        100 *
+        LEVEL_CONFIG.PROGRESS.TIME_PROTECTION_COEFFICIENT;
     state.progress = Math.max(state.progress, minProgress);
 
     // 4. 击杀加速：消耗击杀计数并加速进度
@@ -91,22 +96,25 @@ function processBossDefeat(world: World, event: BossDefeatEvent): void {
     // 防护：检查是否已有退场组件
     const hasExitComponent = [...view(world, [BossExitComponent])].length > 0;
     if (hasExitComponent) {
-        // console.log('[LevelSystem] Boss退场已进行中，忽略重复触发');
         return;
     }
 
     // 创建 BossExitComponent 实体
     const exitEntityId = generateId();
-    addComponent(world, exitEntityId, new BossExitComponent({
-        kind: 'BossExit',
-        timer: 0,
-        duration: LEVEL_CONFIG.ANIMATION.BOSS_EXIT_DURATION,
-        bossId: event.bossId,
-    }));
+    addComponent(
+        world,
+        exitEntityId,
+        new BossExitComponent({
+            kind: "BossExit",
+            timer: 0,
+            duration: LEVEL_CONFIG.ANIMATION.BOSS_EXIT_DURATION,
+            bossId: event.bossId,
+        })
+    );
 
     // 推送 BossExitStartEvent 事件
     pushEvent(world, {
-        type: 'BossExitStart',
+        type: "BossExitStart",
         bossId: event.bossId,
     });
 }
@@ -139,7 +147,7 @@ function updateBossExit(world: World, dt: number): void {
             if (currentLevel >= MAX_LEVEL) {
                 // 通关！触发胜利事件
                 pushEvent(world, {
-                    type: 'Victory',
+                    type: "Victory",
                     finalLevel: currentLevel,
                 } as VictoryEvent);
             } else {
@@ -164,17 +172,21 @@ function updateBossExit(world: World, dt: number): void {
 export function startLevelTransition(world: World, fromLevel: number, toLevel: number): void {
     // 创建 LevelTransitionComponent 实体
     const transitionEntityId = generateId();
-    addComponent(world, transitionEntityId, new LevelTransitionComponent({
-        kind: 'LevelTransition',
-        timer: 0,
-        duration: LEVEL_CONFIG.ANIMATION.LEVEL_TRANSITION_DURATION,
-        fromLevel,
-        toLevel,
-    }));
+    addComponent(
+        world,
+        transitionEntityId,
+        new LevelTransitionComponent({
+            kind: "LevelTransition",
+            timer: 0,
+            duration: LEVEL_CONFIG.ANIMATION.LEVEL_TRANSITION_DURATION,
+            fromLevel,
+            toLevel,
+        })
+    );
 
     // 推送 LevelTransitionStartEvent 事件
     pushEvent(world, {
-        type: 'LevelTransitionStart',
+        type: "LevelTransitionStart",
         fromLevel,
         toLevel,
     } as LevelTransitionStartEvent);
@@ -210,7 +222,7 @@ function updateLevelTransitions(world: World, dt: number): void {
                 // 通关！触发胜利事件
                 const currentLevel = world.levelState.currentLevel ?? 1;
                 pushEvent(world, {
-                    type: 'Victory',
+                    type: "Victory",
                     finalLevel: currentLevel,
                 } as VictoryEvent);
             } else {
@@ -219,14 +231,14 @@ function updateLevelTransitions(world: World, dt: number): void {
 
                 // 推送 LevelTransitionCompleteEvent 事件
                 pushEvent(world, {
-                    type: 'LevelTransitionComplete',
+                    type: "LevelTransitionComplete",
                     level: nextLevel,
                 } as LevelTransitionCompleteEvent);
 
                 // 如果是第一关，推送进入动画事件
                 if (nextLevel === 1) {
                     pushEvent(world, {
-                        type: 'StageOneIntro',
+                        type: "StageOneIntro",
                         duration: LEVEL_CONFIG.ANIMATION.STAGE_ONE_INTRO_DURATION,
                     } as StageOneIntroEvent);
                 }
@@ -252,7 +264,7 @@ export function LevelSystem(world: World, dt: number): void {
 
     // 边界检查：levelState 必须存在
     if (!state) {
-        console.error('[LevelSystem] levelState未初始化');
+        log.error("levelState未初始化");
         return;
     }
 
@@ -260,7 +272,7 @@ export function LevelSystem(world: World, dt: number): void {
     updateProgress(world, dt);
 
     // 2. 处理 Boss 击杀事件
-    const bossDefeatEvents = getEvents<BossDefeatEvent>(world, 'BossDefeat');
+    const bossDefeatEvents = getEvents<BossDefeatEvent>(world, "BossDefeat");
     for (const event of bossDefeatEvents) {
         processBossDefeat(world, event);
     }

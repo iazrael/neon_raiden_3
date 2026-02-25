@@ -9,10 +9,10 @@
  * 执行顺序：P5 - 在 CollisionSystem 之后
  */
 
-import { EntityId } from '../types';
-import { World, pushEvent, getEvents, view } from '../world';
-import { Transform, Health, EnemyTag, BossTag, DestroyTag, Explosion } from '../components';
-import { ExplosionEvent, HitEvent } from '../events';
+import { EntityId } from "../types";
+import { World, pushEvent, getEvents, view } from "../world";
+import { Transform, Health, EnemyTag, BossTag, DestroyTag, Explosion } from "../components";
+import { ExplosionEvent, HitEvent } from "../events";
 
 /**
  * 触发范围爆炸（供 CollisionSystem 调用）
@@ -32,13 +32,13 @@ export function triggerExplosionDamage(
     damage: number,
     explosion: Explosion,
     attackerId: EntityId,
-    excludeId: EntityId,
+    excludeId: EntityId
 ): void {
     // 计算最终爆炸半径
     const finalRadius = explosion.baseRadius * explosion.radiusMultiplier;
 
     pushEvent(world, {
-        type: 'Explosion',
+        type: "Explosion",
         pos: { x, y },
         radius: finalRadius,
         damage,
@@ -55,7 +55,7 @@ export function triggerExplosionDamage(
  * @param dt 时间增量（毫秒）
  */
 export function ExplosionSystem(world: World, dt: number): void {
-    const explosionEvents = getEvents<ExplosionEvent>(world, 'Explosion');
+    const explosionEvents = getEvents<ExplosionEvent>(world, "Explosion");
 
     for (const event of explosionEvents) {
         processExplosion(world, event);
@@ -103,15 +103,10 @@ function processExplosion(world: World, event: ExplosionEvent): void {
         const falloffMultiplier = minFalloff + (1 - minFalloff) * rawFalloff;
         const splashDamage = damage * falloffMultiplier;
 
-        // console.log(
-        //     `Explosion: Entity ${entityId} at (${transform.x}, ${transform.y}) with distance ${distance.toFixed(
-        //         2,
-        //     )}, damage ${splashDamage.toFixed(2)} (falloff ${falloffMultiplier.toFixed(2)})`,
-        // );
         // 只有伤害 > 0 时才生成 HitEvent
         if (splashDamage > 0) {
             pushEvent(world, {
-                type: 'Hit',
+                type: "Hit",
                 pos: { x: transform.x, y: transform.y },
                 damage: splashDamage,
                 owner,

@@ -36,6 +36,9 @@ import {
 } from "../components";
 import { CollisionLayer } from "../types/collision";
 import { DebugConfig } from "../config/DebugConfig";
+import { logger } from "../logger";
+
+const log = logger.for("RenderSystem");
 
 /**
  * 渲染层级
@@ -67,7 +70,6 @@ function determineLayer(comps: Component[]): number {
     }
     return RenderLayer.PICKUP;
 }
-
 
 /**
  * 绘制背景星空效果
@@ -182,7 +184,7 @@ function drawSprite(ctx: CanvasRenderingContext2D, item: RenderItem, camX: numbe
 
     // 应用旋转: rotate 是角度，转换为弧度, 公式： degree * Math.PI / 180
     // 最终旋转 = Sprite.rotate（基础朝向）+ Transform.rot（自转，弧度→度）
-    const rotation = sprite.rotate * Math.PI / 180 + transform.rot;
+    const rotation = (sprite.rotate * Math.PI) / 180 + transform.rot;
     // ctx.rotate 的参数是弧度
     ctx.rotate(rotation);
 
@@ -230,7 +232,6 @@ function drawPlayerEffect(ctx: CanvasRenderingContext2D, transform: Transform, c
     ctx.lineTo(0, 40 + Math.random() * 10);
     ctx.fill();
     ctx.restore();
-
 }
 
 /**
@@ -259,12 +260,17 @@ function drawShield(ctx: CanvasRenderingContext2D, shield: Shield, transform: Tr
     }
 }
 
-
 /**
  * 绘制无敌状态
  */
 
-function drawInvulnerableEffect(ctx: CanvasRenderingContext2D, invulnerable: InvulnerableState, transform: Transform, camX: number, camY: number) {
+function drawInvulnerableEffect(
+    ctx: CanvasRenderingContext2D,
+    invulnerable: InvulnerableState,
+    transform: Transform,
+    camX: number,
+    camY: number
+) {
     if (invulnerable && invulnerable.duration > 0) {
         const x = transform.x - camX;
         const y = transform.y - camY;
@@ -298,7 +304,6 @@ function drawInvulnerableEffect(ctx: CanvasRenderingContext2D, invulnerable: Inv
         ctx.restore();
     }
 }
-
 
 /**
  * 绘制 VisualEffect 圆环（冲击波等）
@@ -385,12 +390,12 @@ function drawTimeSlowEffect(ctx: CanvasRenderingContext2D, lines: VisualLine[], 
  * 按 CollisionLayer 区分颜色
  */
 const HITBOX_COLORS: Partial<Record<CollisionLayer, string>> = {
-    [CollisionLayer.Player]: '#00ff00',        // 绿色 - 玩家
-    [CollisionLayer.Enemy]: '#ff4444',         // 红色 - 敌人
-    [CollisionLayer.PlayerBullet]: '#00ffff',    // 青色 - 玩家子弹
-    [CollisionLayer.EnemyBullet]: '#ff6b6b',    // 浅红 - 敌人子弹
-    [CollisionLayer.Pickup]: '#ffff00',         // 黄色 - 道具
-    [CollisionLayer.None]: '#888888',          // 灰色 - 默认
+    [CollisionLayer.Player]: "#00ff00", // 绿色 - 玩家
+    [CollisionLayer.Enemy]: "#ff4444", // 红色 - 敌人
+    [CollisionLayer.PlayerBullet]: "#00ffff", // 青色 - 玩家子弹
+    [CollisionLayer.EnemyBullet]: "#ff6b6b", // 浅红 - 敌人子弹
+    [CollisionLayer.Pickup]: "#ffff00", // 黄色 - 道具
+    [CollisionLayer.None]: "#888888", // 灰色 - 默认
 };
 
 /**
@@ -414,7 +419,13 @@ function drawCircleHitbox(ctx: CanvasRenderingContext2D, x: number, y: number, r
  * @param halfWidth 半宽
  * @param halfHeight 半高
  */
-function drawRectHitbox(ctx: CanvasRenderingContext2D, x: number, y: number, halfWidth: number, halfHeight: number): void {
+function drawRectHitbox(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    halfWidth: number,
+    halfHeight: number
+): void {
     ctx.beginPath();
     ctx.rect(x - halfWidth, y - halfHeight, halfWidth * 2, halfHeight * 2);
     ctx.stroke();
@@ -428,7 +439,13 @@ function drawRectHitbox(ctx: CanvasRenderingContext2D, x: number, y: number, hal
  * @param capRadius 胶囊半径
  * @param capHeight 胶囊高度
  */
-function drawCapsuleHitbox(ctx: CanvasRenderingContext2D, x: number, y: number, capRadius: number, capHeight: number): void {
+function drawCapsuleHitbox(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    capRadius: number,
+    capHeight: number
+): void {
     const halfHeight = capHeight / 2;
     ctx.beginPath();
     // 上半圆
@@ -449,12 +466,7 @@ function drawCapsuleHitbox(ctx: CanvasRenderingContext2D, x: number, y: number, 
  * @param camX 相机 X 偏移
  * @param camY 相机 Y 偏移
  */
-function drawDebugHitBoxes(
-    ctx: CanvasRenderingContext2D,
-    world: World,
-    camX: number,
-    camY: number
-): void {
+function drawDebugHitBoxes(ctx: CanvasRenderingContext2D, world: World, camX: number, camY: number): void {
     ctx.save();
 
     // 遍历所有带 Transform + HitBox 的实体
@@ -463,21 +475,21 @@ function drawDebugHitBoxes(
         const y = transform.y - camY;
 
         // 获取颜色
-        const color = HITBOX_COLORS[hitbox.layer] || '#ffffff';
+        const color = HITBOX_COLORS[hitbox.layer] || "#ffffff";
 
         ctx.strokeStyle = color;
         ctx.lineWidth = 2;
-        ctx.setLineDash([4, 4]);  // 虚线效果
+        ctx.setLineDash([4, 4]); // 虚线效果
 
         // 根据形状绘制
         switch (hitbox.shape) {
-            case 'circle':
+            case "circle":
                 drawCircleHitbox(ctx, x, y, hitbox.radius!);
                 break;
-            case 'rect':
+            case "rect":
                 drawRectHitbox(ctx, x, y, hitbox.halfWidth!, hitbox.halfHeight!);
                 break;
-            case 'capsule':
+            case "capsule":
                 drawCapsuleHitbox(ctx, x, y, hitbox.capRadius!, hitbox.capHeight!);
                 break;
         }
@@ -498,7 +510,7 @@ function drawDebugHitBoxes(
 export function RenderSystem(world: World, dt: number): void {
     const renderCtx = world.renderContext;
     if (!renderCtx) {
-        console.warn("[RenderSystem] RenderContext not initialized, skipping render");
+        log.warn("RenderContext not initialized, skipping render");
         return;
     }
 
@@ -508,7 +520,7 @@ export function RenderSystem(world: World, dt: number): void {
 
     // 调试日志
     if (DebugConfig.render.enabled && DebugConfig.render.logEntities) {
-        console.log("[RenderSystem] Entities:", world.entities.size);
+        log.debug(`Entities: ${world.entities.size}`);
     }
 
     // 2. 绘制背景（传递流星数据）
@@ -524,7 +536,7 @@ export function RenderSystem(world: World, dt: number): void {
     const camY = camera.shakeY;
 
     // 收集精灵做排序
-    const sprites: RenderItem[] = []
+    const sprites: RenderItem[] = [];
     for (const [id, [transform, sprite], comps] of view(world, [Transform, Sprite])) {
         sprites.push({
             layer: determineLayer(comps),
@@ -554,7 +566,6 @@ export function RenderSystem(world: World, dt: number): void {
     for (const [id, [transform, inv], comps] of view(world, [Transform, InvulnerableState])) {
         drawInvulnerableEffect(context, inv, transform, camX, camY);
     }
-
 
     // 6. 绘制粒子特效
     for (const [id, [particle]] of view(world, [Particle])) {

@@ -54,7 +54,6 @@ export function WeaponSystem(world: World, dt: number): void {
 
         // 第三步：发射武器
         const isPlayer = !!comps.find(PlayerTag.check);
-        // console.log(`Entity ${id} firing weapon ${weapon.id}`);
         fireWeapon(world, dt, {
             id,
             transform,

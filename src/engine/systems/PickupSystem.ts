@@ -36,12 +36,15 @@ import {
     BuffCategory,
 } from "../configs/powerups";
 import { spawnOption } from "../factory";
+import { logger } from "../logger";
+
+const log = logger.for("PickupSystem");
 
 /**
  * 拾取处理器接口
  */
 interface PickupHandler {
-    handle(world: World, playerId: number, itemId: string,  count?: number): void;
+    handle(world: World, playerId: number, itemId: string, count?: number): void;
 }
 
 /**
@@ -57,10 +60,7 @@ const weaponPickupHandler: PickupHandler = {
 
         if (existingWeapon && existingWeapon.id === weaponId) {
             // 已有该武器，升级武器等级
-            existingWeapon.level = Math.min(
-                existingWeapon.level + count,
-                existingWeapon.maxLevel,
-            );
+            existingWeapon.level = Math.min(existingWeapon.level + count, existingWeapon.maxLevel);
         } else {
             // 移除旧武器，添加新武器
             if (existingWeapon) {
@@ -70,11 +70,8 @@ const weaponPickupHandler: PickupHandler = {
 
             // 根据武器ID创建新武器
             const weaponConfig = WEAPON_TABLE[weaponId as WeaponId];
-            const weapon = new Weapon(weaponConfig)
-            weapon.level = Math.min(
-                weapon.level + count,
-                weapon.maxLevel,
-            );
+            const weapon = new Weapon(weaponConfig);
+            weapon.level = Math.min(weapon.level + count, weapon.maxLevel);
             playerComps.push(weapon);
         }
 
@@ -176,12 +173,7 @@ const PICKUP_HANDLERS = {
 /**
  * 应用一次性 Buff 效果
  */
-function applyInstantBuff(
-    world: World,
-    playerId: EntityId,
-    playerComps: Component[],
-    buffType: BuffType,
-): void {
+function applyInstantBuff(world: World, playerId: EntityId, playerComps: Component[], buffType: BuffType): void {
     switch (buffType) {
         case BuffType.POWER:
             // POWER: 武器升级
@@ -197,10 +189,7 @@ function applyInstantBuff(
             // HP: 恢复生命值
             const health = playerComps.find(Health.check);
             if (health) {
-                health.hp = Math.min(
-                    health.hp + BUFF_CONFIG[BuffType.HP].healAmount,
-                    health.max,
-                );
+                health.hp = Math.min(health.hp + BUFF_CONFIG[BuffType.HP].healAmount, health.max);
             }
             break;
 
@@ -234,7 +223,7 @@ function applyInstantBuff(
             break;
 
         default:
-            console.warn(`Unknown instant buff type: ${buffType}`);
+            log.warn(`Unknown instant buff type: ${buffType}`);
             break;
     }
 }
@@ -242,25 +231,15 @@ function applyInstantBuff(
 /**
  * 添加持续 Buff 效果
  */
-function addDurationBuff(
-    world: World,
-    playerId: number,
-    playerComps: Component[],
-    buffType: BuffType,
-): void {
+function addDurationBuff(world: World, playerId: number, playerComps: Component[], buffType: BuffType): void {
     switch (buffType) {
         case BuffType.INVINCIBILITY: {
             // INVINCIBILITY: 添加短暂无敌 Buff
             const config = BUFF_CONFIG[BuffType.INVINCIBILITY];
-            const invulnerable = ensureComponent(
-                world,
-                playerId,
-                InvulnerableState,
-                {
-                    duration: config.duration,
-                    flashColor: config.flashColor,
-                },
-            );
+            const invulnerable = ensureComponent(world, playerId, InvulnerableState, {
+                duration: config.duration,
+                flashColor: config.flashColor,
+            });
             // 重复拾取时刷新倒计时
             invulnerable.duration = config.duration;
             break;
@@ -285,20 +264,15 @@ function addDurationBuff(
             //     shield.value = shield.max;
             // }
             const config = BUFF_CONFIG[BuffType.SHIELD];
-            const shieldAutoRegen = ensureComponent(
-                world,
-                playerId,
-                ShieldAutoRegen,
-                {
-                    regenPerSecond: config.regenPerSecond,
-                    duration: config.duration,
-                },
-            );
+            const shieldAutoRegen = ensureComponent(world, playerId, ShieldAutoRegen, {
+                regenPerSecond: config.regenPerSecond,
+                duration: config.duration,
+            });
             shieldAutoRegen.duration = config.duration;
             break;
         }
         default:
-            console.warn(`Unknown duration buff type: ${buffType}`);
+            log.warn(`Unknown duration buff type: ${buffType}`);
             break;
     }
 }
@@ -310,7 +284,7 @@ function addDurationBuff(
  */
 export function PickupSystem(world: World, dt: number): void {
     // 收集本帧的所有拾取事件
-    const pickupEvents = getEvents<PickupEvent>(world, 'Pickup');
+    const pickupEvents = getEvents<PickupEvent>(world, "Pickup");
 
     if (pickupEvents.length === 0) return;
 
@@ -326,8 +300,7 @@ export function PickupSystem(world: World, dt: number): void {
         else if (isBuffType(itemId)) {
             if (itemId === BuffType.OPTION) {
                 // OPTION 是特殊的，需要调用 option handler
-                const blueprintType =
-                    POWERUP_CONFIG[BuffType.OPTION].blueprintType;
+                const blueprintType = POWERUP_CONFIG[BuffType.OPTION].blueprintType;
                 PICKUP_HANDLERS.options.handle(world, playerId, blueprintType);
             } else {
                 PICKUP_HANDLERS.buffs.handle(world, playerId, itemId);
@@ -349,4 +322,3 @@ function isWeaponId(id: string): id is WeaponId {
 function isBuffType(id: string): id is BuffType {
     return Object.values(BuffType).includes(id as BuffType);
 }
-

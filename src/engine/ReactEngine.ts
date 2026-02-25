@@ -11,16 +11,17 @@
  * - 处理用户输入 (炸弹等)
  */
 
-import { Engine } from './engine';
-import { Blueprint, BLUEPRINT_FIGHTER_NEON } from './blueprints';
-import type { GameSnapshot } from './snapshot';
-import { ComboState, GameState, WeaponId } from './types';
-import { inputManager } from './input/InputManager';
-import { GameStorage, StorageEventListener, CURRENT_SAVE_VERSION, LocalStorageBackend } from './storage';
-import { GameSettings } from './settings';
-import { FighterId } from './types/ids';
+import { Engine } from "./engine";
+import { Blueprint, BLUEPRINT_FIGHTER_NEON } from "./blueprints";
+import type { GameSnapshot } from "./snapshot";
+import { ComboState, GameState, WeaponId } from "./types";
+import { inputManager } from "./input/InputManager";
+import { GameStorage, StorageEventListener, CURRENT_SAVE_VERSION, LocalStorageBackend } from "./storage";
+import { GameSettings } from "./settings";
+import { FighterId } from "./types/ids";
+import { logger } from "./logger";
 
-
+const log = logger.for("ReactEngine");
 
 /**
  * ReactEngine - 适配新 ECS 引擎供 React 使用
@@ -32,7 +33,6 @@ export class ReactEngine {
     // ========== 存储模块 ==========
     private storage: GameStorage | null = null;
     private storageListener: StorageEventListener | null = null;
-
 
     // ========== 游戏状态 (与旧 GameEngine 兼容) ==========
     public state: GameState = GameState.MENU;
@@ -63,7 +63,7 @@ export class ReactEngine {
 
     // 关卡事件状态
     public levelEvent: {
-        type: 'stageOneIntro' | 'levelTransitionStart' | 'levelTransitionComplete' | 'bossExitStart' | 'victory';
+        type: "stageOneIntro" | "levelTransitionStart" | "levelTransitionComplete" | "bossExitStart" | "victory";
         duration?: number;
         fromLevel?: number;
         toLevel?: number;
@@ -126,9 +126,9 @@ export class ReactEngine {
     private async initStorage(): Promise<void> {
         this.storage = GameStorage.initialize({
             version: CURRENT_SAVE_VERSION,
-            backend: new LocalStorageBackend('neon_raiden_'),
+            backend: new LocalStorageBackend("neon_raiden_"),
             onVersionMismatch: (current, saved) => {
-                console.warn(`[Storage] 存档版本不匹配: ${saved} -> ${current}`);
+                log.warn(`存档版本不匹配: ${saved} -> ${current}`);
                 // TODO: 可以触发 UI 提示
             },
         });
@@ -159,7 +159,9 @@ export class ReactEngine {
 
                 // 处理存储事件（每帧）
                 if (this.storageListener) {
-                    this.storageListener.processEvents(snapshot.events).catch(console.error);
+                    this.storageListener
+                        .processEvents(snapshot.events)
+                        .catch((e) => log.error("Storage event processing failed", e));
                 }
             }
         });
@@ -184,8 +186,8 @@ export class ReactEngine {
                 Transform: {
                     x: this.canvas.width / 2,
                     y: this.canvas.height - 80,
-                    rot: 0
-                }
+                    rot: 0,
+                },
             };
             await this.start(this.canvas, blueprint);
 
@@ -295,15 +297,15 @@ export class ReactEngine {
      */
     private syncFromSnapshot(snapshot: GameSnapshot): void {
         // 处理游戏状态事件（失败/胜利）
-        if (snapshot.gameStateEvent === 'defeat') {
+        if (snapshot.gameStateEvent === "defeat") {
             this.setState(GameState.GAME_OVER);
-        } else if (snapshot.gameStateEvent === 'victory') {
+        } else if (snapshot.gameStateEvent === "victory") {
             this.setState(GameState.VICTORY);
         }
 
         // 处理 Boss 事件
         if (snapshot.bossEvent) {
-            if (snapshot.bossEvent.type === 'entranceStart') {
+            if (snapshot.bossEvent.type === "entranceStart") {
                 // Boss 开始进场
                 this.showBossWarning = true;
                 this.onBossWarning(true);
@@ -317,8 +319,7 @@ export class ReactEngine {
                     this.onBossWarning(false);
                     this.bossWarningTimer = null;
                 }, 3000);
-
-            } else if (snapshot.bossEvent.type === 'entranceComplete') {
+            } else if (snapshot.bossEvent.type === "entranceComplete") {
                 // Boss 进场完成，确保隐藏 warning
                 if (this.bossWarningTimer) {
                     clearTimeout(this.bossWarningTimer);
@@ -326,8 +327,7 @@ export class ReactEngine {
                 }
                 this.showBossWarning = false;
                 this.onBossWarning(false);
-
-            } else if (snapshot.bossEvent.type === 'defeat') {
+            } else if (snapshot.bossEvent.type === "defeat") {
                 // Boss 被击败
                 if (this.bossWarningTimer) {
                     clearTimeout(this.bossWarningTimer);
@@ -375,7 +375,7 @@ export class ReactEngine {
         if (snapshot.boss) {
             this.boss = {
                 hp: snapshot.boss.hp,
-                maxHp: snapshot.boss.maxHp
+                maxHp: snapshot.boss.maxHp,
             };
         } else {
             this.boss = null;
@@ -392,7 +392,7 @@ export class ReactEngine {
      */
     getStorage(): GameStorage {
         if (!this.storage) {
-            throw new Error('Storage not initialized');
+            throw new Error("Storage not initialized");
         }
         return this.storage;
     }

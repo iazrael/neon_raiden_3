@@ -8,7 +8,10 @@
  * - 替代旧的 SpriteRenderer
  */
 
-import { SpriteKey, SPRITE_REGISTRY, SpriteEntry, buildSpritePath } from './configs/sprites';
+import { SpriteKey, SPRITE_REGISTRY, SpriteEntry, buildSpritePath } from "./configs/sprites";
+import { logger } from "./logger";
+
+const log = logger.for("SpriteManager");
 
 /**
  * 缓存的精灵数据
@@ -32,10 +35,10 @@ export class SpriteManager {
      */
     static async preloadAll(): Promise<void> {
         const entries = Object.values(SPRITE_REGISTRY);
-        const promises = entries.map(entry => this.loadSprite(entry));
+        const promises = entries.map((entry) => this.loadSprite(entry));
 
         await Promise.all(promises);
-        console.log(`[SpriteManager] All assets preloaded: ${entries.length}`);
+        log.info(`All assets preloaded: ${entries.length}`);
     }
 
     /**
@@ -73,7 +76,7 @@ export class SpriteManager {
             };
 
             img.onerror = () => {
-                console.warn(`[SpriteManager] Failed to load: ${src}`);
+                log.warn(`Failed to load: ${src}`);
                 this.loadingPromises.delete(key);
                 // 即使失败也缓存图片，避免重复尝试
                 this.cache.set(key, { image: img, config: entry, loaded: false });
@@ -122,7 +125,7 @@ export class SpriteManager {
      */
     static getLoadProgress(): { loaded: number; total: number } {
         const total = Object.keys(SPRITE_REGISTRY).length;
-        const loaded = Array.from(this.cache.values()).filter(c => c.loaded).length;
+        const loaded = Array.from(this.cache.values()).filter((c) => c.loaded).length;
         return { loaded, total };
     }
 
