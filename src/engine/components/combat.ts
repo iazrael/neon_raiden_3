@@ -1,4 +1,4 @@
-import { AmmoType, BuffType, Component, EntityId, EnemyWeaponId, WeaponId, WeaponPattern } from '../types';
+import { AmmoType, BuffType, Component, EntityId, EnemyWeaponId, WeaponId, WeaponPattern } from "../types";
 
 // 「攻击 & 防御 & 增益」
 
@@ -21,7 +21,9 @@ export class Shield extends Component {
     }
     public value = 0;
     public max = 0;
-    static check(c: any): c is Shield { return c instanceof Shield; }
+    static check(c: any): c is Shield {
+        return c instanceof Shield;
+    }
 }
 
 /** 武器组件 - 存储实体的武器信息 */
@@ -31,7 +33,7 @@ export class Weapon extends Component {
      * @param cfg 武器配置
      */
     constructor(cfg: {
-        id: WeaponId | EnemyWeaponId
+        id: WeaponId | EnemyWeaponId;
         /** 弹药类型 */
         ammoType: AmmoType;
         /** 基础冷却时间（毫秒） */
@@ -91,7 +93,9 @@ export class Weapon extends Component {
     public bounces = 0;
     /** 旋转累积角度（弧度），用于 SPINNING_RADIAL 模式 */
     public spinAngle: number = 0;
-    static check(c: any): c is Weapon { return c instanceof Weapon; }
+    static check(c: any): c is Weapon {
+        return c instanceof Weapon;
+    }
 }
 
 /** 子弹组件 - 存储子弹相关信息 */
@@ -128,7 +132,9 @@ export class Bullet extends Component {
     public pierceLeft = 0;
     public bouncesLeft = 0;
     public target?: EntityId;
-    static check(c: any): c is Bullet { return c instanceof Bullet; }
+    static check(c: any): c is Bullet {
+        return c instanceof Bullet;
+    }
 }
 
 /**
@@ -155,7 +161,6 @@ export class Bomb extends Component {
     }
 }
 
-
 /** 拾取物品组件 - 定义可拾取物品的属性 */
 export class PickupItem extends Component {
     /**
@@ -164,7 +169,7 @@ export class PickupItem extends Component {
      */
     constructor(cfg: {
         /** 物品类型 */
-        kind: 'weapon' | 'buff' | 'coin';
+        kind: "weapon" | "buff" | "coin";
         /** 蓝图名称 */
         blueprint: string;
         /** 是否自动拾取 */
@@ -175,12 +180,13 @@ export class PickupItem extends Component {
         this.blueprint = cfg.blueprint;
         this.autoPickup = cfg.autoPickup ?? false;
     }
-    public kind: 'weapon' | 'buff' | 'coin';
+    public kind: "weapon" | "buff" | "coin";
     public blueprint: string;
     public autoPickup = false;
-    static check(c: any): c is PickupItem { return c instanceof PickupItem; }
+    static check(c: any): c is PickupItem {
+        return c instanceof PickupItem;
+    }
 }
-
 
 /** 掉落表组件 - 定义实体被销毁时的掉落物品 */
 export class DropTable extends Component {
@@ -196,12 +202,16 @@ export class DropTable extends Component {
         this.table = cfg.table;
     }
     public table: Array<{ item: string; weight: number; min?: number; max?: number }>;
-    static check(c: any): c is DropTable { return c instanceof DropTable; }
+    static check(c: any): c is DropTable {
+        return c instanceof DropTable;
+    }
 }
 
 /**
  * 持续伤害组件（DOT）
  * 用法：CollisionSystem 命中后挂上，DamageResolutionSystem 每帧扣血
+ *
+ * 纯数据组件，逻辑由 DamageResolutionSystem 处理
  */
 export class DamageOverTime extends Component {
     /**
@@ -220,7 +230,7 @@ export class DamageOverTime extends Component {
         this.damagePerSecond = cfg.damagePerSecond;
         this.remaining = cfg.remaining;
         this.interval = cfg.interval ?? 200; // 默认 200 毫秒一跳
-        this.timer = 0;             // 内部间隔计时器
+        this.timer = 0; // 内部间隔计时器
     }
     /** 每秒扣血量 */
     public damagePerSecond: number;
@@ -228,23 +238,8 @@ export class DamageOverTime extends Component {
     public remaining: number;
     /** 扣血间隔（毫秒），默认 200 毫秒一跳 */
     public interval = 200;
-    private timer = 0;               // 内部间隔计时器
-
-    /** 每帧由 DamageResolutionSystem 调用，返回本帧是否应扣血 */
-    tick(dt: number): boolean {
-        this.remaining -= dt;
-        this.timer += dt;
-        if (this.timer >= this.interval) {
-            this.timer = 0;
-            return true;   // 告诉外部：这次要扣血
-        }
-        return false;
-    }
-
-    /** 倒计时结束？ */
-    isFinished(): boolean {
-        return this.remaining <= 0;
-    }
+    /** 内部间隔计时器（毫秒）- 由 DamageResolutionSystem 更新 */
+    public timer = 0;
 
     static check(c: any): c is DamageOverTime {
         return c instanceof DamageOverTime;
@@ -260,7 +255,7 @@ export class InvulnerableState extends Component {
         /** 无敌状态持续时间（毫秒） */
         duration: number;
         /** 无敌状态视觉效果颜色 */
-        flashColor?: string
+        flashColor?: string;
     }) {
         super();
         this.duration = cfg.duration;
@@ -269,8 +264,9 @@ export class InvulnerableState extends Component {
     public duration: number; // 剩余无敌时间（毫秒）
     public flashColor?: string;
 
-
-    static check(c: any): c is InvulnerableState { return c instanceof InvulnerableState; }
+    static check(c: any): c is InvulnerableState {
+        return c instanceof InvulnerableState;
+    }
 }
 
 /**
@@ -284,18 +280,20 @@ export class TimeSlowState extends Component {
         /** 持续时间（毫秒） */
         duration: number;
         /** 影响范围 (预留未来扩展区域限制) */
-        scope?: 'global' | 'area';
+        scope?: "global" | "area";
     }) {
         super();
         this.scale = cfg.scale;
         this.duration = cfg.duration;
-        this.scope = cfg.scope ?? 'global';
+        this.scope = cfg.scope ?? "global";
     }
     public scale: number;
     public duration: number;
-    public scope: 'global' | 'area';
+    public scope: "global" | "area";
 
-    static check(c: any): c is TimeSlowState { return c instanceof TimeSlowState; }
+    static check(c: any): c is TimeSlowState {
+        return c instanceof TimeSlowState;
+    }
 }
 
 /** 护盾自动恢复 buff 组件 - 定义护盾自动恢复效果 */
@@ -316,7 +314,9 @@ export class ShieldAutoRegen extends Component {
     }
     public regenPerSecond: number;
     public duration: number;
-    static check(c: any): c is ShieldAutoRegen { return c instanceof ShieldAutoRegen; }
+    static check(c: any): c is ShieldAutoRegen {
+        return c instanceof ShieldAutoRegen;
+    }
 }
 
 /**
@@ -345,12 +345,12 @@ export class Option extends Component {
     lerpFactor: number;
 
     constructor(cfg: {
-        owner: EntityId,
-        index: number,
-        radius: number,
-        rotationSpeed: number,
-        lerpFactor: number,
-        angle?: number,
+        owner: EntityId;
+        index: number;
+        radius: number;
+        rotationSpeed: number;
+        lerpFactor: number;
+        angle?: number;
     }) {
         super();
         this.owner = cfg.owner;
@@ -507,4 +507,3 @@ export class Explosion extends Component {
     /** 半径倍率（来自升级配置） */
     radiusMultiplier: number = 1;
 }
-

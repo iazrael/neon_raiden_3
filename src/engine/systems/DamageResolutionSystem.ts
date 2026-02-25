@@ -13,8 +13,27 @@
  */
 
 import { EntityId } from "../types";
-import { Health, Shield, DamageOverTime, DestroyTag, ScoreValue, Transform, PlayerTag, BossTag, EnemyTag } from "../components";
-import { HitEvent, KillEvent, BloodFogEvent, CamShakeEvent, PlaySoundEvent, ShieldBrokenEvent, DefeatEvent, BossDefeatEvent } from "../events";
+import {
+    Health,
+    Shield,
+    DamageOverTime,
+    DestroyTag,
+    ScoreValue,
+    Transform,
+    PlayerTag,
+    BossTag,
+    EnemyTag,
+} from "../components";
+import {
+    HitEvent,
+    KillEvent,
+    BloodFogEvent,
+    CamShakeEvent,
+    PlaySoundEvent,
+    ShieldBrokenEvent,
+    DefeatEvent,
+    BossDefeatEvent,
+} from "../events";
 import { removeComponent, view, getEvents, World, pushEvent } from "../world";
 
 /**
@@ -57,7 +76,7 @@ function processKillCount(world: World): void {
     }
 
     // 累加本帧的所有击杀事件
-    const killEvents = getEvents<KillEvent>(world, 'Kill');
+    const killEvents = getEvents<KillEvent>(world, "Kill");
     state.killCount += killEvents.length;
 }
 
@@ -147,17 +166,28 @@ function applyDamage(world: World, event: HitEvent): void {
 
 /**
  * 处理持续伤害 (DOT)
+ *
+ * 逻辑说明：
+ * - 每帧更新 DOT 剩余时间和间隔计时器
+ * - 当间隔计时器达到阈值时，扣除伤害并重置计时器
+ * - 当剩余时间 <= 0 时，移除 DOT 组件
  */
 function processDamageOverTime(world: World, dt: number): void {
     for (const [id, [dot], comps] of view(world, [DamageOverTime])) {
-        // 更新 DOT
-        const shouldDamage = dot.tick(dt);
-        if (shouldDamage) {
+        // 更新剩余时间和间隔计时器
+        dot.remaining -= dt;
+        dot.timer += dt;
+
+        // 检查是否达到扣血间隔
+        if (dot.timer >= dot.interval) {
+            dot.timer = 0; // 重置间隔计时器
+
             // 应用 DOT 伤害
             const transform = comps.find(Transform.check);
             const health = comps.find(Health.check);
 
             if (health && transform) {
+                // 伤害 = 每秒伤害 * 间隔时间(秒)
                 health.hp -= (dot.damagePerSecond * dot.interval) / 1000;
 
                 // 检查死亡
@@ -169,8 +199,9 @@ function processDamageOverTime(world: World, dt: number): void {
                 }
             }
         }
-        // 检查 DOT 是否结束
-        if (dot.isFinished()) {
+
+        // 检查 DOT 是否结束（剩余时间 <= 0）
+        if (dot.remaining <= 0) {
             removeComponent(world, id, dot);
         }
     }
@@ -220,7 +251,6 @@ function handleDeath(world: World, victimId: EntityId, killerId: EntityId, pos: 
         };
         pushEvent(world, bossDefeatEvent);
     }
-
 
     // 添加销毁标记
     const hasDestroyTag = victimComps.some(DestroyTag.check);
