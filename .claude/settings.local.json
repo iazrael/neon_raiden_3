@@ -41,7 +41,9 @@
       "/Users/azrael/Code/neon_raiden/docs/plans",
       "/tmp",
       "/private/tmp",
-      "/Users/azraellong/workspaces/neon_raiden/docs/plans"
+      "/Users/azraellong/workspaces/neon_raiden/docs/plans",
+      "/Users/azraellong/.claude/skills/game-code-review/assets",
+      "/Users/azraellong/.claude/skills"
     ]
   }
 }
